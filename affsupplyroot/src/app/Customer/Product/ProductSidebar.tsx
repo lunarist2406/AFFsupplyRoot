@@ -83,15 +83,13 @@ export function ProductSidebar() {
       className="border-r-0 h-screen [&>*]:!bg-transparent [&>*]:!text-white"
       style={{ 
         background: 'linear-gradient(180deg, #353D39 4%, #7E8C7C 55%, #353D39 95%)',
-        height: '100vh',
-        padding: '6px'
       } as React.CSSProperties}
     >
       <SidebarHeader className="p-4">
         {state === "expanded" ? (
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Leaf className="h-6 w-6 text-green-300" />
+              <Leaf className="h-5 w-5 text-green-300" />
               <span className="font-semibold text-lg text-yellow-400">AFF supplyRoot</span>
             </div>
             <SidebarTrigger 

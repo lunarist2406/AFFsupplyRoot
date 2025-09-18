@@ -11,7 +11,7 @@ const productImages = [
 
 export function ProductGallery() {
   return (
-    <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
+    <div className="bg-white/5 backdrop-blur-sm rounded-xl p-0 border border-white/10 ">
           <Image
             height={380}
             width= '100%'
@@ -23,10 +23,10 @@ export function ProductGallery() {
             }}
           />
 
-      <div className="mt-3" style={{ padding: '8px' }}>
+      <div className="mt-3">
         <Carousel
           arrows
-          dots={false}
+          dots={true}
           slidesToShow={4}
           responsive={[
             { breakpoint: 1024, settings: { slidesToShow: 4 } },

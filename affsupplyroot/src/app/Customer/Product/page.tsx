@@ -1,7 +1,7 @@
 "use client"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
-import { ProductSidebar } from "@/app/Customer/Product/ProductSidebar"
-import { ProductContent } from "@/app/Customer/Product/ProductContent"
+import { ProductSidebar } from "@/app/customer/product/ProductSidebar"
+import { ProductContent } from "@/app/customer/product/ProductContent"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
@@ -56,8 +56,7 @@ export default function ProductPage() {
             background: 'linear-gradient(180deg, #353D39 100%, #7E8C7C 100%, #353D39 5%)',
             padding: '12px' 
           }}>
-            <div className="flex items-center justify-between mb-8"
-            style={{padding:'0 0 12px'}}
+            <div className="flex items-center justify-between mb-5"
             >
               <div className="flex items-center gap-2">
                 <Link href="/" className="text-yellow-300 text-sm hover:text-yellow-200">Trang chủ</Link>
@@ -92,7 +91,6 @@ export default function ProductPage() {
                 <Input 
                   placeholder="Tìm kiếm sản phẩm của bạn"
                   className="pr-12 pl-4 bg-white/95 border border-gray-200 rounded-lg h-9 text-gray-700 placeholder:text-gray-500 text-sm focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400"
-                  style={{ padding: '4px' }}
                   value={searchTerm}
                   onChange={(e) => handleSearch(e.target.value)}
                 />
@@ -103,7 +101,6 @@ export default function ProductPage() {
                 <Button 
                   onClick={() => setShowSortDropdown(!showSortDropdown)}
                   className="bg-[#FFD54F] hover:bg-[#FACC15] text-black rounded-lg h-9 px-4 text-sm font-medium transition-all duration-200 flex items-center gap-2"
-                  style={{ padding: '4px' }}
                 >
                   <Filter className="h-4 w-4" />
                   {getSortText()}

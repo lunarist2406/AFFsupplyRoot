@@ -1,6 +1,5 @@
 "use client"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
-import { ProductSidebar } from "@/app/Customer/Product/ProductSidebar"
 import { LivestreamContent } from "./LivestreamContent"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -17,6 +16,7 @@ import {
   ChevronRight,
   ChevronDown
 } from "lucide-react"
+import { ProductSidebar } from "../product/ProductSidebar"
 
 export default function LivestreamPage() {
   const [searchTerm, setSearchTerm] = useState("")
@@ -53,11 +53,10 @@ export default function LivestreamPage() {
       <SidebarInset>
         <div className="flex flex-1 flex-col">
           <div style={{ 
-            background: 'linear-gradient(180deg, #353D39 100%, #7E8C7C 100%, #353D39 5%)',
+            background: 'linear-gradient(180deg, #353D39 4%, #7E8C7C 55%, #353D39 95%)',
             padding: '12px' 
           }}>
-            <div className="flex items-center justify-between mb-8"
-            style={{padding:'0 0 12px'}}
+            <div className="flex items-center justify-between mb-5"
             >
               <div className="flex items-center gap-2">
                 <Link href="/" className="text-yellow-300 text-sm hover:text-yellow-200">Trang chủ</Link>

@@ -6,9 +6,9 @@ import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Eye, Users, ShoppingBag } from "lucide-react"
+import { useState } from "react"
 
 const allLivestreams = [
-  // Rice livestreams
   ...Array.from({ length: 4 }, (_, i) => ({
     id: i + 1,
     title: "Gạo cao cấp nhà trồng",
@@ -18,7 +18,6 @@ const allLivestreams = [
     thumbnail: "/Gao-ST25.png",
     isLive: true
   })),
-  // Vegetable livestreams
   ...Array.from({ length: 4 }, (_, i) => ({
     id: i + 5,
     title: "Rau mới về hàng 11/7",
@@ -38,10 +37,8 @@ interface LivestreamContentProps {
 export function LivestreamContent({ searchTerm = "", sortBy = "all" }: LivestreamContentProps) {
   const router = useRouter()
   
-  // Filter và sort livestreams
   let filteredLivestreams = allLivestreams
 
-  // Search filter
   if (searchTerm) {
     filteredLivestreams = filteredLivestreams.filter(livestream => 
       livestream.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -58,14 +55,15 @@ export function LivestreamContent({ searchTerm = "", sortBy = "all" }: Livestrea
   const livestreams = filteredLivestreams
 
   const handleCardClick = () => {
-    router.push('/Customer/Livestream/watch')
+    router.push('/customer/livestream/watch')
   }
 
   return (
-    <div className="flex-1 p-6" style={{ 
-      background: 'linear-gradient(180deg, #353D39 100%, #7E8C7C 100%, #353D39 5%)',
-      padding: '12px'
-    }}>
+    <>
+      <div className="flex-1 p-6" style={{ 
+        background: 'linear-gradient(180deg, #353D39 4%, #7E8C7C 100%, #353D39 95%)',
+        padding: '12px'
+      }}>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" style={{ marginBottom: '12px' }}>
         {livestreams.map((livestream) => (
           <Card key={livestream.id} 
@@ -73,7 +71,6 @@ export function LivestreamContent({ searchTerm = "", sortBy = "all" }: Livestrea
                 style={{ padding: '0' }}
                 onClick={handleCardClick}>
             
-            {/* Thumbnail Section */}
             <div className="relative h-48">
               <Image 
                 src={livestream.thumbnail} 
@@ -81,7 +78,6 @@ export function LivestreamContent({ searchTerm = "", sortBy = "all" }: Livestrea
                 fill
                 className="object-cover"
               />
-              {/* LIVE Badge */}
               {livestream.isLive && (
                 <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded flex items-center gap-1"
                 style={{padding:'4px'}}>
@@ -91,15 +87,12 @@ export function LivestreamContent({ searchTerm = "", sortBy = "all" }: Livestrea
               )}
             </div>
             
-            {/* Information Section - Overlapping bottom */}
             <div className="relative bg-[#353D39] rounded-t-lg p-4"
             style={{padding: '0 12px'}}
             >
               
-              {/* Title */}
               <h3 className="font-bold text-white text-lg mb-3 mt-2">{livestream.title}</h3>
               
-              {/* Seller Info with Avatar */}
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <ShoppingBag className="h-4 w-4 text-[#FFD54F]" />
@@ -155,5 +148,6 @@ export function LivestreamContent({ searchTerm = "", sortBy = "all" }: Livestrea
         </div>
       </div>
     </div>
+    </>
   )
 }

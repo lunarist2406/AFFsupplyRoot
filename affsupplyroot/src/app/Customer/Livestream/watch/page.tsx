@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
-import { ProductSidebar } from "@/app/Customer/Product/ProductSidebar"
+import { ProductSidebar } from "@/app/customer/product/ProductSidebar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
@@ -28,6 +28,15 @@ export default function LivestreamWatchPage() {
   const [quantity, setQuantity] = useState(1)
   const [isFollowing, setIsFollowing] = useState(false)
   const [playing, setPlaying] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 1500)
+
+    return () => clearTimeout(timer)
+  }, [])
 
   const handleSendMessage = () => {
     if (message.trim()) {
@@ -39,6 +48,17 @@ export default function LivestreamWatchPage() {
     setQuantity(Math.max(1, quantity + delta))
   }
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#353D39] flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#FFD54F] mx-auto mb-4"></div>
+          <p className="text-white text-lg">Đang tải livestream...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <SidebarProvider>
       <ProductSidebar />
@@ -46,15 +66,12 @@ export default function LivestreamWatchPage() {
       <SidebarInset>
         <div className="flex flex-1 flex-col">
           {/* Header */}
-          <div style={{ 
-            background: 'linear-gradient(180deg, #353D39 100%, #7E8C7C 100%, #353D39 5%)',
-            padding: '12px' 
-          }}>
+          <div className="bg-gradient-to-b from-[#353D39] via-[#7E8C7C] to-[#353D39] p-3">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <Link href="/" className="text-yellow-300 text-sm hover:text-yellow-200">Trang chủ</Link>
                 <ChevronRight className="h-4 w-4 text-gray-400" />
-                <Link href="/Customer/Livestream" className="text-yellow-300 text-sm hover:text-yellow-200">Livestreams</Link>
+                <Link href="/customer/livestream" className="text-yellow-300 text-sm hover:text-yellow-200">Livestreams</Link>
                 <ChevronRight className="h-4 w-4 text-gray-400" />
                 <span className="text-yellow-300 text-sm">Xem</span>
               </div>
@@ -81,24 +98,11 @@ export default function LivestreamWatchPage() {
           </div>
           
           {/* Main Content */}
-          <div style={{ 
-            flex: 1, 
-            padding: '20px', 
-            backgroundColor: '#353D39', 
-            display: 'flex', 
-            gap: '24px' 
-          }}>
+          <div className="flex-1 p-5 bg-[#353D39] flex gap-6">
             {/* Left Side - Video Player */}
-            <div style={{ flex: 1 }}>
+            <div className="flex-1">
               {/* Video Player */}
-              <div style={{ 
-                position: 'relative', 
-                backgroundColor: '#374151', 
-                borderRadius: '12px', 
-                overflow: 'hidden', 
-                marginBottom: '24px',
-                aspectRatio: '16/9'
-              }}>
+              <div className="relative bg-gray-700 rounded-xl overflow-hidden mb-6 aspect-video">
                 <ReactPlayer
                   src="https://www.youtube.com/watch?v=Mt2huL2TCR8"
                   width="100%"
@@ -117,453 +121,203 @@ export default function LivestreamWatchPage() {
                 
                 {/* LIVE Badges - Only show when not playing */}
                 {!playing && (
-                  <div style={{
-                    position: 'absolute',
-                    top: '16px',
-                    left: '16px',
-                    display: 'flex',
-                    gap: '8px',
-                    zIndex: 10
-                  }}>
-                    <div style={{
-                      backgroundColor: '#ef4444',
-                      color: 'white',
-                      fontSize: '12px',
-                      fontWeight: 'bold',
-                      padding: '4px 8px',
-                      borderRadius: '4px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px'
-                    }}>
-                      <div style={{
-                        width: '6px',
-                        height: '6px',
-                        backgroundColor: 'white',
-                        borderRadius: '50%',
-                        animation: 'pulse 2s infinite'
-                      }}></div>
+                  <div className="absolute top-4 left-4 flex gap-2 z-10">
+                    <div className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded flex items-center gap-1">
+                      <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
                       LIVE
                     </div>
-                    <div style={{
-                      backgroundColor: '#10b981',
-                      color: 'white',
-                      fontSize: '11px',
-                      fontWeight: 'bold',
-                      padding: '4px 8px',
-                      borderRadius: '4px'
-                    }}>
+                    <div className="bg-emerald-500 text-white text-xs font-bold px-2 py-1 rounded">
                       5K đang xem
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* Streamer Info */}
-              <div style={{
-                backgroundColor: 'white',
-                borderRadius: '12px',
-                padding: '20px',
-                marginBottom: '24px'
-              }}>
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  marginBottom: '16px'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <div style={{
-                      width: '48px',
-                      height: '48px',
-                      borderRadius: '50%',
-                      border: '2px solid #FFD54F',
-                      overflow: 'hidden'
-                    }}>
+              <div className="bg-white rounded-xl p-5 mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full border-2 border-[#FFD54F] overflow-hidden">
                       <Image 
                         src="/Gao-ST25.png" 
                         alt="Streamer Avatar"
                         width={48}
                         height={48}
-                        style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                        className="object-cover w-full h-full"
                       />
                     </div>
                     <div>
-                      <h3 style={{ fontWeight: 'bold', fontSize: '18px', margin: 0 }}>AFFSHOP</h3>
-                      <p style={{ fontSize: '14px', color: '#6b7280', margin: 0 }}>1.2K người theo dõi</p>
+                      <h3 className="font-bold text-lg m-0">AFFSHOP</h3>
+                      <p className="text-sm text-gray-500 m-0">1.2K người theo dõi</p>
                     </div>
                   </div>
                   
-                  <div style={{ display: 'flex', gap: '8px' }}>
+                  <div className="flex gap-2">
                     <Button 
                       onClick={() => setIsFollowing(!isFollowing)}
-                      style={{
-                        padding: '8px 24px',
-                        backgroundColor: isFollowing ? '#6b7280' : '#3b82f6',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '6px',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px'
-                      }}
+                      className={`px-6 py-2 text-white border-none rounded-md cursor-pointer flex items-center gap-1.5 ${
+                        isFollowing ? 'bg-gray-500' : 'bg-blue-500'
+                      }`}
                     >
-                      <FaUserPlus style={{ fontSize: '14px' }} />
+                      <FaUserPlus className="text-sm" />
                       {isFollowing ? 'Đã theo dõi' : 'Theo dõi'}
                     </Button>
-                    <Button style={{
-                      backgroundColor: '#22c55e',
-                      color: 'white',
-                      padding: '8px 24px',
-                      border: 'none',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px'
-                    }}>
-                      <FaComments style={{ fontSize: '14px' }} />
+                    <Button className="bg-green-500 text-white px-6 py-2 border-none rounded-md cursor-pointer flex items-center gap-1.5">
+                      <FaComments className="text-sm" />
                       Nhắn Tin
                     </Button>
                   </div>
                 </div>
                 
-                <div style={{ marginBottom: '16px' }}>
-                  <h4 style={{ fontWeight: '600', marginBottom: '8px', margin: 0 }}>Tiêu đề livestream</h4>
-                  <p style={{ fontSize: '14px', color: '#6b7280', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <FaFire style={{ color: '#ef4444' }} />
+                <div className="mb-4">
+                  <h4 className="font-semibold mb-2 m-0">Tiêu đề livestream</h4>
+                  <p className="text-sm text-gray-500 m-0 flex items-center gap-1.5">
+                    <FaFire className="text-red-500" />
                     SALE SỐC - Kho Lúa AFF supplyRoot
                   </p>
                 </div>
                 
-                <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '16px' }}>
-                  <p style={{ fontSize: '14px', fontWeight: '500', color: '#1f2937', margin: '0 0 4px 0' }}>Sắp diễn ra 2 tiếng nữa</p>
-                  <p style={{ fontSize: '14px', color: '#6b7280', margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <FaCalendarAlt style={{ color: '#3b82f6' }} />
+                <div className="border-t border-gray-200 pt-4">
+                  <p className="text-sm font-medium text-gray-800 m-0 mb-1">Sắp diễn ra 2 tiếng nữa</p>
+                  <p className="text-sm text-gray-500 m-0 mb-2 flex items-center gap-1.5">
+                    <FaCalendarAlt className="text-blue-500" />
                     Mở tài
                   </p>
-                  <p style={{ fontSize: '14px', color: '#6b7280', margin: 0 }}>Xem thêm (3)</p>
+                  <p className="text-sm text-gray-500 m-0">Xem thêm (3)</p>
                 </div>
               </div>
             </div>
 
             {/* Right Side - Chat & Products */}
-            <div style={{ width: '320px', display: 'flex', flexDirection: 'column' }}>
+            <div className="w-80 flex flex-col">
               
               {/* Product Info - First */}
-              <div style={{
-                backgroundColor: 'white',
-                borderRadius: '12px',
-                padding: '16px',
-                marginBottom: '16px'
-              }}>
-                <div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
-                  <div style={{ 
-                    position: 'relative', 
-                    width: '64px', 
-                    height: '64px',
-                    borderRadius: '8px',
-                    overflow: 'hidden'
-                  }}>
-                    <Image src="/Gao-ST25.png" alt="Product" fill style={{ objectFit: 'cover' }} />
+              <div className="bg-white rounded-xl p-4 mb-4">
+                <div className="flex gap-3 mb-3">
+                  <div className="relative w-16 h-16 rounded-lg overflow-hidden">
+                    <Image src="/Gao-ST25.png" alt="Product" fill className="object-cover" />
                   </div>
-                  <div style={{ flex: 1 }}>
-                    <h4 style={{ fontWeight: '600', fontSize: '14px', margin: '0 0 4px 0' }}>Gạo ST 25</h4>
-                    <p style={{ color: '#dc2626', fontWeight: 'bold', fontSize: '16px', margin: '0 0 2px 0' }}>150.000đ/5kg <span style={{ color: '#6b7280', fontSize: '12px', textDecoration: 'line-through', fontWeight: 'normal' }}>200.000đ</span></p>
-                    <p style={{ fontSize: '12px', color: '#6b7280', margin: 0 }}>Khô: 200.000đ Đã bán: 100000</p>
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-sm m-0 mb-1">Gạo ST 25</h4>
+                    <p className="text-red-600 font-bold text-base m-0 mb-0.5">150.000đ/5kg <span className="text-gray-500 text-xs line-through font-normal">200.000đ</span></p>
+                    <p className="text-xs text-gray-500 m-0">Khô: 200.000đ Đã bán: 100000</p>
                   </div>
                 </div>
                 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: '14px', width: '100%', marginBottom: '8px' }}>Số lượng</span>
-                  <div style={{ display: 'flex', alignItems: 'center', border: '2px solid #e5e7eb', borderRadius: '6px', backgroundColor: 'white' }}>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-sm w-full mb-2">Số lượng</span>
+                  <div className="flex items-center border-2 border-gray-200 rounded-md bg-white">
                     <Button 
                       onClick={() => handleQuantityChange(-1)}
-                      style={{
-                        backgroundColor: 'transparent',
-                        border: 'none',
-                        padding: '8px',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: '#374151',
-                        minWidth: '32px',
-                        height: '32px'
-                      }}
+                      className="bg-transparent border-none p-2 cursor-pointer flex items-center justify-center text-gray-700 min-w-8 h-8"
                     >
-                      <Minus style={{ width: '16px', height: '16px', color: '#374151' }} />
+                      <Minus className="w-4 h-4 text-gray-700" />
                     </Button>
-                    <span style={{ padding: '8px 12px', fontSize: '14px', fontWeight: '500', color: '#1f2937', minWidth: '40px', textAlign: 'center' }}>{quantity}</span>
+                    <span className="px-3 py-2 text-sm font-medium text-gray-800 min-w-10 text-center">{quantity}</span>
                     <Button 
                       onClick={() => handleQuantityChange(1)}
-                      style={{
-                        backgroundColor: 'transparent',
-                        border: 'none',
-                        padding: '8px',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: '#374151',
-                        minWidth: '32px',
-                        height: '32px'
-                      }}
+                      className="bg-transparent border-none p-2 cursor-pointer flex items-center justify-center text-gray-700 min-w-8 h-8"
                     >
-                      <Plus style={{ width: '16px', height: '16px', color: '#374151' }} />
+                      <Plus className="w-4 h-4 text-gray-700" />
                     </Button>
                   </div>
-                  <Button style={{
-                    backgroundColor: '#FFD54F',
-                    color: 'black',
-                    fontSize: '12px',
-                    padding: '6px 12px',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    fontWeight: 'bold'
-                  }}>
+                  <Button className="bg-[#FFD54F] text-black text-xs px-3 py-1.5 border-none rounded cursor-pointer font-bold">
                     Thêm vào giỏ
                   </Button>
                 </div>
               </div>
 
               {/* Chat - Second */}
-              <div style={{
-                backgroundColor: 'white',
-                borderRadius: '12px',
-                padding: '16px',
-                marginBottom: '16px',
-                flex: 1,
-                minHeight: '350px',
-                maxHeight: '450px',
-                display: 'flex',
-                flexDirection: 'column'
-              }}>
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  marginBottom: '12px'
-                }}>
-                  <h4 style={{ fontWeight: '600', margin: 0 }}>Khung chat</h4>
-                  <span style={{ fontSize: '14px', color: '#6b7280' }}>1.2K</span>
+              <div className="bg-white rounded-xl p-4 mb-4 flex-1 min-h-[350px] max-h-[450px] flex flex-col">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-semibold m-0">Khung chat</h4>
+                  <span className="text-sm text-gray-500">1.2K</span>
                 </div>
                 
                 {/* Chat Messages */}
-                <div style={{
-                  flex: 1,
-                  overflowY: 'auto',
-                  marginBottom: '12px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '8px'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-                    <div style={{
-                      width: '20px',
-                      height: '20px',
-                      backgroundColor: '#22c55e',
-                      borderRadius: '50%',
-                      color: 'white',
-                      fontSize: '10px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0
-                    }}>K</div>
+                <div className="flex-1 overflow-y-auto mb-3 flex flex-col gap-2">
+                  <div className="flex items-start gap-2">
+                    <div className="w-5 h-5 bg-green-500 rounded-full text-white text-xs flex items-center justify-center flex-shrink-0">K</div>
                     <div>
                       <div>
-                        <span style={{ fontSize: '12px', fontWeight: '500', color: '#2563eb' }}>Khoa Phạm</span>
-                        <span style={{ fontSize: '10px', color: '#6b7280', marginLeft: '4px' }}>1 phút</span>
+                        <span className="text-xs font-medium text-blue-600">Khoa Phạm</span>
+                        <span className="text-xs text-gray-500 ml-1">1 phút</span>
                       </div>
-                      <p style={{ fontSize: '12px', margin: 0 }}>Gạo gì ngon dữ</p>
+                      <p className="text-xs m-0">Gạo gì ngon dữ</p>
                     </div>
                   </div>
                   
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-                    <div style={{
-                      width: '20px',
-                      height: '20px',
-                      backgroundColor: '#3b82f6',
-                      borderRadius: '50%',
-                      color: 'white',
-                      fontSize: '10px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0
-                    }}>T</div>
+                  <div className="flex items-start gap-2">
+                    <div className="w-5 h-5 bg-blue-500 rounded-full text-white text-xs flex items-center justify-center flex-shrink-0">T</div>
                     <div>
                       <div>
-                        <span style={{ fontSize: '12px', fontWeight: '500', color: '#2563eb' }}>Thiên bảo</span>
-                        <span style={{ fontSize: '10px', color: '#6b7280', marginLeft: '4px' }}>2 phút</span>
+                        <span className="text-xs font-medium text-blue-600">Thiên bảo</span>
+                        <span className="text-xs text-gray-500 ml-1">2 phút</span>
                       </div>
-                      <p style={{ fontSize: '12px', margin: 0 }}>WOW</p>
+                      <p className="text-xs m-0">WOW</p>
                     </div>
                   </div>
                   
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-                    <div style={{
-                      width: '20px',
-                      height: '20px',
-                      backgroundColor: '#8b5cf6',
-                      borderRadius: '50%',
-                      color: 'white',
-                      fontSize: '10px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0
-                    }}>B</div>
+                  <div className="flex items-start gap-2">
+                    <div className="w-5 h-5 bg-purple-500 rounded-full text-white text-xs flex items-center justify-center flex-shrink-0">B</div>
                     <div>
                       <div>
-                        <span style={{ fontSize: '12px', fontWeight: '500', color: '#2563eb' }}>Bill</span>
-                        <span style={{ fontSize: '10px', color: '#6b7280', marginLeft: '4px' }}>3 phút</span>
+                        <span className="text-xs font-medium text-blue-600">Bill</span>
+                        <span className="text-xs text-gray-500 ml-1">3 phút</span>
                       </div>
-                      <p style={{ fontSize: '12px', margin: 0 }}>So good</p>
+                      <p className="text-xs m-0">So good</p>
                     </div>
                   </div>
                 </div>
                 
                 {/* Chat Input */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                <div className="flex items-center gap-2 mb-3">
                   <Input 
                     placeholder="Viết bình luận tại đây"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                    style={{
-                      flex: 1,
-                      fontSize: '12px',
-                      padding: '6px 10px',
-                      border: '1px solid #e5e7eb',
-                      borderRadius: '6px',
-                      height: '32px'
-                    }}
+                    className="flex-1 text-xs px-2.5 py-1.5 border border-gray-200 rounded-md h-8"
                   />
                   <Button 
                     onClick={handleSendMessage}
-                    style={{
-                      backgroundColor: '#22c55e',
-                      color: 'white',
-                      padding: '6px',
-                      border: 'none',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      width: '32px',
-                      height: '32px'
-                    }}
+                    className="bg-green-500 text-white p-1.5 border-none rounded-md cursor-pointer flex items-center justify-center w-8 h-8"
                   >
-                    <Send style={{ width: '14px', height: '14px' }} />
+                    <Send className="w-3.5 h-3.5" />
                   </Button>
                 </div>
                 
                 {/* Chat Actions */}
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'flex-start',
-                  gap: '16px',
-                  paddingTop: '8px',
-                  borderTop: '1px solid #e5e7eb'
-                }}>
-                  <Button style={{
-                    backgroundColor: 'transparent',
-                    color: '#6b7280',
-                    border: 'none',
-                    fontSize: '12px',
-                    padding: '4px 0',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}>
-                    <ThumbsUp style={{ width: '14px', height: '14px' }} />
+                <div className="flex items-center justify-start gap-4 pt-2 border-t border-gray-200">
+                  <Button className="bg-transparent text-gray-500 border-none text-xs p-1 cursor-pointer flex items-center gap-1">
+                    <ThumbsUp className="w-3.5 h-3.5" />
                     Like
                   </Button>
-                  <Button style={{
-                    backgroundColor: 'transparent',
-                    color: '#6b7280',
-                    border: 'none',
-                    fontSize: '12px',
-                    padding: '4px 0',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}>
-                    <Heart style={{ width: '14px', height: '14px' }} />
+                  <Button className="bg-transparent text-gray-500 border-none text-xs p-1 cursor-pointer flex items-center gap-1">
+                    <Heart className="w-3.5 h-3.5" />
                     Tim
                   </Button>
                 </div>
               </div>
 
               {/* Related Products - Third (Compact) */}
-              <div style={{
-                backgroundColor: 'white',
-                borderRadius: '12px',
-                padding: '16px',
-                maxHeight: '270px',
-                overflowY: 'auto'
-              }}>
-                <h4 style={{ 
-                  fontSize: '16px', 
-                  fontWeight: '600', 
-                  color: 'black', 
-                  marginBottom: '12px',
-                  margin: '0 0 12px 0'
-                }}>
+              <div className="bg-white rounded-xl p-4 max-h-[270px] overflow-y-auto">
+                <h4 className="text-base font-semibold text-black mb-3 m-0">
                   Sản phẩm liên quan
                 </h4>
-                <div style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '8px'
-                }}>
+                <div className="flex flex-col gap-2">
                   {[...Array(3)].map((_, i) => (
-                    <div key={i} style={{
-                      backgroundColor: '#f9fafb',
-                      borderRadius: '6px',
-                      padding: '8px',
-                      display: 'flex',
-                      gap: '8px',
-                      alignItems: 'center',
-                      fontSize: '13px',
-                      minHeight: '56px',
-                      border: '1px solid #e5e7eb'
-                    }}>
-                    <div style={{ 
-                      position: 'relative', 
-                      width: '40px', 
-                      height: '40px',
-                      borderRadius: '4px',
-                      overflow: 'hidden',
-                      flexShrink: 0
-                    }}>
-                      <Image src="/Gao-ST25.png" alt="Product" fill style={{ objectFit: 'cover' }} />
+                    <div key={i} className="bg-gray-50 rounded-md p-2 flex gap-2 items-center text-sm min-h-14 border border-gray-200">
+                    <div className="relative w-10 h-10 rounded overflow-hidden flex-shrink-0">
+                      <Image src="/Gao-ST25.png" alt="Product" fill className="object-cover" />
                     </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <h5 style={{ fontWeight: '500', fontSize: '13px', margin: '0 0 2px 0', lineHeight: '1.2' }}>Gạo ST 25</h5>
-                      <p style={{ color: '#dc2626', fontWeight: 'bold', fontSize: '13px', margin: '0 0 1px 0', lineHeight: '1.2' }}>
-                        150.000đ/5kg <span style={{ color: '#6b7280', fontSize: '11px', textDecoration: 'line-through', fontWeight: 'normal' }}>200.000đ</span>
+                    <div className="flex-1 min-w-0">
+                      <h5 className="font-medium text-sm m-0 mb-0.5 leading-tight">Gạo ST 25</h5>
+                      <p className="text-red-600 font-bold text-sm m-0 mb-0.5 leading-tight">
+                        150.000đ/5kg <span className="text-gray-500 text-xs line-through font-normal">200.000đ</span>
                       </p>
-                      <p style={{ fontSize: '11px', color: '#6b7280', margin: 0, lineHeight: '1.2' }}>Khô: 200.000đ Đã bán: 100000</p>
+                      <p className="text-xs text-gray-500 m-0 leading-tight">Khô: 200.000đ Đã bán: 100000</p>
                     </div>
-                    <div style={{
-                      backgroundColor: '#FFD54F',
-                      color: 'black',
-                      fontSize: '10px',
-                      padding: '3px 6px',
-                      borderRadius: '3px',
-                      fontWeight: 'bold',
-                      whiteSpace: 'nowrap',
-                      flexShrink: 0
-                    }}>
+                    <div className="bg-[#FFD54F] text-black text-xs px-1.5 py-0.5 rounded font-bold whitespace-nowrap flex-shrink-0">
                       Chuẩn bị ghim
                     </div>
                   </div>

@@ -27,12 +27,11 @@ export default function ProductDetailsPage() {
       
       <SidebarInset>
         <div className="flex flex-1 flex-col">
-          {/* Header Section */}
           <div style={{ 
             background: 'linear-gradient(180deg, #353D39 100%, #7E8C7C 100%, #353D39 5%)',
             padding: '12px' 
           }}>
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Link href="/" className="text-yellow-300 text-sm hover:text-yellow-200">Trang chủ</Link>
                 <ChevronRight className="h-4 w-4 text-gray-400" />
@@ -60,10 +59,8 @@ export default function ProductDetailsPage() {
             </div>
           </div>
           
-          {/* Main Content */}
           <div className="flex-1 p-4" style={{ 
             background: 'linear-gradient(180deg, #353D39 4%, #7E8C7C 55%, #353D39 95%)',
-            padding: '12px'
           }}>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-8">
               <div>

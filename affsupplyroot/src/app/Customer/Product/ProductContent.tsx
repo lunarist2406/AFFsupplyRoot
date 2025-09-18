@@ -59,18 +59,17 @@ export function ProductContent({ searchTerm = "", sortBy = "name-asc" }: Product
   const products = filteredProducts
 
   const handleCardClick = () => {
-    router.push('/Customer/Product/Details')
+    router.push('/customer/product/details')
   }
   return (
     <div className="flex-1 p-6" style={{ 
       background: 'linear-gradient(180deg, #353D39 100%, #7E8C7C 100%, #353D39 5%)',
-      padding: '12px'
     }}>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2" style={{ marginBottom: '12px' }}>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
         {products.map((product) => (
           <Card key={product.id} 
                 className="bg-[#353D39] hover:bg-[#404A46] transition-all duration-300 border-[#4A5551] shadow-lg hover:shadow-xl cursor-pointer" 
-                style={{ padding: '8px' }}
+                style={{gap:'0', padding: '0'}}
                 onClick={handleCardClick}>
             <CardContent className="p-0">
               <div className="relative">
@@ -83,7 +82,7 @@ export function ProductContent({ searchTerm = "", sortBy = "name-asc" }: Product
                 </div>
               </div>
               
-              <div className="p-4" style={{ padding: '6px' }}>
+              <div className="p-4" >
                 <h3 className="font-semibold text-white text-sm mb-2">{product.name}</h3>
                 
                 <div className="mb-2">
@@ -101,19 +100,19 @@ export function ProductContent({ searchTerm = "", sortBy = "name-asc" }: Product
               </div>
             </CardContent>
             
-            <CardFooter className="p-4 pt-0 flex gap-2">
+            <CardFooter className="p-2 pt-0 flex gap-2">
               <Button 
                 className="flex-1 bg-[#FFD54F] hover:bg-[#FACC15] text-black text-xs h-9 font-medium shadow-md hover:shadow-lg transition-all duration-200"
                 onClick={(e) => e.stopPropagation()}
               >
-                <ShoppingCart className="h-3 w-3 mr-1" />
+                <ShoppingCart className="h-3 w-3" />
                 Mua
               </Button>
               <Button 
                 className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white border-2 border-emerald-500 hover:border-emerald-600 text-xs h-9 font-medium transition-all duration-200"
                 onClick={(e) => e.stopPropagation()}
               >
-                <ShoppingCart className="h-3 w-3 mr-1" />
+                <ShoppingCart className="h-3 w-3" />
                 Thêm vào giỏ
               </Button>
             </CardFooter>
