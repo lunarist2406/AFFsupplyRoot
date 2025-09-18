@@ -10,7 +10,7 @@ import logo from "../../public/logo.png"
 
 export default function Footer() {
   return (
-<footer className="w-full bg-gradient-to-r from-green-900 to-green-700 text-white px-6 sm:px-10 py-8 sm:py-12 font-manuale">
+<footer className="w-full bg-gradient-to-r from-green-950 via-gray-600 to-green-950 text-white px-6 sm:px-10 py-8 sm:py-12 font-manuale">
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-10">
     {/* Cột trái: Logo + mô tả + mạng xã hội */}
     <motion.div

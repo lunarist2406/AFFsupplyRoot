@@ -34,7 +34,7 @@ export default function Header() {
   return (
     <>
       {/* HEADER */}
-  <header className="w-full h-[5rem] bg-green-950 text-yellow-400 font-manuale px-4 flex items-center justify-between shadow-md">
+  <header className="w-full h-[5rem] bg-green-950 text-yellow-400 font-manuale px-10 flex items-center justify-between shadow-md">
 
       {/* Logo */}
       <motion.div
