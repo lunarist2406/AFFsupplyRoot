@@ -1,6 +1,7 @@
 import Footer from '@/layout/Footer'
 import Header from '@/layout/Header'
 import React from 'react'
+import Banner from './components/Banner'
 
 export default function HomePageView() {
   return (
@@ -10,7 +11,7 @@ export default function HomePageView() {
 
       {/* Nội dung chính chiếm toàn bộ khoảng trống còn lại */}
       <main className="flex-1">
-        {/* Content của bạn để ở đây */}
+       <Banner/>
       </main>
 
       {/* Footer */}
