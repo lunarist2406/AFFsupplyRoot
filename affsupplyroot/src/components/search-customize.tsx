@@ -29,11 +29,11 @@ export default function SearchCustomize() {
       {/* Button search */}
       <button
         type="submit"
-        className="p-1.5 ml-2 text-xs font-medium text-white bg-green-700 rounded-lg 
+        className="p-1.5 ml-2 text-xs font-medium text-yellow-primary bg-green-700 rounded-lg 
                    border border-green-600 hover:bg-green-600 
                    focus:ring-2 focus:outline-none focus:ring-yellow-400 transition"
       >
-        <FaSearch className="w-3.5 h-3.5" />
+        <FaSearch className="w-[0.875rem ] h-[0.875rem] text-yellow-primary" />
         <span className="sr-only">Search</span>
       </button>
     </form>

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Montserrat, Manuale } from "next/font/google";
-import logo from '../../public/logo.svg'
 const montserrat = Montserrat({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
