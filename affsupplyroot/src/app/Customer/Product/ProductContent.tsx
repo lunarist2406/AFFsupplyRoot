@@ -82,47 +82,47 @@ export function ProductContent({ searchTerm = "", sortBy = "name-asc" }: Product
                 </div>
               </div>
               
-              <div className="p-4" >
+              <div className="p-2" >
                 <h3 className="font-semibold text-white text-sm mb-2">{product.name}</h3>
                 
                 <div className="mb-2">
-                  <span className="text-sm font-bold text-[#FFD54F]">
+                  <span className="text-sm font-bold text-yellow-primary">
                     Giá: {product.price.toLocaleString('vi-VN')} VND
                   </span>
-                  <span className="text-xs text-[#A0A0A0] line-through ml-2">
+                  <span className="text-xs text-gray-400 line-through ml-1">
                     {product.originalPrice.toLocaleString('vi-VN')} vnd
                   </span>
                 </div>
                 
-                <div className="text-xs text-[#B8B8B8] mb-3">
+                <div className="text-xs text-gray-300 mb-3">
                   Số lượng còn lại: {product.stock}
                 </div>
               </div>
             </CardContent>
             
-            <CardFooter className="p-2 pt-0 flex gap-2">
+            <CardFooter className="p-2 pt-0 flex gap-1 sm:gap-2">
               <Button 
-                className="flex-1 bg-[#FFD54F] hover:bg-[#FACC15] text-black text-xs h-9 font-medium shadow-md hover:shadow-lg transition-all duration-200"
+                className="w-16 sm:w-20 bg-yellow-primary hover:bg-yellow-secondary text-black text-xs h-8 sm:h-9 font-medium shadow-md hover:shadow-lg transition-all duration-200 flex-shrink-0 cursor-pointer"
                 onClick={(e) => e.stopPropagation()}
               >
                 <ShoppingCart className="h-3 w-3" />
-                Mua
+                <span className="ml-1">Mua</span>
               </Button>
               <Button 
-                className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white border-2 border-emerald-500 hover:border-emerald-600 text-xs h-9 font-medium transition-all duration-200"
+                className="flex-1 bg-green-primary hover:bg-green-secondary text-white text-xs h-8 sm:h-9 font-medium transition-all duration-200 min-w-0 cursor-pointer"
                 onClick={(e) => e.stopPropagation()}
               >
-                <ShoppingCart className="h-3 w-3" />
-                Thêm vào giỏ
+                <ShoppingCart className="h-3 w-3 flex-shrink-0" />
+                <span className="ml-1">Thêm vào giỏ</span>
               </Button>
             </CardFooter>
             
             <div className="px-4 pb-4 flex justify-between items-center">
               <div className="flex items-center gap-1">
-                <Star className="h-3 w-3 fill-[#FFD54F] text-[#FFD54F]" />
-                <span className="text-xs font-medium text-[#B8B8B8]">{product.rating}</span>
+                <Star className="h-3 w-3 fill-yellow-primary text-yellow-primary" />
+                <span className="text-xs font-medium text-gray-300">{product.rating}</span>
               </div>
-              <div className="text-xs text-[#B8B8B8]">
+              <div className="text-xs text-gray-300">
                 Đã bán: {product.sold}
               </div>
             </div>
@@ -132,13 +132,13 @@ export function ProductContent({ searchTerm = "", sortBy = "name-asc" }: Product
       
       <div className="mt-12 pt-6 border-t border-white/20">
         <div className="flex justify-between items-center text-white/80 text-sm">
-          <p className="text-xs text-green-200 text-center">
+          <p className="text-xs text-green-secondary text-center">
             © 2025 AFF supplyRoot. Tất cả các quyền được bảo lưu.
           </p>
           <div className="flex gap-6">
-            <Link href="/terms" className="text-yellow-300">Điều khoản</Link>
-            <Link href="/privacy" className="text-yellow-300">Quyền riêng tư</Link>
-            <Link href="/cookies" className="text-yellow-300">Cookies</Link>
+            <Link href="/terms" className="text-yellow-primary">Điều khoản</Link>
+            <Link href="/privacy" className="text-yellow-primary">Quyền riêng tư</Link>
+            <Link href="/cookies" className="text-yellow-primary">Cookies</Link>
           </div>
         </div>
       </div>

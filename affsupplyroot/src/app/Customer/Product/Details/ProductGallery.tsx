@@ -11,22 +11,25 @@ const productImages = [
 
 export function ProductGallery() {
   return (
-    <div className="bg-white/5 backdrop-blur-sm rounded-xl p-0 border border-white/10 ">
-          <Image
-            height={380}
-            width= '100%'
-            src="/Gao-ST25.png"
-            alt="Gạo ST25"
-            className="rounded-lg transition-transform duration-300 group-hover:scale-105 ant-image-cover"
-            preview={{
-              src: "/Gao-ST25.png",
-            }}
-          />
+    <div className="h-full bg-white/5 backdrop-blur-sm rounded-xl p-3 border border-white/10 flex flex-col">
+      <div className="flex-1 mb-4">
+        <Image
+          height="100%"
+          width="100%"
+          src="/Gao-ST25.png"
+          alt="Gạo ST25"
+          className="rounded-lg transition-transform duration-300 hover:scale-105 object-contain w-full h-full"
+          preview={{
+            src: "/Gao-ST25.png",
+          }}
+        />
+      </div>
 
-      <div className="mt-3">
+      {/* Thumbnail Images - Fixed at bottom */}
+      <div className="">
         <Carousel
           arrows
-          dots={true}
+          dots={false}
           slidesToShow={4}
           responsive={[
             { breakpoint: 1024, settings: { slidesToShow: 4 } },
@@ -35,14 +38,14 @@ export function ProductGallery() {
           ]}
         >
           {productImages.map((image, index) => (
-            <div key={index} className="mx-[1.5px]">
-              <div className="w-30 h-22 mx-auto rounded-xl overflow-hidden border-2 border-white/20 hover:border-emerald-400 transition-all duration-300 shadow-md hover:shadow-lg">
+            <div key={index} className="px-2">
+              <div className="w-full h-20 sm:h-24 mx-auto rounded-xl overflow-hidden border-2 border-white/20 hover:border-green-primary transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer">
                 <Image
-                  width={120}
-                  height={90}
+                  width="100%"
+                  height="100%"
                   src={image}
                   alt={`Thumbnail ${index + 1}`}
-                  className="bg-gradient-to-br from-gray-50 to-gray-100"
+                  className="bg-gradient-to-br from-gray-50 to-gray-100 object-contain w-full h-full"
                   preview={{ src: image }}
                 />
               </div>
