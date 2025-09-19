@@ -2,12 +2,10 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Image } from "antd";
 import {
   FaStar,
   FaLeaf,
   FaBoxOpen,
-  FaImages,
   FaMinus,
   FaPlus,
   FaCartShopping,
@@ -21,66 +19,68 @@ const features = [
 ];
 
 export function ProductInfo() {
-  const [selectedWeight, setSelectedWeight] = useState("5kg");
+  const [selectedWeight, setSelectedWeight] = useState("10kg");
   const [quantity, setQuantity] = useState(1);
 
+  const calculateTotal = () => {
+    return 45000 * quantity;
+  };
+
   return (
-    <div
-      className="bg-white/5 rounded-2xl border border-white/10 shadow-lg p-8 space-y-6"
-      style={{
-        padding: "8px",
-      }}
-    >
+    <div className="h-full bg-white/5 rounded-2xl border border-white/10 shadow-lg p-4 sm:p-6 space-y-4 sm:space-y-5 flex flex-col overflow-hidden">
+      {/* Header Section */}
       <div className="space-y-3">
-        <h1 className="text-3xl font-bold text-yellow-400 leading-tight">
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-yellow-primary leading-tight">
           Gạo ST25 Chính Hãng
         </h1>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
           <div className="flex items-center gap-1">
             {[...Array(5)].map((_, i) => (
-              <FaStar key={i} className="h-5 w-5 text-yellow-400" />
+              <FaStar key={i} className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-primary" />
             ))}
           </div>
-
-          <div className="flex items-center gap-2 divide-x divide-white/20">
-            <span className="text-yellow-300 font-bold text-lg pr-2">4.9</span>
-            <span className="text-sm text-white/70 pl-2">(900 đánh giá)</span>
+          <div className="flex items-center gap-2 sm:gap-3 divide-x divide-white/20">
+            <span className="text-yellow-primary font-bold text-lg sm:text-xl pr-2 sm:pr-3">4.9</span>
+            <span className="text-xs sm:text-sm text-white/70 pl-2 sm:pl-3">(900 đánh giá)</span>
           </div>
         </div>
       </div>
 
+      {/* Features Section */}
       <div className="space-y-3">
-        <h3 className="text-white font-semibold text-lg mb-4 flex items-center gap-2">
-          <FaLeaf className="text-emerald-400" />
+        <h3 className="text-white font-semibold text-base sm:text-lg flex items-center gap-2">
+          <FaLeaf className="text-green-primary" />
           Ưu điểm vượt trội:
         </h3>
-        <ul className="space-y-3">
+        
+        <ul className="space-y-2" style={{margin:'0'}}>
           {features.map((feature, index) => (
-            <li key={index} className="text-white/90 flex items-center gap-3">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full flex-shrink-0"></div>
-              <span className="text-base leading-relaxed">{feature}</span>
+            <li key={index} className="text-white/90 flex items-start gap-3">
+              <div className="w-2 h-2 bg-green-primary rounded-full flex-shrink-0 mt-1" />
+              <span className="text-sm sm:text-base leading-relaxed">{feature}</span>
             </li>
           ))}
         </ul>
       </div>
 
-      <div className="space-y-4">
-        <h3 className="text-white font-semibold text-lg mb-4 flex items-center gap-2">
-          <FaBoxOpen className="text-emerald-300" />
+      {/* Weight Selection */}
+      <div className="space-y-3">
+        <h3 className="text-white font-semibold text-base sm:text-lg flex items-center gap-2">
+          <FaBoxOpen className="text-green-secondary" />
           Khối lượng:
         </h3>
-        <div className="flex gap-3 flex-wrap">
+        
+        <div className="flex gap-2 sm:gap-3 flex-wrap">
           {weightOptions.map((weight) => (
             <button
               key={weight}
               onClick={() => setSelectedWeight(weight)}
-              className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+              className={`px-3 sm:px-4 lg:px-5 py-2 sm:py-3 rounded-xl font-semibold transition-all text-sm sm:text-base cursor-pointer ${
                 selectedWeight === weight
-                  ? "bg-emerald-500 text-white shadow-lg"
+                  ? "bg-green-primary text-white shadow-lg"
                   : "bg-white/10 text-white hover:bg-white/20 border border-white/20"
               }`}
-              style={{ padding: "0 12px" }}
             >
               {weight}
             </button>
@@ -88,58 +88,60 @@ export function ProductInfo() {
         </div>
       </div>
 
-      <div className="rounded-xl border border-yellow-400/50 bg-white/5 p-3">
-        <div className="flex flex-col md:flex-row items-center gap-6">
-          {/* Ảnh + thông tin sản phẩm */}
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0">
-              <Image
-                width={64}
-                height={64}
-                src="/Gao-ST25.png"
-                alt="Product"
-                className="object-contain bg-gray-50 w-full h-full"
-                preview={false}
-              />
+      <div className=" rounded-xl border border-yellow-primary bg-white/5 p-3 sm:p-4 overflow-hidden">
+        <div className="space-y-2 mb-3 sm:mb-4">
+          <div className="space-y-1 text-sm sm:text-base">
+            <div className="flex justify-between items-center">
+              <span className="text-white">Trọng lượng:</span>
+              <span className="text-yellow-primary font-semibold">{selectedWeight} × {quantity} = {parseInt(selectedWeight) * quantity}kg</span>
             </div>
-            <div className="flex flex-col justify-center">
-              <div className="text-white/90 text-lg font-semibold mb-1">
-                Gạo ST25 chính hãng
-              </div>
-              <div className="text-yellow-300 text-lg font-bold">
-                45.000 Vnd/kg
-              </div>
+            
+            <div className="flex justify-between items-center">
+              <span className="text-white">Đơn giá:</span>
+              <span className="text-yellow-primary font-semibold">45.000 VND/kg</span>
+            </div>
+            
+            <div className="flex justify-between items-center text-base sm:text-lg font-bold pt-2 border-t border-white/20">
+              <span className="text-white">Tổng tiền:</span>
+              <span className="text-yellow-primary text-lg sm:text-xl">
+                {calculateTotal().toLocaleString('vi-VN')} VND
+              </span>
             </div>
           </div>
+        </div>
 
-          {/* Số lượng */}
-          <div className="flex items-center gap-2 md:ml-auto">
-            <span className="text-white">Số lượng:</span>
-            <div className="flex items-center bg-white/10 border border-white/20 rounded-xl">
+        {/* Action Row - Clean & Focused */}
+        <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 w-full min-w-0">
+          {/* Quantity Controls */}
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+            <span className="text-white text-sm sm:text-base font-medium whitespace-nowrap">Số lượng:</span>
+            <div className="flex items-center bg-white/10 border border-white/20 rounded-lg">
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="p-2 hover:bg-white/20 transition rounded-l-xl"
+                className="p-2 sm:p-3 hover:bg-white/20 transition rounded-l-lg cursor-pointer"
+                disabled={quantity <= 1}
               >
-                <FaMinus className="h-2 w-2 text-white" />
+                <FaMinus className="h-3 w-3 text-white" />
               </button>
-              <span className="px-2 py-2 text-white font-semibold bg-white/5 border-x border-white/10 min-w-[40px] text-center">
+              
+              <span className="px-3 sm:px-4 py-2 sm:py-3 text-white font-bold bg-white/5 border-x border-white/10 min-w-[50px] text-center text-sm sm:text-base">
                 {quantity}
               </span>
+              
               <button
                 onClick={() => setQuantity(quantity + 1)}
-                className="p-2 hover:bg-white/20 transition rounded-r-xl"
+                className="p-2 sm:p-3 hover:bg-white/20 transition rounded-r-lg cursor-pointer"
               >
-                <FaPlus className="h-4 w-4 text-white" />
+                <FaPlus className="h-3 w-3 text-white" />
               </button>
             </div>
           </div>
 
-          {/* Nút thêm vào giỏ */}
-          <div className="flex items-center">
-            <Button className="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-5 h-12 rounded-xl flex items-center">
-              <FaCartShopping className="h-5 w-5 mr-2" /> Thêm vào giỏ
-            </Button>
-          </div>
+          {/* Add to Cart Button - Prominent */}
+          <Button className="w-full sm:flex-1 bg-green-primary hover:bg-green-secondary text-white font-bold px-4 sm:px-6 py-3 sm:py-4 h-11 sm:h-12 rounded-lg flex items-center justify-center cursor-pointer text-sm sm:text-base shadow-lg hover:shadow-xl transition-all max-w-full">
+            <FaCartShopping className="h-4 w-4 mr-2" />
+            <span>Thanh toán</span>
+          </Button>
         </div>
       </div>
     </div>

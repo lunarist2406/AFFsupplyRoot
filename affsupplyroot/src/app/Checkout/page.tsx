@@ -13,9 +13,7 @@ import {
   FaCreditCard,
 } from "react-icons/fa";
 import { SiVisa, SiMastercard } from "react-icons/si";
-// import { Divider } from "antd";
 
-const GREEN = "#647849";
 
 const CustomDivider = () => (
   <div className="h-px w-full bg-gray-300 my-0"></div>
@@ -74,52 +72,49 @@ export default function CheckoutPage() {
 
   return (
     <div className="w-full relative min-h-screen">
-      <div className="fixed inset-0 -z-10 bg-gradient-to-b from-[#353D39] via-[#7E8C7C] to-[#353D39]" />
-      <div className="w-full px-4 py-3 md:px-6 md:py-4 mb-3">
+      <div className="fixed inset-0 -z-10 bg-gradient-to-b from-green-primary/20 via-green-primary/30 to-green-primary/20" />
+      <div className="w-full px-2 sm:px-4 py-3 md:px-6 md:py-4 mb-3">
         <div className="mb-3" />
 
-        <div className="flex flex-col gap-4 lg:flex-row items-stretch p-2">
-          <div className="rounded-lg bg-white shadow-sm w-full lg:basis-[65%] border border-gray-200 p-6">
-            <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col gap-4 xl:flex-row items-stretch p-1 sm:p-2">
+          <div className="rounded-lg bg-white shadow-sm w-full xl:basis-[65%] border border-gray-200 p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-3">
               <div className="flex items-center gap-2">
-                <FaLeaf className="text-green-500 h-7 w-7" />
-                <span className="text-2xl md:text-3xl font-bold text-orange-400">
+                <FaLeaf className="text-green-primary h-6 w-6 sm:h-7 sm:w-7" />
+                <span className="text-xl sm:text-2xl md:text-3xl font-bold text-yellow-primary">
                   Thanh toán
                 </span>
               </div>
-              <div className="flex items-center gap-3 text-sm">
+              <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
                 <div className="flex items-center gap-2">
                   <span
-                    className="inline-flex h-6 w-6 items-center justify-center rounded-full text-white"
-                    style={{ backgroundColor: GREEN }}
+                    className="inline-flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full text-white bg-green-primary text-xs"
                   >
                     1
                   </span>
-                  <span className="font-medium" style={{ color: GREEN }}>
+                  <span className="font-medium text-green-primary">
                     Thông tin
                   </span>
                 </div>
                 <span className="text-gray-400">-</span>
                 <div className="flex items-center gap-2">
                   <span
-                    className="inline-flex h-6 w-6 items-center justify-center rounded-full text-white"
-                    style={{ backgroundColor: GREEN }}
+                    className="inline-flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full text-white bg-green-primary text-xs"
                   >
                     2
                   </span>
-                  <span className="font-medium" style={{ color: GREEN }}>
+                  <span className="font-medium text-green-primary">
                     Vận chuyển
                   </span>
                 </div>
                 <span className="text-gray-400">-</span>
                 <div className="flex items-center gap-2">
                   <span
-                    className="inline-flex h-6 w-6 items-center justify-center rounded-full text-white"
-                    style={{ backgroundColor: GREEN }}
+                    className="inline-flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full text-white bg-green-primary text-xs"
                   >
                     3
                   </span>
-                  <span className="font-semibold" style={{ color: GREEN }}>
+                  <span className="font-semibold text-green-primary">
                     Thanh toán
                   </span>
                 </div>
@@ -135,7 +130,7 @@ export default function CheckoutPage() {
             </div>
 
             <div className="py-4">
-              <h3 className=" text-base font-semibold" style={{ color: GREEN }}>
+              <h3 className="text-base font-semibold text-green-primary">
                 Thanh toán
               </h3>
               <p className="text-sm text-gray-600">
@@ -143,7 +138,7 @@ export default function CheckoutPage() {
               </p>
 
               <div className=" rounded-lg border border-gray-200 p-1">
-                <div className="flex items-center justify-between px-3 py-3 bg-orange-50">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-3 py-3 bg-yellow-primary/10 gap-3">
                   <label
                     className="flex items-center gap-2 text-sm font-medium"
                     onClick={() => setPaymentMethod("credit")}
@@ -159,20 +154,20 @@ export default function CheckoutPage() {
                   </label>
                   <div className="flex items-center gap-2">
                     <SiVisa className="h-6 w-8 text-blue-600" />
-                    <SiMastercard className="h-6 w-8 text-red-500" />
+                    <SiMastercard className="h-6 w-8 text-red-primary" />
                     <div className="h-6 w-8 bg-gray-300 rounded text-xs flex items-center justify-center text-white">
                       JCB
                     </div>
                   </div>
                 </div>
                 {paymentMethod === "credit" && (
-                  <div className="grid gap-4 p-2">
+                  <div className="grid gap-3 sm:gap-4 p-2">
                     <div className="relative">
                       <Input placeholder="Số thẻ" className="h-11 pl-4 pr-10" />
                       <FaLock className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
                     </div>
                     <Input placeholder="Tên trên thẻ" className="h-11 px-4" />
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <Input
                         placeholder="Ngày hết hạn (YY / MM)"
                         className="h-11 px-4"
@@ -210,10 +205,7 @@ export default function CheckoutPage() {
               </div>
 
               <div className="mt-6">
-                <h4
-                  className="text-base font-semibold"
-                  style={{ color: GREEN }}
-                >
+                <h4 className="text-base font-semibold text-green-primary">
                   Địa chỉ thanh toán
                 </h4>
                 <p className="mb-4 text-sm text-gray-600">
@@ -234,12 +226,12 @@ export default function CheckoutPage() {
                     <div
                       className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
                         billingAddress === "same"
-                          ? "border-orange-300 bg-orange-100"
+                          ? "border-yellow-primary bg-yellow-primary/20"
                           : "border-gray-300"
                       }`}
                     >
                       {billingAddress === "same" && (
-                        <div className="w-2 h-2 rounded-full bg-orange-500"></div>
+                        <div className="w-2 h-2 rounded-full bg-yellow-primary"></div>
                       )}
                     </div>
                     <span>Giống với địa chỉ giao hàng</span>
@@ -259,7 +251,7 @@ export default function CheckoutPage() {
                     <div
                       className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
                         billingAddress === "different"
-                          ? "border-orange-300 bg-orange-100"
+                          ? "border-yellow-primary bg-yellow-primary/20"
                           : "border-gray-300"
                       }`}
                     ></div>
@@ -297,7 +289,7 @@ export default function CheckoutPage() {
                 <Button variant="ghost" className="h-11 px-5 text-sm">
                   Quay lại
                 </Button>
-                <Button className="h-11 px-7 text-sm font-semibold text-black bg-[#FFD54F] p-1">
+                <Button className="h-11 px-7 text-sm font-semibold text-black bg-yellow-primary p-1">
                   Hoàn tất
                 </Button>
               </div>
@@ -306,7 +298,7 @@ export default function CheckoutPage() {
 
           <div className="rounded-lg bg-white p-5 shadow-sm w-full lg:basis-[35%] border border-gray-200">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold" style={{ color: GREEN }}>
+              <h3 className="text-lg font-semibold text-green-primary">
                 Danh sách sản phẩm ({items.length})
               </h3>
               <button className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-gray-200 hover:bg-gray-50">
@@ -322,22 +314,16 @@ export default function CheckoutPage() {
                       alt={it.name}
                       className="h-full w-full object-contain bg-gray-50"
                     />
-                    <span
-                      className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full text-xs text-white"
-                      style={{ backgroundColor: GREEN }}
-                    >
+                    <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full text-xs text-white bg-green-primary">
                       +{it.qty}
                     </span>
                   </div>
                   <div className="flex-1">
-                    <div
-                      className="line-clamp-1 text-[15px]"
-                      style={{ color: GREEN }}
-                    >
+                    <div className="line-clamp-1 text-[15px] text-green-primary">
                       {it.name}
                     </div>
                   </div>
-                  <div className="text-[15px] font-semibold text-[#F4A100]">
+                  <div className="text-[15px] font-semibold text-yellow-secondary">
                     {it.price.toLocaleString("vi-VN")} Vnd / kg
                   </div>
                 </div>
@@ -363,10 +349,7 @@ export default function CheckoutPage() {
 
             <div className="flex gap-2 p-2 px-0">
               <Input placeholder="Mã giảm giá" className="h-10 flex-1 p-1" />
-              <Button
-                className="h-10 px-5 text-sm font-semibold text-white p-1"
-                style={{ backgroundColor: GREEN }}
-              >
+                <Button className="h-10 px-5 text-sm font-semibold text-white p-1 bg-green-primary">
                 Áp dụng
               </Button>
             </div>
@@ -388,10 +371,7 @@ export default function CheckoutPage() {
 
                   <CustomDivider />
 
-            <div
-              className="flex items-center justify-between text-lg font-semibold mt-4"
-              style={{ color: GREEN }}
-            >
+            <div className="flex items-center justify-between text-lg font-semibold mt-4 text-green-primary">
               <span>Tổng tiền:</span>
               <span>{total.toLocaleString("vi-VN")} vnd</span>
             </div>
@@ -408,10 +388,7 @@ function Row({ label, value }: { label: string; value: string }) {
       <div className="text-gray-600">{label}</div>
       <div className="flex items-center gap-3">
         <span className="font-medium text-gray-800">{value}</span>
-        <button
-          className="text-sm flex items-center gap-1 hover:underline"
-          style={{ color: "#647849" }}
-        >
+        <button className="text-sm flex items-center gap-1 hover:underline text-green-primary">
           Edit
         </button>
       </div>
