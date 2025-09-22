@@ -16,10 +16,6 @@ export function BannerSection() {
               <span className="text-yellow-400">Nông Nghiệp Việt Nam</span>
             </h1>
 
-            <Button className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-6 py-3 rounded-lg">
-               Dịch Vụ Bán chúng tôi
-            </Button>
-
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 mt-8">
               {services.map((service, index) => (
                 <div

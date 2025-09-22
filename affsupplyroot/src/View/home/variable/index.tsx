@@ -102,7 +102,7 @@ export const services = [
     {
       id: 1,
       name: "Gạo Thơm",
-      image: "/premium-rice-grains.jpg",
+      image: "https://suckhoedoisong.qltns.mediacdn.vn/324455921873985536/2022/8/16/chon-gao-ngon-16606367955691866664148.jpg",
       price: 45000,
       originalPrice: 55000,
       rating: 4.9,
@@ -112,7 +112,7 @@ export const services = [
     {
       id: 2,
       name: "Rau Củ Tươi",
-      image: "/fresh-mixed-vegetables-colorful.jpg",
+      image: "https://tse3.mm.bing.net/th/id/OIP.aLf6xrgR6FoJ0nk31tlyMwHaEo?rs=1&pid=ImgDetMain&o=7&rm=3",
       price: 35000,
       originalPrice: 45000,
       rating: 4.8,
@@ -122,7 +122,7 @@ export const services = [
     {
       id: 3,
       name: "Trái Cây Tươi",
-      image: "/fresh-tropical-fruits-mixed.jpg",
+      image: "https://stockdep.net/files/images/7296948.jpg",
       price: 65000,
       originalPrice: 80000,
       rating: 4.9,
@@ -132,17 +132,27 @@ export const services = [
     {
       id: 4,
       name: "Dưa Hấu",
-      image: "/fresh-watermelon-sliced.jpg",
+      image: "https://tse1.explicit.bing.net/th/id/OIP.FKpay-Is2LKTSdPuplJUrAHaFj?rs=1&pid=ImgDetMain&o=7&rm=3",
       price: 180000,
       originalPrice: 220000,
       rating: 5,
       sold: 423,
       discount: 18,
     },
-        {
+    {
       id: 5,
       name: "Khô",
-      image: "/fresh-watermelon-sliced.jpg",
+      image: "https://cdn.tgdd.vn/2021/08/content/cakho-800x450.jpg",
+      price: 180000,
+      originalPrice: 220000,
+      rating: 5,
+      sold: 423,
+      discount: 18,
+    },
+    {
+      id: 6,
+      name: "Thịt xông khói",
+      image: "https://cdn.tgdd.vn/2021/08/content/cakho-800x450.jpg",
       price: 180000,
       originalPrice: 220000,
       rating: 5,

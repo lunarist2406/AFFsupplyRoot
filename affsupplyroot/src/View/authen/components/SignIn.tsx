@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
-export default function LoginForm() {
+export default function SignIn({ setForm }: { setForm: React.Dispatch<React.SetStateAction<"signin" | "signup" | "reset">> }) {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -21,7 +21,7 @@ export default function LoginForm() {
 
   return (
     <motion.div
-      className="w-full max-w-md mx-auto p-6 rounded-2xl shadow-2xl text-yellow-primary font-manuale"
+      className="w-full h-[30rem] max-w-md mx-auto p-6 rounded-2xl shadow-2xl text-yellow-primary font-manuale"
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
@@ -76,9 +76,12 @@ export default function LoginForm() {
             />
             <span className="text-gray-300">Duy trì đăng nhập</span>
           </label>
-          <a href="/reset-password" className="text-yellow-400 hover:underline">
+            <p
+            className="text-yellow-400 hover:underline cursor-pointer"
+            onClick={() => setForm("reset")}
+            >
             Quên mật khẩu?
-          </a>
+            </p>
         </div>
 
         {/* Submit */}
