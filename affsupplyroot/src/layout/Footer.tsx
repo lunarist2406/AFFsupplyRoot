@@ -2,8 +2,7 @@
 import React from "react"
 import Image from "next/image"
 import { motion } from "framer-motion"
-import { Facebook} from "lucide-react"
-import { FaFacebookMessenger } from "react-icons/fa"
+import { FaFacebookMessenger,FaFacebook } from "react-icons/fa"
 import { SiZalo } from "react-icons/si"
 import footerCard from "../../public/FooterCard.jpg"
 import logo from "../../public/logo.png"
@@ -17,7 +16,7 @@ export default function Footer() {
       initial={{ x: -40, opacity: 0 }}
       whileInView={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.6 }}
-      className="flex flex-col items-center sm:items-start text-center sm:text-left"
+      className="flex flex-col items-center sm:items-start text-center sm:text-left "
     >
       <div className="flex items-center justify-center sm:justify-start gap-3 mb-3">
         <Image src={logo} alt="logo" width={35} height={35} />
@@ -33,7 +32,7 @@ export default function Footer() {
       </p>
 
       <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-10 text-yellow-primary">
-        {[Facebook, FaFacebookMessenger, SiZalo].map((Icon, idx) => (
+        {[FaFacebook, FaFacebookMessenger, SiZalo].map((Icon, idx) => (
           <motion.div
             key={idx}
             whileHover={{ scale: 1.2, rotate: 5 }}
