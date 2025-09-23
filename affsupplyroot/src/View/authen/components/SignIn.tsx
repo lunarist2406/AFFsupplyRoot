@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
-export default function SignIn({ setForm }: { setForm: React.Dispatch<React.SetStateAction<"signin" | "signup" | "reset">> }) {
+export default function SignIn({ setForm }: { setForm: React.Dispatch<React.SetStateAction<"signin" | "signup" |"verify" |"reset">> }) {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -16,7 +16,6 @@ export default function SignIn({ setForm }: { setForm: React.Dispatch<React.SetS
     const password = formData.get("password");
     const remember = formData.get("remember") ? true : false;
     console.log({ email, password, remember });
-    // TODO: Call API login
   };
 
   return (
@@ -27,13 +26,21 @@ export default function SignIn({ setForm }: { setForm: React.Dispatch<React.SetS
       transition={{ duration: 0.6 }}
     >
       {/* Logo */}
-    <div className="text-center mb-6">
-      <Image src="/logo.png" alt="logo" width={48} height={48} className="mx-auto w-12 h-12" />
-      <h2 className="text-2xl font-bold text-yellow-secondary mt-2">AFF supplyRoot</h2>
-      <p className="text-yellow-primary text-sm">
-        Đăng Nhập Tài Khoản Của Bạn Để Giao Dịch
-      </p>
-    </div>
+      <div className="text-center mb-6">
+        <Image
+          src="/logo.png"
+          alt="logo"
+          width={48}
+          height={48}
+          className="mx-auto w-12 h-12"
+        />
+        <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-yellow-secondary mt-2">
+          AFF supplyRoot
+        </h2>
+        <p className="text-xs sm:text-sm md:text-base text-yellow-primary">
+          Đăng Nhập Tài Khoản Của Bạn Để Giao Dịch
+        </p>
+      </div>
 
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -44,7 +51,7 @@ export default function SignIn({ setForm }: { setForm: React.Dispatch<React.SetS
             name="email"
             placeholder="Email"
             required
-            className="w-full px-4 py-2 rounded-lg border border-yellow-primary bg-transparent text-yellow-primary placeholder-green-secondary focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full px-4 py-2 rounded-lg border border-yellow-primary bg-transparent text-yellow-primary placeholder-green-secondary focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base"
           />
         </div>
 
@@ -55,7 +62,7 @@ export default function SignIn({ setForm }: { setForm: React.Dispatch<React.SetS
             name="password"
             placeholder="Mật khẩu"
             required
-            className="w-full px-4 py-2 rounded-lg border border-yellow-primary bg-transparent text-yellow-primary placeholder-green-secondary focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full px-4 py-2 rounded-lg border border-yellow-primary bg-transparent text-yellow-primary placeholder-green-secondary focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base"
           />
           <button
             type="button"
@@ -67,7 +74,7 @@ export default function SignIn({ setForm }: { setForm: React.Dispatch<React.SetS
         </div>
 
         {/* Options */}
-        <div className="flex items-center justify-between text-sm">
+        <div className="flex items-center justify-between text-xs sm:text-sm">
           <label className="flex items-center space-x-2">
             <input
               type="checkbox"
@@ -76,35 +83,33 @@ export default function SignIn({ setForm }: { setForm: React.Dispatch<React.SetS
             />
             <span className="text-gray-300">Duy trì đăng nhập</span>
           </label>
-            <p
+          <p
             className="text-yellow-400 hover:underline cursor-pointer"
-            onClick={() => setForm("reset")}
-            >
+            onClick={() => setForm("verify")}
+          >
             Quên mật khẩu?
-            </p>
+          </p>
         </div>
 
         {/* Submit */}
         <Button
           type="submit"
-          className="w-full py-2 rounded-lg font-bold text-yellow-primary bg-gradient-to-r from-green-800 to-green-600 hover:opacity-90 transition"
+          className="w-full py-2 rounded-lg font-bold text-yellow-primary bg-gradient-to-r from-green-800 to-green-600 hover:opacity-90 transition text-sm sm:text-base"
         >
           Đăng nhập
         </Button>
 
         {/* Divider */}
-        <div className="flex items-center my-4">
+        <div className="flex items-center my-4 text-xs sm:text-sm">
           <div className="flex-grow h-px bg-gray-600" />
-          <span className="px-2 text-gray-400 text-sm">
-            hoặc Đăng nhập với
-          </span>
+          <span className="px-2 text-gray-400">hoặc Đăng nhập với</span>
           <div className="flex-grow h-px bg-gray-600" />
         </div>
 
         {/* Google Button */}
         <Button
           type="button"
-          className="w-full flex items-center justify-center gap-2 py-2 border border-yellow-primary rounded-lg text-yellow-primary hover:bg-green-800 hover:text-green-800 transition"
+          className="w-full flex items-center justify-center gap-2 py-2 border border-yellow-primary rounded-lg text-yellow-primary hover:bg-green-800 hover:text-green-800 transition text-sm sm:text-base"
         >
           <FaGoogle /> Google
         </Button>
