@@ -37,7 +37,7 @@ export default function SignIn({ setForm }: { setForm: React.Dispatch<React.SetS
         <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-yellow-secondary mt-2">
           AFF supplyRoot
         </h2>
-        <p className="text-xs sm:text-sm md:text-base text-yellow-primary">
+        <p className="text-xs sm:text-sm md:text-sm text-yellow-primary">
           Đăng Nhập Tài Khoản Của Bạn Để Giao Dịch
         </p>
       </div>

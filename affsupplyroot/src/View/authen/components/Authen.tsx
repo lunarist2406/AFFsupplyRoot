@@ -78,7 +78,7 @@ export default function Authen() {
                 onClick={() => setForm("signin")}
               >
                 <FaSignInAlt size={14} />
-                <span>Đăng nhập</span>
+                <span className="text-xs sm:text-sm md:text-sm text-yellow-primary">Đăng nhập</span>
               </button>
 
               <Button
@@ -90,7 +90,7 @@ export default function Authen() {
                 onClick={() => setForm("signup")}
               >
                 <FaUserPlus size={14} />
-                <span>Đăng ký</span>
+                <span className="text-xs sm:text-sm md:text-sm text-yellow-primary">Đăng ký</span>
               </Button>
             </div>
 

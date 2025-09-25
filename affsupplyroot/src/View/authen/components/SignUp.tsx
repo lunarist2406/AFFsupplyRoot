@@ -34,7 +34,7 @@ export default function SignUp() {
       <div className="text-center mb-6">
         <Image src="/logo.png" alt="logo" width={48} height={48} className="mx-auto w-12 h-12" />
         <h2 className="text-2xl font-bold text-yellow-secondary mt-2">AFF supplyRoot</h2>
-        <p className="text-yellow-primary text-sm">Đăng Ký Tài Khoản Để Giao Dịch</p>
+        <p className="text-xs sm:text-sm md:text-sm text-yellow-primary">Đăng Ký Tài Khoản Để Giao Dịch</p>
       </div>
 
       {/* Form */}

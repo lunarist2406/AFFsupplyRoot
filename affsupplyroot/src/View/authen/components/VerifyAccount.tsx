@@ -39,7 +39,7 @@ export default function VerifyAccount() {
 
       setTarget(value);
       setIsOTPSent(true);
-      setTimer(10); // reset timer
+      setTimer(120); // reset timer
     } else {
       console.log("Verify OTP:", otp);
       // TODO: API verify OTP
@@ -54,7 +54,7 @@ export default function VerifyAccount() {
 
   const handleResend = () => {
     console.log("Resend OTP to:", target);
-    setTimer(10);
+    setTimer(120);
     // TODO: API gửi lại OTP
   };
 
