@@ -4,7 +4,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Star, ShoppingCart } from "lucide-react"
+import { Star, ShoppingCart, Search, Package } from "lucide-react"
 
 const allProducts = Array.from({ length: 15 }, (_, i) => ({
   id: i + 1,
@@ -62,11 +62,27 @@ export function ProductContent({ searchTerm = "", sortBy = "name-asc" }: Product
     router.push('/customer/product/details')
   }
   return (
-    <div className="flex-1 p-6" style={{ 
+    <div className="flex-1 p-4 pt-0 min-h-full" style={{ 
       background: 'linear-gradient(180deg, #353D39 100%, #7E8C7C 100%, #353D39 5%)',
     }}>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
-        {products.map((product) => (
+      {products.length === 0 ? (
+        <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
+          <div className="bg-white/10 rounded-full p-6 mb-6">
+            <Package className="h-16 w-16 text-yellow-primary" />
+          </div>
+          <h3 className="text-xl font-semibold text-white mb-3">
+            Không tìm thấy sản phẩm nào
+          </h3>
+          <p className="text-gray-300 mb-6 max-w-md">
+            {searchTerm 
+              ? `Không tìm thấy sản phẩm nào phù hợp với từ khóa "${searchTerm}". Hãy thử tìm kiếm với từ khóa khác.`
+              : "Hiện tại chưa có sản phẩm nào trong danh mục này."
+            }
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
+          {products.map((product) => (
           <Card key={product.id} 
                 className="bg-[#353D39] hover:bg-[#404A46] transition-all duration-300 border-[#4A5551] shadow-lg hover:shadow-xl cursor-pointer" 
                 style={{gap:'0', padding: '0'}}
@@ -127,21 +143,24 @@ export function ProductContent({ searchTerm = "", sortBy = "name-asc" }: Product
               </div>
             </div>
           </Card>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
       
-      <div className="mt-12 pt-6 border-t border-white/20">
-        <div className="flex justify-between items-center text-white/80 text-sm">
-          <p className="text-xs text-green-secondary text-center">
-            © 2025 AFF supplyRoot. Tất cả các quyền được bảo lưu.
-          </p>
-          <div className="flex gap-6">
-            <Link href="/terms" className="text-yellow-primary">Điều khoản</Link>
-            <Link href="/privacy" className="text-yellow-primary">Quyền riêng tư</Link>
-            <Link href="/cookies" className="text-yellow-primary">Cookies</Link>
+      {products.length > 0 && (
+        <div className="mt-12 pt-6 border-t border-white/20">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-white/80 text-sm gap-4">
+            <p className="text-xs text-green-secondary text-center sm:text-left">
+              © 2025 AFF supplyRoot. Tất cả các quyền được bảo lưu.
+            </p>
+            <div className="flex gap-4 sm:gap-6 justify-center sm:justify-end">
+              <Link href="/terms" className="text-yellow-primary text-xs sm:text-sm hover:text-yellow-secondary">Điều khoản</Link>
+              <Link href="/privacy" className="text-yellow-primary text-xs sm:text-sm hover:text-yellow-secondary">Quyền riêng tư</Link>
+              <Link href="/cookies" className="text-yellow-primary text-xs sm:text-sm hover:text-yellow-secondary">Cookies</Link>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }
