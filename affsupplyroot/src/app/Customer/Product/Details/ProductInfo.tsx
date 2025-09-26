@@ -4,12 +4,12 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   FaStar,
-  FaLeaf,
   FaBoxOpen,
   FaMinus,
   FaPlus,
   FaCartShopping,
 } from "react-icons/fa6";
+import Image from "next/image";
 
 const weightOptions = ["1kg", "5kg", "10kg", "20kg", "50kg"];
 const features = [
@@ -28,7 +28,6 @@ export function ProductInfo() {
 
   return (
     <div className="h-full bg-white/5 rounded-2xl border border-white/10 shadow-lg p-4 sm:p-6 space-y-4 sm:space-y-5 flex flex-col overflow-hidden">
-      {/* Header Section */}
       <div className="space-y-3">
         <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-yellow-primary leading-tight">
           Gạo ST25 Chính Hãng
@@ -47,10 +46,15 @@ export function ProductInfo() {
         </div>
       </div>
 
-      {/* Features Section */}
       <div className="space-y-3">
         <h3 className="text-white font-semibold text-base sm:text-lg flex items-center gap-2">
-          <FaLeaf className="text-green-primary" />
+          <Image
+            src="/logo.png"
+            alt="Logo"
+            width={20}
+            height={20}
+            className="object-contain"
+          />
           Ưu điểm vượt trội:
         </h3>
         
@@ -64,7 +68,6 @@ export function ProductInfo() {
         </ul>
       </div>
 
-      {/* Weight Selection */}
       <div className="space-y-3">
         <h3 className="text-white font-semibold text-base sm:text-lg flex items-center gap-2">
           <FaBoxOpen className="text-green-secondary" />
@@ -110,9 +113,7 @@ export function ProductInfo() {
           </div>
         </div>
 
-        {/* Action Row - Clean & Focused */}
         <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 w-full min-w-0">
-          {/* Quantity Controls */}
           <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
             <span className="text-white text-sm sm:text-base font-medium whitespace-nowrap">Số lượng:</span>
             <div className="flex items-center bg-white/10 border border-white/20 rounded-lg">
@@ -137,10 +138,9 @@ export function ProductInfo() {
             </div>
           </div>
 
-          {/* Add to Cart Button - Prominent */}
           <Button className="w-full sm:flex-1 bg-green-primary hover:bg-green-secondary text-white font-bold px-4 sm:px-6 py-3 sm:py-4 h-11 sm:h-12 rounded-lg flex items-center justify-center cursor-pointer text-sm sm:text-base shadow-lg hover:shadow-xl transition-all max-w-full">
             <FaCartShopping className="h-4 w-4 mr-2" />
-            <span>Thanh toán</span>
+            <span>Thêm vào giỏ</span>
           </Button>
         </div>
       </div>

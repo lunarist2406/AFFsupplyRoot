@@ -12,7 +12,7 @@ const productImages = [
 export function ProductGallery() {
   return (
     <div className="h-full bg-white/5 backdrop-blur-sm rounded-xl p-3 border border-white/10 flex flex-col">
-      <div className="flex-1 mb-4">
+      <div className="h-120 w-full mb-4">
         <Image
           height="100%"
           width="100%"
@@ -25,7 +25,6 @@ export function ProductGallery() {
         />
       </div>
 
-      {/* Thumbnail Images - Fixed at bottom */}
       <div className="">
         <Carousel
           arrows

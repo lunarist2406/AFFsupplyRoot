@@ -71,7 +71,7 @@ export default function CheckoutPage() {
   const total = subtotal + shipping;
 
   return (
-    <div className="w-full relative min-h-screen">
+    <div className="w-full relative min-h-screen font-manuale">
       <div className="fixed inset-0 -z-10 bg-gradient-to-b from-green-primary/20 via-green-primary/30 to-green-primary/20" />
       <div className="w-full px-2 sm:px-4 py-3 md:px-6 md:py-4 mb-3">
         <div className="mb-3" />
