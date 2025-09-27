@@ -16,7 +16,7 @@ export function BannerSection() {
               <span className="text-yellow-400">Nông Nghiệp Việt Nam</span>
             </h1>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 mt-8">
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-5 mt-8">
               {services.map((service, index) => (
                 <div
                   key={index}
