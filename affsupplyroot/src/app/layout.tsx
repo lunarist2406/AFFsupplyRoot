@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Montserrat, Manuale } from "next/font/google";
+import ToastProvider from "@/components/ToastProvider";
 const montserrat = Montserrat({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -37,7 +38,10 @@ export default function RootLayout({
       <body
         className={`${montserrat.variable} ${manuale.variable}`}
       >
-        {children}
+        <ToastProvider>
+          <main>{children}</main>
+        </ToastProvider>
+
       </body>
     </html>
   );

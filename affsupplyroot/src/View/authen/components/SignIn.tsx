@@ -1,22 +1,52 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import useAuth from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner"; // 👈 import toast
 
 export default function SignIn({ setForm }: { setForm: React.Dispatch<React.SetStateAction<"signin" | "signup" |"verify" |"reset">> }) {
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const { state, dispatch, handleLogin } = useAuth();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const email = formData.get("email");
-    const password = formData.get("password");
-    const remember = formData.get("remember") ? true : false;
-    console.log({ email, password, remember });
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    if (!email || !password) {
+      toast.error("Vui lòng nhập đầy đủ thông tin!");
+      return;
+    }
+
+    dispatch({ type: "SET_FIELD", field: "email", value: email });
+    dispatch({ type: "SET_FIELD", field: "password", value: password });
+
+    try {
+      await handleLogin(); // giả sử handleLogin đã async
+      if (state.response?.user) {
+        toast.success("Đăng nhập thành công ");
+        router.push("/"); // redirect
+      } else if (state.error) {
+        toast.error(state.error);
+      }
+    } catch (error: any) {
+      toast.error(error?.message || "Đăng nhập thất bại!");
+    }
   };
+
+  useEffect(() => {
+    if (state.response?.user) {
+      router.push("/");
+    }
+  }, [state.response, router]);
 
   return (
     <motion.div

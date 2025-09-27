@@ -1,5 +1,5 @@
 "use client"
-import React from "react"
+import React, { useState } from "react"
 import Image from "next/image"
 import { motion } from "framer-motion"
 import { FaUserCircle } from "react-icons/fa"
@@ -16,23 +16,15 @@ import logo from "../../public/logo.png"
 import SearchCustomize from "@/components/search-customize"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
-
-const getUser = () => {
-  if (typeof window !== "undefined") {
-    const saved = localStorage.getItem("user")
-    return saved ? JSON.parse(saved) : null
-  }
-  return null
-}
+import useAuth from "@/hooks/useAuth"
 
 export default function Header() {
-  const [open, setOpen] = React.useState(false)
-  const [user, setUser] = React.useState<any>(null)
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const [desktopOpen, setDesktopOpen] = useState(false)
+  const { state, handleLogout } = useAuth()
   const router = useRouter()
 
-  React.useEffect(() => {
-    setUser(getUser())
-  }, [])
+  const user = state.response
 
   return (
     <header className="w-full h-[5rem] bg-green-950 text-yellow-400 font-manuale lg:px-25 flex items-center shadow-md px-3">
@@ -65,7 +57,7 @@ export default function Header() {
               </Button>
             </motion.div>
           ) : (
-            <DropdownMenu open={open} onOpenChange={setOpen}>
+            <DropdownMenu open={mobileOpen} onOpenChange={setMobileOpen}>
               <DropdownMenuTrigger asChild>
                 <motion.div
                   whileHover={{ scale: 1.05 }}
@@ -73,17 +65,21 @@ export default function Header() {
                   className="flex items-center gap-2 cursor-pointer hover:text-green-400 transition"
                 >
                   <FaUserCircle className="w-6 h-6" />
-                  {open ? (
-                    <ChevronUp className="w-4 h-4 text-yellow-primary" />
-                  ) : (
-                    <ChevronDown className="w-4 h-4 text-yellow-primary" />
-                  )}
+                  {mobileOpen ? <ChevronUp className="w-4 h-4 text-yellow-primary" /> : <ChevronDown className="w-4 h-4 text-yellow-primary" />}
                 </motion.div>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56 bg-green-950 text-yellow-400 rounded-md shadow-lg">
                 <DropdownMenuLabel className="font-bold">Tài khoản</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Đăng xuất</DropdownMenuItem>
+                {user.role === "customer" ? (
+                  <>
+                    <DropdownMenuItem>Profile</DropdownMenuItem>
+                    <DropdownMenuItem>Orders</DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleLogout}>Đăng xuất</DropdownMenuItem>
+                  </>
+                ) : (
+                  <DropdownMenuItem onClick={handleLogout}>Đăng xuất</DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           )}
@@ -117,7 +113,7 @@ export default function Header() {
               </Button>
             </motion.div>
           ) : (
-            <DropdownMenu open={open} onOpenChange={setOpen}>
+            <DropdownMenu open={desktopOpen} onOpenChange={setDesktopOpen}>
               <DropdownMenuTrigger asChild>
                 <motion.div
                   whileHover={{ scale: 1.05 }}
@@ -125,17 +121,21 @@ export default function Header() {
                   className="flex items-center gap-2 cursor-pointer hover:text-green-400 transition"
                 >
                   <FaUserCircle className="w-6 h-6" />
-                  {open ? (
-                    <ChevronUp className="w-4 h-4 text-yellow-primary" />
-                  ) : (
-                    <ChevronDown className="w-4 h-4 text-yellow-primary" />
-                  )}
+                  {desktopOpen ? <ChevronUp className="w-4 h-4 text-yellow-primary" /> : <ChevronDown className="w-4 h-4 text-yellow-primary" />}
                 </motion.div>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56 bg-green-950 text-yellow-400 rounded-md shadow-lg">
                 <DropdownMenuLabel className="font-bold">Tài khoản</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Đăng xuất</DropdownMenuItem>
+                {user.role === "customer" ? (
+                  <>
+                    <DropdownMenuItem>Profile</DropdownMenuItem>
+                    <DropdownMenuItem>Orders</DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleLogout}>Đăng xuất</DropdownMenuItem>
+                  </>
+                ) : (
+                  <DropdownMenuItem onClick={handleLogout}>Đăng xuất</DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           )}

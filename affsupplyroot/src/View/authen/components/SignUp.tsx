@@ -5,12 +5,13 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { toast } from "sonner"; // 👈 import toast
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const fullName = formData.get("fullName");
@@ -19,8 +20,25 @@ export default function SignUp() {
     const confirm = formData.get("confirm");
     const agree = formData.get("agree") ? true : false;
 
-    console.log({ fullName, email, password, confirm, agree });
-    // TODO: Call API sign up
+    if (password !== confirm) {
+      toast.error("Mật khẩu xác nhận không khớp!");
+      return;
+    }
+
+    try {
+      // TODO: Gọi API đăng ký
+      // Ví dụ mock
+      const success = true; // đổi thành response từ API
+
+      if (success) {
+        toast.success("Đăng ký thành công 🎉");
+        // có thể redirect login
+      } else {
+        toast.error("Đăng ký thất bại. Vui lòng thử lại!");
+      }
+    } catch (error: any) {
+      toast.error(error?.message || "Có lỗi xảy ra khi đăng ký!");
+    }
   };
 
   return (
@@ -34,7 +52,9 @@ export default function SignUp() {
       <div className="text-center mb-6">
         <Image src="/logo.png" alt="logo" width={48} height={48} className="mx-auto w-12 h-12" />
         <h2 className="text-2xl font-bold text-yellow-secondary mt-2">AFF supplyRoot</h2>
-        <p className="text-xs sm:text-sm md:text-sm text-yellow-primary">Đăng Ký Tài Khoản Để Giao Dịch</p>
+        <p className="text-xs sm:text-sm md:text-sm text-yellow-primary">
+          Đăng Ký Tài Khoản Để Giao Dịch
+        </p>
       </div>
 
       {/* Form */}
@@ -119,9 +139,6 @@ export default function SignUp() {
         >
           Đăng ký
         </Button>
-
-        {/* Switch to Login */}
-
       </form>
     </motion.div>
   );
