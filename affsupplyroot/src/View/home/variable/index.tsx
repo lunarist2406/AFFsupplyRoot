@@ -71,7 +71,7 @@ export const services = [
     {
       id: 1,
       icon: FaTruck,
-      title: "Logistics nông nghiệp",
+      title: "Vận chuyển",
       description:
         "Dịch vụ vận chuyển chuyên biệt cho nông sản, đảm bảo tươi ngon từ vườn đến bàn ăn của người tiêu dùng.",
       features: ["Vận chuyển lạnh", "Giao hàng nhanh trong ngày", "Theo dõi đơn hàng thời gian thực"],
@@ -79,7 +79,7 @@ export const services = [
     {
       id: 2,
       icon: FaShieldAlt,
-      title: "Chứng nhận chất lượng",
+      title: "Chứng nhận",
       description: "Hệ thống chứng nhận và kiểm định chất lượng sản phẩm theo tiêu chuẩn quốc tế.",
       features: ["Chứng nhận VietGAP", "Chứng nhận hữu cơ", "Tư vấn quy trình sản xuất"],
     },
@@ -151,6 +151,16 @@ export const services = [
     },
     {
       id: 6,
+      name: "Thịt xông khói",
+      image: "https://cdn.tgdd.vn/2021/08/content/cakho-800x450.jpg",
+      price: 180000,
+      originalPrice: 220000,
+      rating: 5,
+      sold: 423,
+      discount: 18,
+    },
+        {
+      id: 7,
       name: "Thịt xông khói",
       image: "https://cdn.tgdd.vn/2021/08/content/cakho-800x450.jpg",
       price: 180000,

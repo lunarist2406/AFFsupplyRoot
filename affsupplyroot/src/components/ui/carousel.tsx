@@ -19,6 +19,8 @@ type CarouselProps = {
   plugins?: CarouselPlugin
   orientation?: "horizontal" | "vertical"
   setApi?: (api: CarouselApi) => void
+  autoplay?: boolean
+  interval?: number
 }
 
 type CarouselContextProps = {
@@ -34,11 +36,9 @@ const CarouselContext = React.createContext<CarouselContextProps | null>(null)
 
 function useCarousel() {
   const context = React.useContext(CarouselContext)
-
   if (!context) {
     throw new Error("useCarousel must be used within a <Carousel />")
   }
-
   return context
 }
 
@@ -49,12 +49,15 @@ function Carousel({
   plugins,
   className,
   children,
+  autoplay = false,
+  interval = 3000,
   ...props
 }: React.ComponentProps<"div"> & CarouselProps) {
   const [carouselRef, api] = useEmblaCarousel(
     {
       ...opts,
       axis: orientation === "horizontal" ? "x" : "y",
+      loop: true,
     },
     plugins
   )
@@ -104,6 +107,15 @@ function Carousel({
     }
   }, [api, onSelect])
 
+  // Autoplay effect
+  React.useEffect(() => {
+    if (!api || !autoplay) return
+    const autoplayInterval = setInterval(() => {
+      api.scrollNext()
+    }, interval)
+    return () => clearInterval(autoplayInterval)
+  }, [api, autoplay, interval])
+
   return (
     <CarouselContext.Provider
       value={{
@@ -116,6 +128,8 @@ function Carousel({
         scrollNext,
         canScrollPrev,
         canScrollNext,
+        autoplay,
+        interval,
       }}
     >
       <div
