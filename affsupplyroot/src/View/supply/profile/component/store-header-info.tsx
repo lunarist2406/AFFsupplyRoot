@@ -1,6 +1,14 @@
 "use client"
 
-import { MapPin, Phone, Mail, Calendar, Camera, CheckCircle, Leaf } from "lucide-react"
+import {
+  FaMapMarkerAlt,
+  FaPhoneAlt,
+  FaEnvelope,
+  FaCalendarAlt,
+  FaCamera,
+  FaCheckCircle,
+  FaLeaf,
+} from "react-icons/fa"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -22,47 +30,60 @@ interface StoreHeaderInfoProps {
 export function StoreHeaderInfo({ storeInfo, onChangeAvatar }: StoreHeaderInfoProps) {
   return (
     <div className="flex flex-col md:flex-row gap-6 flex-1">
-      <div className="relative">
-        <Avatar className="w-32 h-32 border-4 border-white shadow-lg">
+      {/* Avatar */}
+      <div className="flex flex-col items-center md:items-center">
+        <Avatar className="w-28 h-28 sm:w-32 sm:h-32 border-4 border-white shadow-lg">
           <AvatarImage src={storeInfo.avatar || "/placeholder.svg"} />
           <AvatarFallback className="text-2xl">NS</AvatarFallback>
         </Avatar>
-        <Button size="sm" className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0" onClick={onChangeAvatar}>
-          <Camera className="w-4 h-4" />
+        <Button
+          size="sm"
+          className="mt-3 rounded-full px-3 py-1 bg-green-600 hover:bg-green-700 text-white flex items-center gap-1"
+          onClick={onChangeAvatar}
+        >
+          <FaCamera className=" w-4 h-4" />
+          <span className="hidden sm:inline">Đổi ảnh</span>
         </Button>
       </div>
 
-      <div className="flex-1 space-y-4">
+      {/* Store info */}
+      <div className="flex-1 space-y-4 text-center md:text-left">
+        {/* Name + badges */}
         <div>
-          <div className="flex items-center gap-3 mb-2">
-            <h1 className="text-3xl font-bold">{storeInfo.name}</h1>
-            <Badge className="bg-green-100 text-green-800">
-              <CheckCircle className="w-3 h-3 mr-1" />
-              Đã xác minh
-            </Badge>
-            <Badge className="bg-blue-100 text-blue-800">
-              <Leaf className="w-3 h-3 mr-1" />
-              Hữu cơ
-            </Badge>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3 mb-2">
+            <h1 className="text-2xl sm:text-3xl font-bold">{storeInfo.name}</h1>
+            <div className="flex flex-wrap gap-2 justify-center sm:justify-start mt-2 sm:mt-0">
+              <Badge className="bg-green-100 text-green-800 flex items-center gap-1">
+                <FaCheckCircle className="w-3 h-3" />
+                Đã xác minh
+              </Badge>
+              <Badge className="bg-blue-100 text-blue-800 flex items-center gap-1">
+                <FaLeaf className="w-3 h-3" />
+                Hữu cơ
+              </Badge>
+            </div>
           </div>
-          <p className="text-lg text-muted-foreground italic">{storeInfo.slogan}</p>
+          <p className="text-base sm:text-lg text-muted-foreground italic">{storeInfo.slogan}</p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-4">
+        {/* Details */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           <div className="flex items-center gap-2 text-sm">
-            <MapPin className="w-4 h-4 text-muted-foreground" />
+            <FaMapMarkerAlt className="text-muted-foreground" />
             <span>{storeInfo.address.full}</span>
           </div>
           <div className="flex items-center gap-2 text-sm">
-            <Calendar className="w-4 h-4 text-muted-foreground" />
-            <span>Tham gia từ {new Date(storeInfo.stats.joinDate).toLocaleDateString("vi-VN")}</span>
+            <FaCalendarAlt className="text-muted-foreground" />
+            <span>
+              Tham gia từ {new Date(storeInfo.stats.joinDate).toLocaleDateString("vi-VN")}
+            </span>
           </div>
           <div className="flex items-center gap-2 text-sm">
-            <Phone className="w-4 h-4 text-muted-foreground" />
+            <FaPhoneAlt className="text-muted-foreground" />
             <span>{storeInfo.contact.phone}</span>
           </div>
           <div className="flex items-center gap-2 text-sm">
-            <Mail className="w-4 h-4 text-muted-foreground" />
+            <FaEnvelope className="text-muted-foreground" />
             <span>{storeInfo.contact.email}</span>
           </div>
         </div>
