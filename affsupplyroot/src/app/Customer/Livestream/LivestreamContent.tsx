@@ -60,18 +60,17 @@ export function LivestreamContent({ searchTerm = "", sortBy = "all" }: Livestrea
 
   return (
     <>
-      <div className="flex-1 p-6" style={{ 
-        background: 'linear-gradient(180deg, #353D39 4%, #7E8C7C 100%, #353D39 95%)',
-        padding: '12px'
+      <div className="flex-1 p-3 sm:p-4 lg:p-6" style={{ 
+        background: 'linear-gradient(180deg, #353D39 4%, #7E8C7C 100%, #353D39 95%)'
       }}>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" style={{ marginBottom: '12px' }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 mb-3 sm:mb-4">
         {livestreams.map((livestream) => (
           <Card key={livestream.id} 
                 className="bg-[#353D39] hover:scale-105 transition-all duration-300 border-[#FFD54F] shadow-lg hover:shadow-2xl cursor-pointer overflow-hidden" 
                 style={{ padding: '0' }}
                 onClick={handleCardClick}>
             
-            <div className="relative h-48">
+            <div className="relative h-40 sm:h-48">
               <Image 
                 src={livestream.thumbnail} 
                 alt={livestream.title}
@@ -79,26 +78,22 @@ export function LivestreamContent({ searchTerm = "", sortBy = "all" }: Livestrea
                 className="object-cover"
               />
               {livestream.isLive && (
-                <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded flex items-center gap-1"
-                style={{padding:'4px'}}>
+                <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded flex items-center gap-1">
                   <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
                   LIVE
                 </div>
               )}
             </div>
             
-            <div className="relative bg-[#353D39] rounded-t-lg p-4"
-            style={{padding: '0 12px'}}
-            >
-              
-              <h3 className="font-bold text-white text-lg mb-3 mt-2">{livestream.title}</h3>
+            <div className="relative bg-[#353D39] rounded-t-lg p-3 sm:p-4">
+              <h3 className="font-bold text-white text-base sm:text-lg mb-2 sm:mb-3 mt-1 sm:mt-2">{livestream.title}</h3>
               
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <ShoppingBag className="h-4 w-4 text-[#FFD54F]" />
-                  <span className="text-sm text-white">{livestream.seller}</span>
+                  <ShoppingBag className="h-3 w-3 sm:h-4 sm:w-4 text-[#FFD54F]" />
+                  <span className="text-xs sm:text-sm text-white">{livestream.seller}</span>
                 </div>
-                <div className="w-8 h-8 rounded-full border-2 border-[#FFD54F] overflow-hidden">
+                <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 border-[#FFD54F] overflow-hidden">
                   <Image 
                     src="/Gao-ST25.png" 
                     alt="Avatar"
@@ -109,25 +104,23 @@ export function LivestreamContent({ searchTerm = "", sortBy = "all" }: Livestrea
                 </div>
               </div>
               
-              {/* Viewer Count */}
               <div className="flex items-center gap-2">
-                <Users className="h-4 w-4 text-[#FFD54F]" />
-                <span className="text-sm text-white">
+                <Users className="h-3 w-3 sm:h-4 sm:w-4 text-[#FFD54F]" />
+                <span className="text-xs sm:text-sm text-white">
                   {(livestream.viewers / 1000).toFixed(1)}K
                 </span>
               </div>
             </div>
             
-            {/* Button */}
             <CardFooter className="p-0">
               <Button 
-                className="w-full bg-[#FFD54F] hover:bg-[#FFC107] hover:text-black text-green-800 text-sm h-12 font-bold shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 rounded-none transform hover:scale-105 cursor-pointer"
+                className="w-full bg-[#FFD54F] hover:bg-[#FFC107] hover:text-black text-green-800 text-xs sm:text-sm h-10 sm:h-12 font-bold shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 rounded-none transform hover:scale-105 cursor-pointer"
                 onClick={(e) => {
                   e.stopPropagation()
                   handleCardClick()
                 }}
               >
-                <Eye className="h-5 w-5" />
+                <Eye className="h-4 w-4 sm:h-5 sm:w-5" />
                 Xem live
               </Button>
             </CardFooter>
@@ -135,15 +128,15 @@ export function LivestreamContent({ searchTerm = "", sortBy = "all" }: Livestrea
         ))}
       </div>
       
-      <div className="mt-12 pt-6 border-t border-white/20">
-        <div className="flex justify-between items-center text-white/80 text-sm">
-          <p className="text-xs text-green-200 text-center">
+      <div className="mt-8 sm:mt-12 pt-4 sm:pt-6 border-t border-white/20">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-white/80 text-sm gap-4">
+          <p className="text-xs text-green-200 text-center sm:text-left">
             © 2025 AFF supplyRoot. Tất cả các quyền được bảo lưu.
           </p>
-          <div className="flex gap-6">
-            <Link href="/terms" className="text-yellow-300">Điều khoản</Link>
-            <Link href="/privacy" className="text-yellow-300">Quyền riêng tư</Link>
-            <Link href="/cookies" className="text-yellow-300">Cookies</Link>
+          <div className="flex gap-4 sm:gap-6 justify-center sm:justify-end">
+            <Link href="/terms" className="text-yellow-300 text-xs sm:text-sm hover:text-yellow-100">Điều khoản</Link>
+            <Link href="/privacy" className="text-yellow-300 text-xs sm:text-sm hover:text-yellow-100">Quyền riêng tư</Link>
+            <Link href="/cookies" className="text-yellow-300 text-xs sm:text-sm hover:text-yellow-100">Cookies</Link>
           </div>
         </div>
       </div>
