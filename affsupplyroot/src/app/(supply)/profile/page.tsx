@@ -1,4 +1,4 @@
-import SupplyProfile from '@/View/profile/supply'
+import SupplyProfile from '@/View/supply/profile'
 import React from 'react'
 
 export default function ProfilePage() {

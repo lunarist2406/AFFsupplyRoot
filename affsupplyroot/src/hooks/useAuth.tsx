@@ -6,6 +6,7 @@ import api from "@/lib/Axios/axios";
 const initialState = {
   email: "",
   password: "",
+  token:"",
   response: null,
   loading: false,
   error: null,
@@ -43,7 +44,7 @@ export default function useAuth() {
     dispatch({ type: "LOGIN_START" });
 
     try {
-      const res = await api.post("/api/auth", {
+      const res = await api.post("/api/auth/login", {
         email: state.email,
         password: state.password,
       });
@@ -65,5 +66,5 @@ export default function useAuth() {
     dispatch({ type: "LOGOUT" });
   };
 
-  return { state, dispatch, handleLogin, handleLogout };
+  return {user: state.response,loading: state.loading, state, dispatch, handleLogin, handleLogout };
 }

@@ -1,39 +1,45 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import useAuth from "@/hooks/useAuth";
 import { useEffect } from "react";
+import useAuth from "@/hooks/useAuth";
 import Header from "./Header";
 import Footer from "./Footer";
 
-export default function LayoutWrapper({
+export default function  LayoutWrapper({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, isLoading } = useAuth();
+  const { user, loading } = useAuth();
+
   useEffect(() => {
-    if (!isLoading && !user) {
+    if (!loading && !user) {
       localStorage.clear();
       router.push("/");
     }
-  }, [user, isLoading, router]);
-  // Check path, ví dụ: nếu đường dẫn bắt đầu bằng "/user"
-  if (isLoading) return null;
-  const isUserPage = user && pathname.startsWith(`/${user.userName}`);
+  }, [user, loading, router]);
+
+  if (loading) return null;
+
+  // Kiểm tra role
+  const isAdmin = user?.role === "admin";
+  const isStaff = user?.role === "staff";
+  const isUser = user?.role === "user";
+    const isSupplyPage = user?.role === "supply" && pathname.startsWith("/profile");
+  // Check path để ẩn Header/Footer trong layout riêng
+  const isUserPage = isUser && pathname.startsWith(`/${user.userName}`);
 
   return (
     <>
-      {/* Nếu KHÔNG phải trang user thì render Header */}
-      {!isUserPage && <Header />}
+      {/* Nếu không phải trang user thì render Header */}
+      {!isSupplyPage && <Header />}
 
-      {/* Nội dung trang */}
       {children}
 
-      {/* Nếu KHÔNG phải trang user thì render Footer */}
-      {!isUserPage && <Footer />}
+      {!isSupplyPage && <Footer/>}
     </>
   );
 }

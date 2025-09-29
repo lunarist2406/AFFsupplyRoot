@@ -14,16 +14,15 @@ import {
 } from "@/components/ui/carousel"
 
 export function FeaturedProducts() {
-  // Hàm check số lượng products
-  const shouldShowIndicators = (products.length > 6) // vd: chỉ show nếu > 6 sp
+  const shouldShowIndicators = (products.length > 6) 
 
   return (
     <section className="py-16 font-manuale">
       <div className="container mx-auto lg:px-10 px-4">
         {/* Title */}
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold flex items-center gap-2">
-            <span className="text-yellow-primary">Sản Phẩm Nổi Bật</span>
+          <h2 className=" text-yellow-primary font-bold flex items-center gap-2">
+            <span className="text-xl md:text-2xl lg:text-3xl font-bold ">Sản Phẩm Nổi Bật</span>
           </h2>
         </div>
 

@@ -10,7 +10,6 @@ export default function HomePageView() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
-      <Header />
 
       {/* Nội dung chính chiếm toàn bộ khoảng trống còn lại */}
       <main className="flex-1 bg-gradient-to-r from-green-950 via-gray-600 to-green-950">
@@ -22,7 +21,6 @@ export default function HomePageView() {
       </main>
 
       {/* Footer */}
-      <Footer />
     </div>
   )
 }

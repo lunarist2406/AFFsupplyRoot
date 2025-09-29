@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Montserrat, Manuale } from "next/font/google";
 import ToastProvider from "@/components/ToastProvider";
+import Header from "@/layout/Header";
+import Footer from "@/layout/Footer";
 const montserrat = Montserrat({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -30,19 +32,23 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {  // Lấy pathname từ client để check
+  // (có thể check group segment nữa)
+  const hideHeaderFooter =
+    typeof window !== "undefined" &&
+    (window.location.pathname.startsWith("/authenication"));
+
   return (
     <html lang="en">
-      <body
-        className={`${montserrat.variable} ${manuale.variable}`}
-      >
+      <body className={`${montserrat.variable} ${manuale.variable}`}>
         <ToastProvider>
-          <main>{children}</main>
+          <main>
+            {children}
+          </main>
         </ToastProvider>
-
       </body>
     </html>
-  );
+  )
 }
