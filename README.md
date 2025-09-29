@@ -1,6 +1,5 @@
 # 🌱 EXE101 - AFF Supply Root
 
-![AFF Supply Root Logo](./1c5ca770-54a8-460f-92e3-5d72fd7444c1.png)
 
 ## 📌 Introduction  
 
