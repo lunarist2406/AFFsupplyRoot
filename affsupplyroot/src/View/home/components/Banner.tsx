@@ -7,7 +7,7 @@ export function BannerSection() {
 
   return (
     <section className="relative text-white font-manuale overflow-hidden">
-      <div className="relative container mx-auto px-4 py-16">
+      <div className="relative container mx-auto px-5 lg:px-10 py-16">
         <div className="grid lg:grid-cols-10 gap-12 items-center">
           {/* Left content 70% */}
           <div className="lg:col-span-6 space-y-6">
@@ -16,7 +16,7 @@ export function BannerSection() {
               <span className="text-yellow-400">Nông Nghiệp Việt Nam</span>
             </h1>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 mt-8">
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-5 mt-8">
               {services.map((service, index) => (
                 <div
                   key={index}

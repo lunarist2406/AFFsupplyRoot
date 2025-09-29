@@ -1,0 +1,26 @@
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000",
+  timeout: 5000, // timeout 5s
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+// Add interceptor để tự động attach token nếu có
+api.interceptors.request.use(
+  (config) => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      const token = JSON.parse(user).token; // nếu sau này backend có trả token
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+export default api;
