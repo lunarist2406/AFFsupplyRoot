@@ -1,9 +1,11 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { services } from "../variable"
-
+import { useRouter } from "next/navigation"
 
 export function BannerSection() {
-
+  const router = useRouter();
 
   return (
     <section className="relative text-white font-manuale overflow-hidden">
@@ -18,13 +20,15 @@ export function BannerSection() {
 
             <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-5 mt-8">
               {services.map((service, index) => (
-                <div
+                <Button
                   key={index}
-                  className="flex flex-row items-center justify-center space-x-2 p-2 rounded-lg border border-white/20 hover:bg-white/10 transition-colors cursor-pointer"
+                  variant="ghost"
+                  className="flex flex-row items-center justify-center space-x-2 p-3 rounded-lg border border-white/20 hover:bg-white/10 transition-colors cursor-pointer text-yellow-primary"
+                  onClick={() => router.push(service.links)}
                 >
                   <service.icon className="w-[1rem] h-[1rem] text-yellow-400" />
                   <span className="text-[0.875rem]">{service.label}</span>
-                </div>
+                </Button>
               ))}
             </div>
           </div>
@@ -33,12 +37,12 @@ export function BannerSection() {
           <div className="lg:col-span-4 relative">
             <div className="aspect-video w-full rounded-lg shadow-2xl overflow-hidden">
               <iframe
-              className="w-full h-full"
-              src="https://www.youtube.com/embed/3BmWOERYOxg?si=w3Yh9gpvEo2-wRqy"
-              title="YouTube video player"
-              frameBorder={0}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
+                className="w-full h-full"
+                src="https://www.youtube.com/embed/3BmWOERYOxg?si=w3Yh9gpvEo2-wRqy"
+                title="YouTube video player"
+                frameBorder={0}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
               />
             </div>
           </div>

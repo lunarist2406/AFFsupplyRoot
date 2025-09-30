@@ -1,29 +1,71 @@
 "use client";
 import { useReducer, useEffect } from "react";
-import axios from "axios";
 import api from "@/lib/Axios/axios";
 
-const initialState = {
+interface User {
+  id: number;
+  roleID: number;
+  email: string;
+  name: string;
+  avatar?: string;
+  permissions: string[];
+}
+
+interface BackendToken {
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
+}
+
+interface AuthState {
+  email: string;
+  password: string;
+  roleId: number | null;
+  token: string | null;
+  refreshToken: string | null;
+  user: User | null;
+  loading: boolean;
+  error: string | null;
+}
+
+type Action =
+  | { type: "SET_FIELD"; field: string; value: any }
+  | { type: "START" }
+  | { type: "SUCCESS"; payload: any }
+  | { type: "ERROR"; payload: string }
+  | { type: "LOGOUT" };
+
+const initialState: AuthState = {
   email: "",
   password: "",
-  token:"",
-  response: null,
+  roleId: null,
+  token: null,
+  refreshToken: null,
+  user: null,
   loading: false,
   error: null,
 };
 
-function reducer(state: any, action: any) {
+function reducer(state: AuthState, action: Action): AuthState {
   switch (action.type) {
     case "SET_FIELD":
       return { ...state, [action.field]: action.value };
-    case "LOGIN_START":
+    case "START":
       return { ...state, loading: true, error: null };
-    case "LOGIN_SUCCESS":
-      return { ...state, loading: false, response: action.payload };
-    case "LOGIN_ERROR":
+    case "SUCCESS":
+      return {
+        ...state,
+        loading: false,
+        user: action.payload.data.user,
+        roleId: action.payload.data.user.roleID,
+        token: action.payload.data.backendToken.accessToken,
+        refreshToken: action.payload.data.backendToken.refreshToken,
+      };
+    case "ERROR":
       return { ...state, loading: false, error: action.payload };
     case "LOGOUT":
-      return { ...initialState }; // reset state khi logout
+      localStorage.removeItem("authUser");
+      return { ...initialState };
     default:
       return state;
   }
@@ -32,39 +74,108 @@ function reducer(state: any, action: any) {
 export default function useAuth() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  // Load user từ localStorage khi component mount
+  // Load user từ localStorage khi mount
   useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    if (savedUser) {
-      dispatch({ type: "LOGIN_SUCCESS", payload: JSON.parse(savedUser) });
+    const saved = localStorage.getItem("authUser");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      dispatch({ type: "SUCCESS", payload: parsed });
     }
   }, []);
 
-  const handleLogin = async () => {
-    dispatch({ type: "LOGIN_START" });
+  const setField = (field: string, value: any) => {
+    dispatch({ type: "SET_FIELD", field, value });
+  };
 
+const login = async (email: string, password: string) => {
+  dispatch({ type: "START" });
+  try {
+    const res = await api.post("/api/v1/auth/login", { email, password });
+    localStorage.setItem("authUser", JSON.stringify(res.data));
+    dispatch({ type: "SUCCESS", payload: res.data });
+    return res.data;
+  } catch (err: any) {
+    dispatch({ type: "ERROR", payload: err.response?.data?.message || err.message });
+    throw err;
+  }
+};
+
+
+
+  const loginFacebook = async (accessToken: string) => {
+    dispatch({ type: "START" });
     try {
-      const res = await api.post("/api/auth/login", {
-        email: state.email,
-        password: state.password,
-      });
-
-      localStorage.setItem("user", JSON.stringify(res.data));
-        console.log("User stored:", JSON.parse(localStorage.getItem("user")!));
-
-      dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
+      const res = await api.post("/api/v1/auth/login-facebook", { accessToken });
+      localStorage.setItem("authUser", JSON.stringify(res.data));
+      dispatch({ type: "SUCCESS", payload: res.data });
     } catch (err: any) {
       dispatch({
-        type: "LOGIN_ERROR",
+        type: "ERROR",
         payload: err.response?.data?.message || err.message,
       });
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
+    const signup = async (payload: any) => {
+      dispatch({ type: "START" });
+      try {
+        const res = await api.post("/api/v1/auth/signup", payload);
+        // Không gọi SUCCESS vì signup chưa có user/token
+        dispatch({ type: "SET_FIELD", field: "loading", value: false });
+        return res.data; // chỉ trả message
+      } catch (err: any) {
+        dispatch({
+          type: "ERROR",
+          payload: err.response?.data?.message || err.message,
+        });
+      }
+    };
+
+
+  const refreshToken = async () => {
+    if (!state.refreshToken) return;
+    try {
+      const res = await api.post("/api/v1/auth/refresh-token", {
+        refreshToken: state.refreshToken,
+      });
+      localStorage.setItem("authUser", JSON.stringify(res.data));
+      dispatch({ type: "SUCCESS", payload: res.data });
+    } catch (err: any) {
+      console.error("Refresh token failed:", err);
+    }
+  };
+
+  const forgotPassword = async (email: string) => {
+    return api.post("/api/v1/auth/forgot-password", { email });
+  };
+
+  const verifyOtp = async (payload: { email: string; otp: string }) => {
+    return api.post("/api/v1/auth/verify-otp", payload);
+  };
+
+  const resetPassword = async (payload: { email: string; newPassword: string }) => {
+    return api.post("/api/v1/auth/reset-password", payload);
+  };
+
+  const resendOtp = async (email: string) => {
+    return api.post("/api/v1/auth/resend-otp", { email });
+  };
+
+  const logout = () => {
     dispatch({ type: "LOGOUT" });
   };
 
-  return {user: state.response,loading: state.loading, state, dispatch, handleLogin, handleLogout };
+  return {
+    state, 
+    setField,
+    login,
+    loginFacebook,
+    signup,
+    refreshToken,
+    forgotPassword,
+    verifyOtp,
+    resetPassword,
+    resendOtp,
+    logout,
+  };
 }

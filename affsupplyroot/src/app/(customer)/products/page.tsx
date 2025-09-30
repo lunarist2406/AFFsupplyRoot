@@ -1,6 +1,6 @@
 "use client"
-import { ProductContent } from "@/app/customer/product/ProductContent"
-import { CategorySidebar } from "@/app/customer/product/CategorySidebar"
+import { ProductContent } from "@/app/(customer)/products/ProductContent"
+import { CategorySidebar } from "@/app/(customer)/products/CategorySidebar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"

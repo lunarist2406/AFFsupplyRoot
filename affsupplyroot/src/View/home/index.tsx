@@ -1,5 +1,3 @@
-import Footer from '@/layout/Footer'
-import Header from '@/layout/Header'
 import React from 'react'
 import { SupportServices } from './components/SupportService'
 import { BannerSection } from './components/Banner'

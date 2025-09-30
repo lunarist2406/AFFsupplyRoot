@@ -23,22 +23,26 @@ import { roleMenus } from "@/variable/menuHeader"
 
 export default function Header() {
   const [desktopOpen, setDesktopOpen] = useState(false)
-  const { state, handleLogout } = useAuth()
+  const { state, logout } = useAuth()
   const router = useRouter()
 
-  const user = state.response
-  const menus = user ? roleMenus[user?.user?.role] || [{ label: "Đăng xuất" }] : []
+  // ✅ Destructure user từ state
+  const { user } = state
 
-  // 👉 gom logic xử lý click
+  // ✅ Lấy menu dựa theo role
+  const menus = user ? roleMenus[user.roleID] || [{ label: "Đăng xuất" }] : []
+
+  // 👉 Gom logic click menu
   const handleMenuClick = (item: any) => {
     if (item.label === "Đăng xuất") {
-      handleLogout()
-      router.push("/authentication") // nếu muốn đẩy về login page
+      logout()
+      router.push("/authentication")
     } else if (item.href) {
       router.push(item.href)
     }
   }
 
+  // ✅ Render menu items cho desktop
   const renderMenuItems = () =>
     menus.map((item, idx) => (
       <DropdownMenuItem
@@ -53,6 +57,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-30 w-full h-[5rem] bg-green-950 text-yellow-400 font-manuale lg:px-25 flex items-center shadow-md px-5 ">
+      
       {/* Mobile */}
       <div className="grid grid-cols-[auto_1fr_auto] items-center w-full md:hidden gap-2">
         <Link href="/" className="flex items-center gap-2 cursor-pointer">

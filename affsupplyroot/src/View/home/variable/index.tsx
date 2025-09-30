@@ -17,10 +17,10 @@ import caycongnghiep from '../../../../public/caycongnghiep.jpg'
 import duoclieu from '../../../../public/cayduoclieu.jpg'
 import dacsanvungmien from '../../../../public/nongsanviet.webp'
 export const services = [
-    { icon: FaShoppingBag, label: "Sản Phẩm" },
-    { icon: FaBox, label: "Nhà Cung Cấp" },
-    { icon: FaNewspaper, label: "Tin tức" },
-    { icon: FaVideo, label: "Livestream" },
+    { icon: FaShoppingBag, label: "Sản Phẩm", links: "/products" },
+    { icon: FaVideo, label: "Livestream", links:"livestream"},
+    { icon: FaBox, label: "Nhà Cung Cấp",links:"/"},
+    { icon: FaNewspaper, label: "Tin tức",links:"/" },
 
   ]
  export const categories = [

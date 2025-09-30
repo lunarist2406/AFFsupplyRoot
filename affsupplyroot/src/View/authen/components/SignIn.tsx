@@ -1,52 +1,48 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import useAuth from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner"; // 👈 import toast
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import useAuth from "@/hooks/useAuth";
+import { toast } from "sonner";
 
-export default function SignIn({ setForm }: { setForm: React.Dispatch<React.SetStateAction<"signin" | "signup" |"verify" |"reset">> }) {
+const SignInSchema = Yup.object().shape({
+  email: Yup.string().email("Email không hợp lệ").required("Email là bắt buộc"),
+  password: Yup.string().min(6, "Mật khẩu ít nhất 6 ký tự").required("Mật khẩu là bắt buộc"),
+});
+
+export default function SignIn({
+  setForm,
+}: {
+  setForm: React.Dispatch<React.SetStateAction<"signin" | "signup" | "verify" | "reset">>;
+}) {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
-
-  const { state, dispatch, handleLogin } = useAuth();
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-
-    if (!email || !password) {
-      toast.error("Vui lòng nhập đầy đủ thông tin!");
-      return;
-    }
-
-    dispatch({ type: "SET_FIELD", field: "email", value: email });
-    dispatch({ type: "SET_FIELD", field: "password", value: password });
-
-    try {
-      await handleLogin(); // giả sử handleLogin đã async
-      if (state.response?.user) {
-        toast.success("Đăng nhập thành công ");
-        router.push("/"); // redirect
-      } else if (state.error) {
-        toast.error(state.error);
-      }
-    } catch (error: any) {
-      toast.error(error?.message || "Đăng nhập thất bại!");
-    }
-  };
+  const { state, setField, login } = useAuth();
 
   useEffect(() => {
-    if (state.response?.user) {
+    if (state.user) {
       router.push("/");
     }
-  }, [state.response, router]);
+  }, [state.user, router]);
+
+    const handleSubmit = async (values: { email: string; password: string }) => {
+      try {
+        const res = await login(values.email, values.password);
+        console.log("login response:", res);
+        if (res?.data?.user) {
+          toast.success("Đăng nhập thành công!");
+          setTimeout(() => router.push("/"), 1000);
+        }
+      } catch (error: any) {
+        toast.error(error?.message || state.error || "Đăng nhập thất bại!");
+      }
+    };
 
   return (
     <motion.div
@@ -57,13 +53,7 @@ export default function SignIn({ setForm }: { setForm: React.Dispatch<React.SetS
     >
       {/* Logo */}
       <div className="text-center mb-6">
-        <Image
-          src="/logo.png"
-          alt="logo"
-          width={48}
-          height={48}
-          className="mx-auto w-12 h-12"
-        />
+        <Image src="/logo.png" alt="logo" width={48} height={48} className="mx-auto w-12 h-12" />
         <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-yellow-secondary mt-2">
           AFF supplyRoot
         </h2>
@@ -72,78 +62,87 @@ export default function SignIn({ setForm }: { setForm: React.Dispatch<React.SetS
         </p>
       </div>
 
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Email */}
-        <div>
-          <Input
-            type="email"
-            name="email"
-            placeholder="Email"
-            required
-            className="w-full px-4 py-2 rounded-lg border border-yellow-primary bg-transparent text-yellow-primary placeholder-green-secondary focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base"
-          />
-        </div>
+      {/* Formik Form */}
+      <Formik
+        initialValues={{ email: "", password: "" }}
+        validationSchema={SignInSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ isSubmitting }) => (
+          <Form className="space-y-4">
+            {/* Email */}
+            <div>
+              <Field
+                as={Input}
+                type="email"
+                name="email"
+                placeholder="Email"
+                className="w-full px-4 py-2 rounded-lg border border-yellow-primary bg-transparent text-yellow-primary placeholder-green-secondary focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base"
+              />
+              <ErrorMessage name="email" component="div" className="text-red-500 text-xs mt-1" />
+            </div>
 
-        {/* Password */}
-        <div className="relative">
-          <Input
-            type={showPassword ? "text" : "password"}
-            name="password"
-            placeholder="Mật khẩu"
-            required
-            className="w-full px-4 py-2 rounded-lg border border-yellow-primary bg-transparent text-yellow-primary placeholder-green-secondary focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base"
-          />
-          <button
-            type="button"
-            className="absolute right-3 top-2.5 text-yellow-400"
-            onClick={() => setShowPassword(!showPassword)}
-          >
-            {showPassword ? <FaEyeSlash /> : <FaEye />}
-          </button>
-        </div>
+            {/* Password */}
+            <div className="relative">
+              <Field
+                as={Input}
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Mật khẩu"
+                className="w-full px-4 py-2 rounded-lg border border-yellow-primary bg-transparent text-yellow-primary placeholder-green-secondary focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base"
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-2.5 text-yellow-400"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+              <ErrorMessage name="password" component="div" className="text-red-500 text-xs mt-1" />
+            </div>
 
-        {/* Options */}
-        <div className="flex items-center justify-between text-xs sm:text-sm">
-          <label className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              name="remember"
-              className="accent-green-500"
-            />
-            <span className="text-gray-300">Duy trì đăng nhập</span>
-          </label>
-          <p
-            className="text-yellow-400 hover:underline cursor-pointer"
-            onClick={() => setForm("verify")}
-          >
-            Quên mật khẩu?
-          </p>
-        </div>
+            {/* Options */}
+            <div className="flex items-center justify-between text-xs sm:text-sm">
+              <label className="flex items-center space-x-2">
+                <input type="checkbox" name="remember" className="accent-green-500" />
+                <span className="text-gray-300">Duy trì đăng nhập</span>
+              </label>
+              <p
+                className="text-yellow-400 hover:underline cursor-pointer"
+                onClick={() => setForm("verify")}
+              >
+                Quên mật khẩu?
+              </p>
+            </div>
 
-        {/* Submit */}
-        <Button
-          type="submit"
-          className="w-full py-2 rounded-lg font-bold text-yellow-primary bg-gradient-to-r from-green-800 to-green-600 hover:opacity-90 transition text-sm sm:text-base"
-        >
-          Đăng nhập
-        </Button>
+            {/* Submit */}
+            <Button
+              type="submit"
+              className="w-full py-2 rounded-lg font-bold text-yellow-primary bg-gradient-to-r from-green-800 to-green-600 hover:opacity-90 transition text-sm sm:text-base"
+              disabled={isSubmitting || state.loading}
+            >
+              {state.loading ? "Đang đăng nhập..." : "Đăng nhập"}
+            </Button>
 
-        {/* Divider */}
-        <div className="flex items-center my-4 text-xs sm:text-sm">
-          <div className="flex-grow h-px bg-gray-600" />
-          <span className="px-2 text-gray-400">hoặc Đăng nhập với</span>
-          <div className="flex-grow h-px bg-gray-600" />
-        </div>
+            {/* Divider */}
+            <div className="flex items-center my-4 text-xs sm:text-sm">
+              <div className="flex-grow h-px bg-gray-600" />
+              <span className="px-2 text-gray-400">hoặc Đăng nhập với</span>
+              <div className="flex-grow h-px bg-gray-600" />
+            </div>
 
-        {/* Google Button */}
-        <Button
-          type="button"
-          className="w-full flex items-center justify-center gap-2 py-2 border border-yellow-primary rounded-lg text-yellow-primary hover:bg-green-800 hover:text-green-800 transition text-sm sm:text-base"
-        >
-          <FaGoogle /> Google
-        </Button>
-      </form>
+            {/* Google Button */}
+            <Button
+              type="button"
+              className="w-full flex items-center justify-center gap-2 py-2 border border-yellow-primary rounded-lg text-yellow-primary hover:bg-green-800 hover:text-green-800 transition text-sm sm:text-base"
+            >
+              <FaGoogle /> Google
+            </Button>
+
+            {/* Error toast sẽ hiển thị tự động qua sonner */}
+          </Form>
+        )}
+      </Formik>
     </motion.div>
   );
 }

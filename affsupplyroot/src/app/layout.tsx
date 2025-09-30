@@ -34,12 +34,7 @@ export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
-}) {  // Lấy pathname từ client để check
-  // (có thể check group segment nữa)
-  const hideHeaderFooter =
-    typeof window !== "undefined" &&
-    (window.location.pathname.startsWith("/authenication"));
-
+}) {  
   return (
     <html lang="en">
       <body className={`${montserrat.variable} ${manuale.variable}`}>
