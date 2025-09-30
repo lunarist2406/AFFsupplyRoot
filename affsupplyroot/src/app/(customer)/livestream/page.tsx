@@ -17,7 +17,7 @@ import {
   ChevronDown,
   Menu
 } from "lucide-react"
-import { ProductSidebar } from "../product/ProductSidebar"
+import { ProductSidebar } from "../products/ProductSidebar"
 
 export default function LivestreamPage() {
   const [searchTerm, setSearchTerm] = useState("")

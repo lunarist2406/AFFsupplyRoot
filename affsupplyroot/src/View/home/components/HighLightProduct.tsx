@@ -12,17 +12,21 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "@/components/ui/carousel"
+import { useRouter } from "next/navigation"
 
 export function FeaturedProducts() {
-  const shouldShowIndicators = (products.length > 6) 
+  const router = useRouter()
+  const shouldShowIndicators = products.length > 6
 
   return (
     <section className="py-16 font-manuale">
       <div className="container mx-auto lg:px-10 px-4">
         {/* Title */}
         <div className="flex justify-between items-center mb-8">
-          <h2 className=" text-yellow-primary font-bold flex items-center gap-2">
-            <span className="text-xl md:text-2xl lg:text-3xl font-bold ">Sản Phẩm Nổi Bật</span>
+          <h2 className="text-yellow-primary font-bold flex items-center gap-2">
+            <span className="text-xl md:text-2xl lg:text-3xl font-bold">
+              Sản Phẩm Nổi Bật
+            </span>
           </h2>
         </div>
 
@@ -41,7 +45,10 @@ export function FeaturedProducts() {
                 key={product.id}
                 className="basis-1/2 md:basis-1/4 lg:basis-1/6"
               >
-                <Card className="group hover:shadow-lg transition-shadow cursor-pointer overflow-hidden">
+                <Card
+                  className="group hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
+                  onClick={() => router.push("/products")}
+                >
                   <div className="relative">
                     <Image
                       src={product.image || "/placeholder.svg"}
@@ -83,13 +90,12 @@ export function FeaturedProducts() {
           </CarouselContent>
 
           {/* Prev / Next buttons */}
-            {shouldShowIndicators && (
-              <>
-                <CarouselPrevious className="hidden lg:flex bg-white text-black hover:bg-gray-200 shadow" />
-                <CarouselNext className="hidden lg:flex bg-white text-black hover:bg-gray-200 shadow" />
-              </>
-            )}
-
+          {shouldShowIndicators && (
+            <>
+              <CarouselPrevious className="hidden lg:flex bg-white text-black hover:bg-gray-200 shadow" />
+              <CarouselNext className="hidden lg:flex bg-white text-black hover:bg-gray-200 shadow" />
+            </>
+          )}
         </Carousel>
       </div>
     </section>
