@@ -1,4 +1,4 @@
-import { FaUser, FaBox, FaSignOutAlt, FaTachometerAlt, FaUsers, FaChartBar, FaComments, FaWarehouse, FaShoppingCart, FaCreditCard, FaDollarSign, FaStore, FaChartLine, FaTruck, FaTv } from "react-icons/fa"
+import { FaUser, FaBox, FaSignOutAlt, FaTachometerAlt, FaUsers, FaChartBar, FaComments, FaWarehouse, FaShoppingCart, FaCreditCard, FaDollarSign, FaStore, FaChartLine, FaTruck, FaTv, FaShieldAlt } from "react-icons/fa"
 
 export const roleMenus: Record<
   string,
@@ -27,6 +27,7 @@ supply : [
   admin: [
     { label: "Dashboard", href: "/admin", icon: <FaTachometerAlt className="text-yellow-secondary w-4 h-4" /> },
     { label: "Quản lý người dùng", href: "/admin/users", icon: <FaUsers className="text-yellow-secondary w-4 h-4" /> },
+    { label: "Quản lý phân quyền", href: "/admin/permissions", icon: <FaShieldAlt className="text-yellow-secondary w-4 h-4" /> },
     {  label: "Đăng xuất",href: "/", icon: <FaSignOutAlt className="text-yellow-secondary w-4 h-4" /> },
   ],
   staff: [

@@ -55,7 +55,7 @@ export function LivestreamContent({ searchTerm = "", sortBy = "all" }: Livestrea
   const livestreams = filteredLivestreams
 
   const handleCardClick = () => {
-    router.push('/customer/livestream/watch')
+    router.push('/livestream/watch')
   }
 
   return (

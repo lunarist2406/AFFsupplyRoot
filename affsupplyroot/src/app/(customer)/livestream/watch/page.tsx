@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
-import { ProductSidebar } from "@/app/customer/product/ProductSidebar"
+import { ProductSidebar } from "@/app/(customer)/products/ProductSidebar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
