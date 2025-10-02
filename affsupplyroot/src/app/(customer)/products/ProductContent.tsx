@@ -59,7 +59,7 @@ export function ProductContent({ searchTerm = "", sortBy = "name-asc" }: Product
   const products = filteredProducts
 
   const handleCardClick = () => {
-    router.push('/customer/product/details')
+    router.push('/products/details')
   }
   return (
     <div className="flex-1 p-4 pt-0 min-h-full" style={{ 
