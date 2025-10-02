@@ -20,7 +20,9 @@ export default function Authen() {
       case "signup":
         return <SignUp />;
       case "verify":
-        return <VerifyAccount />;
+        return <VerifyAccount setForm={setForm} />;
+      case "reset":
+        return <ResetPassword setForm={setForm}/> 
       default:
         return <SignIn setForm={setForm} />;
     }

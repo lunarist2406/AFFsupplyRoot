@@ -10,12 +10,22 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { FaArrowLeft, FaRedoAlt } from "react-icons/fa";
+import useAuth from "@/hooks/useAuth";
+import { toast } from "sonner";
+import useResetEmail from "@/hooks/useResetEmail";
 
-export default function VerifyAccount() {
+
+export default function VerifyAccount({
+  setForm,
+}: {
+  setForm: React.Dispatch<React.SetStateAction<"signin" | "signup" | "verify" | "reset">>;
+}){
   const [isOTPSent, setIsOTPSent] = useState(false);
   const [otp, setOtp] = useState("");
   const [target, setTarget] = useState("");
   const [timer, setTimer] = useState(0);
+  const { forgotPassword,verifyOtp } = useAuth();
+  const { resetEmail, setResetEmail } = useResetEmail();
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -27,24 +37,47 @@ export default function VerifyAccount() {
     return () => clearInterval(interval);
   }, [isOTPSent, timer]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
 
-    if (!isOTPSent) {
-      const formData = new FormData(e.currentTarget);
-      const method = formData.get("method");
-      const value = formData.get("email") as string;
+  if (!isOTPSent) {
+    // Gửi OTP lần đầu
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
 
-      console.log("Send OTP to:", { method, value });
-
-      setTarget(value);
-      setIsOTPSent(true);
-      setTimer(120); // reset timer
-    } else {
-      console.log("Verify OTP:", otp);
-      // TODO: API verify OTP
+    try {
+      const res = await forgotPassword(email);
+      if (res.success) {
+        toast.success(res.data); // "Gửi OTP thành công"
+        setTarget(email);
+        setResetEmail(email); // ✅ lưu email
+        setIsOTPSent(true);
+        setTimer(180);
+      } else {
+        toast.error(res.message || "Không thể gửi OTP");
+      }
+    } catch (err) {
+      toast.error("Có lỗi xảy ra, vui lòng thử lại!");
+      console.error(err);
     }
-  };
+  } else {
+    // Xác minh OTP
+    try {
+      const res = await verifyOtp({ email: target, otp });
+      if (res.success) {
+        toast.success(res.data || "Xác minh OTP thành công");
+        setForm('reset')
+        // TODO: chuyển sang bước đặt lại mật khẩu
+      } else {
+        toast.error(res.message || "OTP không hợp lệ");
+      }
+    } catch (err) {
+      toast.error("Có lỗi xảy ra khi xác minh OTP!");
+      console.error(err);
+    }
+  }
+};
+
 
   const handleBack = () => {
     setIsOTPSent(false);
@@ -52,10 +85,19 @@ export default function VerifyAccount() {
     setTimer(0);
   };
 
-  const handleResend = () => {
-    console.log("Resend OTP to:", target);
-    setTimer(120);
-    // TODO: API gửi lại OTP
+  const handleResend = async () => {
+    try {
+      const res = await forgotPassword(target);
+      if (res.success) {
+        toast.success(res.data);
+        setTimer(180);
+      } else {
+        toast.error(res.message || "Gửi lại OTP thất bại");
+      }
+    } catch (err) {
+      toast.error("Có lỗi xảy ra, vui lòng thử lại!");
+      console.error(err);
+    }
   };
 
   return (
@@ -100,7 +142,7 @@ export default function VerifyAccount() {
         <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-green-500 mt-2">
           AFF supplyRoot
         </h2>
-        <p className="text-xs sm:text-sm md:text-base text-yellow-primary">
+        <p className="text-xs sm:text-sm md:text-sm text-yellow-primary">
           {!isOTPSent
             ? "Xác minh tài khoản để thiết lập lại mật khẩu"
             : `Mã xác nhận đã được gửi đến ${target}`}
@@ -112,7 +154,7 @@ export default function VerifyAccount() {
         <AnimatePresence mode="wait">
           {!isOTPSent ? (
             <motion.div
-              key="email-phone"
+              key="email"
               className="border border-yellow-primary rounded-lg p-4"
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
@@ -120,24 +162,12 @@ export default function VerifyAccount() {
               transition={{ duration: 0.4 }}
             >
               <p className="text-xs sm:text-sm text-yellow-primary mb-4">
-                Nhập email hoặc số điện thoại của bạn để nhận mã OTP
+                Nhập email của bạn để nhận mã OTP
               </p>
-
-              <div className="flex items-center gap-4 mb-3 text-sm sm:text-base">
-                <label className="flex items-center gap-2">
-                  <input type="radio" name="method" value="email" defaultChecked />
-                  Email
-                </label>
-                <label className="flex items-center gap-2">
-                  <input type="radio" name="method" value="phone" />
-                  Số điện thoại
-                </label>
-              </div>
-
               <Input
-                type="text"
+                type="email"
                 name="email"
-                placeholder="example@email.com / 0123456789"
+                placeholder="example@email.com"
                 required
                 className="w-full px-4 py-2 rounded-lg border border-yellow-primary bg-transparent text-yellow-primary placeholder-green-secondary focus:outline-none focus:ring-2 focus:ring-green-500 text-sm sm:text-base"
               />
@@ -179,13 +209,12 @@ export default function VerifyAccount() {
         >
           <Button
             type="submit"
-            disabled={isOTPSent && timer <= 0}
             className="w-full py-2 rounded-lg font-bold text-yellow-primary bg-gradient-to-r from-green-800 to-green-600 hover:opacity-90 transition text-sm sm:text-base"
           >
             {!isOTPSent ? "Gửi mã OTP" : "Xác minh OTP"}
           </Button>
 
-          {/* Timer / Resend dưới button */}
+          {/* Timer / Resend */}
           {isOTPSent && (
             <>
               {timer > 0 ? (
@@ -193,25 +222,24 @@ export default function VerifyAccount() {
                   Mã sẽ hết hạn sau <span className="font-bold">{timer}s</span>
                 </p>
               ) : (
-                    <Button
-                    type="button"
-                    variant="link"   // hoặc thử "link"
-                    onClick={handleResend}
-                    className="flex items-center gap-2 text-yellow-primary"
-                    >
-                    <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{
-                        repeat: Infinity,
-                        duration: 1.2,
-                        ease: "linear",
-                        }}
-                    >
-                        <FaRedoAlt size={16} />
-                    </motion.div>
-                    <span>Gửi lại OTP</span>
-                    </Button>
-
+                <Button
+                  type="button"
+                  variant="link"
+                  onClick={handleResend}
+                  className="flex items-center gap-2 text-yellow-primary"
+                >
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 1.2,
+                      ease: "linear",
+                    }}
+                  >
+                    <FaRedoAlt size={16} />
+                  </motion.div>
+                  <span>Gửi lại OTP</span>
+                </Button>
               )}
             </>
           )}

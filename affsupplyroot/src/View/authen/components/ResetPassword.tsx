@@ -5,19 +5,49 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import useAuth from "@/hooks/useAuth";
+import { toast } from "sonner";
+import useResetEmail from "@/hooks/useResetEmail";
 
-export default function ResetPassword() {
+export default function ResetPassword({
+  setForm,
+}: {
+  setForm: React.Dispatch<
+    React.SetStateAction<"signin" | "signup" | "verify" | "reset">
+  >;
+}) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const { resetPassword } = useAuth();
+  const {resetEmail} = useResetEmail();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const newPassword = formData.get("newPassword");
-    const confirmPassword = formData.get("confirmPassword");
-    console.log({ newPassword, confirmPassword });
-    // TODO: Call API reset password
+    const newPassword = formData.get("newPassword") as string;
+    const confirmPassword = formData.get("confirmPassword") as string;
+
+    if (newPassword !== confirmPassword) {
+      toast.error("Mật khẩu xác nhận không khớp!");
+      return;
+    }
+
+    try {
+      // Lấy email đã lưu từ hook useResetEmail
+      console.log("Email:", resetEmail)
+      const res = await resetPassword({ email: resetEmail, newPassword });
+      console.log("Data send:",res)
+      if (res.success) {
+        toast.success("Đặt lại mật khẩu thành công!");
+        setForm("signin"); // chuyển về trang đăng nhập
+      } else {
+        toast.error(res.message || "Đặt lại mật khẩu thất bại!");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Có lỗi xảy ra. Vui lòng thử lại sau!");
+    }
   };
+
 
   return (
     <motion.div
@@ -38,7 +68,6 @@ export default function ResetPassword() {
         <h2 className="text-2xl font-bold text-yellow-secondary mt-2">
           AFF supplyRoot
         </h2>
-
       </div>
 
       {/* Form */}

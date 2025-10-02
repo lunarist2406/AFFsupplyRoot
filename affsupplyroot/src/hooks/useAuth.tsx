@@ -144,17 +144,48 @@ const login = async (email: string, password: string) => {
       console.error("Refresh token failed:", err);
     }
   };
+const forgotPassword = async (email: string) => {
+  try {
+    const res = await api.post("/api/v1/auth/forgot-password", { email });
+    return res.data; 
+  } catch (error: any) {
+    return {
+      success: false,
+      statusCode: error.response?.status || 500,
+      message: error.response?.data?.message || "Lỗi hệ thống",
+      data: null,
+    };
+  }
+};
 
-  const forgotPassword = async (email: string) => {
-    return api.post("/api/v1/auth/forgot-password", { email });
-  };
 
-  const verifyOtp = async (payload: { email: string; otp: string }) => {
-    return api.post("/api/v1/auth/verify-otp", payload);
-  };
+const verifyOtp = async (payload: { email: string; otp: string }) => {
+  try {
+    const res = await api.post("/api/v1/auth/verify-otp", payload);
+    return res.data; // { success, statusCode, message, data }
+  } catch (err: any) {
+    const errorMsg = err.response?.data?.message || err.message;
+    dispatch({
+      type: "ERROR",
+      payload: errorMsg,
+    });
+    return { success: false, message: errorMsg }; 
+  }
+};
+
 
   const resetPassword = async (payload: { email: string; newPassword: string }) => {
-    return api.post("/api/v1/auth/reset-password", payload);
+    try{
+      const res = await  api.post("/api/v1/auth/reset-password", payload);
+      return res.data
+    }catch(err:any){
+      const errorMsg = err.response?.data?.message || err.message;
+      dispatch({
+        type: "ERROR",
+        payload: errorMsg,
+      });
+      return { success: false, message: errorMsg }; 
+    }
   };
 
   const resendOtp = async (email: string) => {
