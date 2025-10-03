@@ -3,8 +3,9 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { Star, ShoppingCart, Search, Package } from "lucide-react"
+import { Star, ShoppingCart, Package } from "lucide-react"
 
 const allProducts = Array.from({ length: 15 }, (_, i) => ({
   id: i + 1,
@@ -58,8 +59,8 @@ export function ProductContent({ searchTerm = "", sortBy = "name-asc" }: Product
 
   const products = filteredProducts
 
-  const handleCardClick = () => {
-    router.push('/products/details')
+  const handleCardClick = (productId: number) => {
+    router.push(`/products/details/${productId}`)
   }
   return (
     <div className="flex-1 p-4 pt-0 min-h-full" style={{ 
@@ -86,13 +87,15 @@ export function ProductContent({ searchTerm = "", sortBy = "name-asc" }: Product
           <Card key={product.id} 
                 className="bg-[#353D39] hover:bg-[#404A46] transition-all duration-300 border-[#4A5551] shadow-lg hover:shadow-xl cursor-pointer" 
                 style={{gap:'0', padding: '0'}}
-                onClick={handleCardClick}>
+                onClick={() => handleCardClick(product.id)}>
             <CardContent className="p-0">
               <div className="relative">
                 <div className="h-32 bg-[#FBF8EF] rounded-lg overflow-hidden shadow-inner">
-                  <img 
+                  <Image 
                     src="/Gao-ST25.png" 
                     alt={product.name}
+                    width={128}
+                    height={128}
                     className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-300"
                   />
                 </div>
