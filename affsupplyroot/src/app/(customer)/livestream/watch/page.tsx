@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import Image from "next/image"
+import useAuth from "@/hooks/useAuth"
 import { 
   Heart, 
   ThumbsUp, 
@@ -31,6 +32,8 @@ export default function LivestreamWatchPage() {
   const [playing, setPlaying] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
+  const { state } = useAuth()
+  const { user, token } = state
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -70,7 +73,7 @@ export default function LivestreamWatchPage() {
       
       <SidebarInset>
         <div className="flex flex-1 flex-col font-manuale">
-          <div className="bg-gradient-to-b from-[#353D39] via-[#7E8C7C] to-[#353D39] p-3 sm:p-4">
+          <div className="bg-gradient-to-b from-[#353D39] via-[#4A5551] to-[#353D39] p-3 sm:p-4">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-3">
               <div className="flex items-center gap-2 text-xs sm:text-sm">
                 <Button
@@ -81,30 +84,32 @@ export default function LivestreamWatchPage() {
                 >
                   <Menu className="h-5 w-5" />
                 </Button>
-                <Link href="/" className="text-yellow-300 text-sm hover:text-yellow-200">Trang chủ</Link>
+                <Link href="/" className="text-yellow-300 text-base hover:text-yellow-200">Trang chủ</Link>
                 <ChevronRight className="h-4 w-4 text-gray-400" />
-                <Link href="/customer/livestream" className="text-yellow-300 text-sm hover:text-yellow-200">Livestreams</Link>
+                <Link href="/livestream" className="text-yellow-300 text-base hover:text-yellow-200">Livestreams</Link>
                 <ChevronRight className="h-4 w-4 text-gray-400" />
-                <span className="text-yellow-300 text-sm">Xem</span>
+                <span className="text-yellow-300 text-base">Xem</span>
               </div>
               
-              <div className="flex items-center gap-1 sm:gap-2 border border-yellow-300/30 rounded-lg p-1 sm:p-2">
-                <Button variant="ghost" size="icon" className="text-yellow-400 hover:bg-yellow-400/10 h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10">
-                  <ShoppingBag className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-yellow-400" />
-                </Button>
-                <Button variant="ghost" size="icon" className="text-yellow-400 hover:bg-yellow-400/10 h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10">
-                  <Bell className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-yellow-400" />
-                </Button>
-                <Button variant="ghost" size="icon" className="text-yellow-400 hover:bg-yellow-400/10 h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10">
-                  <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-yellow-400" />
-                </Button>
-                <Button variant="ghost" size="icon" className="text-yellow-400 hover:bg-yellow-400/10 h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10">
-                  <Folder className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-yellow-400" />
-                </Button>
-                <Button variant="ghost" size="icon" className="text-yellow-400 hover:bg-yellow-400/10 h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10">
-                  <User className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-yellow-400" />
-                </Button>
-              </div>
+              {token && user && (
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <Button variant="ghost" size="icon" className="text-yellow-400 hover:bg-yellow-400/10 h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10">
+                    <ShoppingBag className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-yellow-400" />
+                  </Button>
+                  <Button variant="ghost" size="icon" className="text-yellow-400 hover:bg-yellow-400/10 h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10">
+                    <Bell className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-yellow-400" />
+                  </Button>
+                  <Button variant="ghost" size="icon" className="text-yellow-400 hover:bg-yellow-400/10 h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10">
+                    <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-yellow-400" />
+                  </Button>
+                  <Button variant="ghost" size="icon" className="text-yellow-400 hover:bg-yellow-400/10 h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10">
+                    <Folder className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-yellow-400" />
+                  </Button>
+                  <Button variant="ghost" size="icon" className="text-yellow-400 hover:bg-yellow-400/10 h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10">
+                    <User className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-yellow-400" />
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
           
