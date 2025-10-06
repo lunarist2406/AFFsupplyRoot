@@ -2,7 +2,7 @@
 import Image, { StaticImageData } from "next/image"
 import { useState } from "react"
 import { categories } from "@/View/home/variable"
-import { ChevronRight, ChevronDown, Menu, X } from "lucide-react"
+import { ChevronRight, ChevronDown, X } from "lucide-react"
 
 interface CategoryWithSub {
   name: string
@@ -70,8 +70,8 @@ export function CategorySidebar({
           background: 'linear-gradient(180deg, #2A332F 0%, #4A5551 50%, #2A332F 100%)'
         }}
       >
-      <div className="p-2">
-        <div className="flex items-center justify-between mb-6">
+      <div className="p-3">
+        <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#3A433F]">
           <div className="flex items-center gap-3">
             <Image
               src="/logo.png"
@@ -80,13 +80,13 @@ export function CategorySidebar({
               height={32}
               className="object-contain"
             />
-            <h2 className="text-xl font-bold text-white">Danh Mục Nông Sản</h2>
+            <h2 className="text-2xl font-bold text-yellow-primary whitespace-nowrap">Danh Mục Nông Sản</h2>
           </div>
           <button
             onClick={() => setIsMobileMenuOpen(false)}
             className="lg:hidden text-white hover:text-yellow-primary"
           >
-            <X className="h-6 w-6" />
+            <X className="h-6 w-6 text-white" />
           </button>
         </div>
         
@@ -97,8 +97,8 @@ export function CategorySidebar({
                 onClick={() => category.subCategories ? toggleCategory(index) : undefined}
                 className="group flex items-center justify-between p-4 hover:bg-yellow-primary/10 transition-all duration-200 cursor-pointer"
               >
-                <div className="flex items-center gap-4">
-                  <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 shadow-sm group-hover:shadow-md transition-shadow">
+                <div className="flex items-center gap-4 flex-1">
+                  <div className="relative w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 shadow-md group-hover:shadow-lg transition-shadow">
                     <Image
                       src={category.image}
                       alt={category.name}
@@ -107,43 +107,48 @@ export function CategorySidebar({
                     />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-semibold text-white group-hover:text-yellow-primary transition-colors">
+                    <h3 className="text-base font-bold text-gray-100 group-hover:text-yellow-primary transition-colors mb-1">
                       {category.name}
                     </h3>
-                    <p className="text-xs text-yellow-primary font-medium">
+                    <p className="text-sm text-yellow-primary font-medium">
                       {category.products}
                     </p>
                   </div>
                 </div>
                 {category.subCategories ? (
                   isExpanded(index) ? (
-                    <ChevronDown className="h-5 w-5 text-gray-400 group-hover:text-yellow-primary transition-colors" />
+                    <ChevronDown className="h-5 w-5 text-white group-hover:text-yellow-primary transition-colors flex-shrink-0" />
                   ) : (
-                    <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-yellow-primary transition-colors" />
+                    <ChevronRight className="h-5 w-5 text-white group-hover:text-yellow-primary transition-colors flex-shrink-0" />
                   )
                 ) : (
-                  <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-yellow-primary transition-colors" />
+                  <ChevronRight className="h-5 w-5 text-white group-hover:text-yellow-primary transition-colors flex-shrink-0" />
                 )}
               </div>
 
               {category.subCategories && isExpanded(index) && (
                 <div className="border-t border-[#3A433F] bg-[#353D39]">
-                  <div className="p-2 space-y-1">
+                  <div className="p-3 space-y-2">
                     {category.subCategories.map((subCategory) => (
-                      <div
+                      <button
                         key={subCategory.name}
-                        className="group flex items-center gap-3 p-3 rounded-lg hover:bg-yellow-primary/20 transition-all duration-200 cursor-pointer"
+                        className="w-full group flex items-center gap-3 p-3 rounded-lg hover:bg-yellow-primary/20 transition-all duration-200 cursor-pointer active:scale-95"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          console.log(`Clicked: ${subCategory.name}`)
+                        }}
                       >
-                        <div className="w-2 h-2 bg-yellow-primary rounded-full flex-shrink-0"></div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-xs font-medium text-gray-300 group-hover:text-yellow-primary transition-colors">
+                        <div className="w-2 h-2 bg-yellow-primary rounded-full flex-shrink-0 group-hover:scale-125 transition-transform"></div>
+                        <div className="flex-1 min-w-0 text-left">
+                          <h4 className="text-sm font-semibold text-gray-200 group-hover:text-yellow-primary transition-colors mb-0.5">
                             {subCategory.name}
                           </h4>
                           <p className="text-xs text-yellow-primary font-medium">
                             {subCategory.products}
                           </p>
                         </div>
-                      </div>
+                        <ChevronRight className="h-4 w-4 text-white group-hover:text-yellow-primary transition-colors flex-shrink-0 opacity-0 group-hover:opacity-100" />
+                      </button>
                     ))}
                   </div>
                 </div>

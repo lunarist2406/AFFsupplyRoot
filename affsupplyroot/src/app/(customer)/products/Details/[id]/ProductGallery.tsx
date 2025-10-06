@@ -11,11 +11,7 @@ const productImages = [
   "/Gao-ST25.png"
 ]
 
-interface ProductGalleryProps {
-  productId: string
-}
-
-export function ProductGallery({ productId }: ProductGalleryProps) {
+export function ProductGallery() {
   const [selectedImage, setSelectedImage] = useState(0)
   const [isLiked, setIsLiked] = useState(false)
   
@@ -87,7 +83,7 @@ export function ProductGallery({ productId }: ProductGalleryProps) {
         </div>
       </div>
 
-      <div className="mt-6 p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl border border-amber-200/50 shadow-sm">
+      <div className="mt-6 p-4 rounded-2xl border border-amber-200/50 shadow-sm bg-gradient-to-r from-amber-50 to-orange-50">
         <div className="flex items-center justify-between">
           <div>
             <h4 className="text-amber-900 font-bold text-lg">Gạo ST25 Chính Hãng</h4>

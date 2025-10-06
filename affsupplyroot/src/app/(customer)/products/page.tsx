@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import { useState } from "react"
+import useAuth from "@/hooks/useAuth"
 import { 
   Search, 
   Filter, 
@@ -23,6 +24,8 @@ export default function ProductPage() {
   const [sortBy, setSortBy] = useState("name-asc")
   const [showSortDropdown, setShowSortDropdown] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const { state } = useAuth()
+  const { user, token } = state
 
   const sortOptions = [
     { value: "name-asc", label: "Tên A-Z" },
@@ -55,11 +58,11 @@ export default function ProductPage() {
       />
       
       <div style={{ 
-        background: 'linear-gradient(180deg, #353D39 100%, #7E8C7C 100%, #353D39 5%)',
+        background: 'linear-gradient(180deg, #353D39 100%, #4A5551 100%, #353D39 5%)',
         padding: '12px' 
       }} className="p-3 sm:p-4 lg:ml-72 flex-shrink-0 pt-3">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-5 gap-3">
-          <div className="flex items-center gap-2 text-xs sm:text-sm">
+          <div className="flex items-center gap-2 text-sm sm:text-base">
             <Button
               onClick={() => setIsMobileMenuOpen(true)}
               variant="ghost"
@@ -68,28 +71,30 @@ export default function ProductPage() {
             >
               <Menu className="h-5 w-5" />
             </Button>
-            <Link href="/" className="text-yellow-primary text-sm hover:text-yellow-secondary">Trang chủ</Link>
+            <Link href="/" className="text-yellow-primary text-base hover:text-yellow-secondary font-medium">Trang chủ</Link>
             <ChevronRight className="h-4 w-4 text-gray-400" />
-            <span className="text-yellow-primary text-sm">Lương thực</span>
+            <span className="text-yellow-primary text-base font-medium">Lương thực</span>
           </div>
           
-          <div className="flex items-center gap-1 sm:gap-2 border border-yellow-primary/30 rounded-lg p-1 sm:p-2">
-            <Button variant="ghost" size="icon" className="text-yellow-primary hover:bg-yellow-primary/10 h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10">
-              <ShoppingBag className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-yellow-primary" />
-            </Button>
-            <Button variant="ghost" size="icon" className="text-yellow-primary hover:bg-yellow-primary/10 h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10">
-              <Bell className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-yellow-primary" />
-            </Button>
-            <Button variant="ghost" size="icon" className="text-yellow-primary hover:bg-yellow-primary/10 h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10">
-              <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-yellow-primary" />
-            </Button>
-            <Button variant="ghost" size="icon" className="text-yellow-primary hover:bg-yellow-primary/10 h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10">
-              <Folder className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-yellow-primary" />
-            </Button>
-            <Button variant="ghost" size="icon" className="text-yellow-primary hover:bg-yellow-primary/10 h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10">
-              <User className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-yellow-primary" />
-            </Button>
-          </div>
+          {token && user && (
+            <div className="flex items-center gap-1 sm:gap-2">
+              <Button variant="ghost" size="icon" className="text-yellow-primary hover:bg-yellow-primary/10 h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10">
+                <ShoppingBag className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-yellow-primary" />
+              </Button>
+              <Button variant="ghost" size="icon" className="text-yellow-primary hover:bg-yellow-primary/10 h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10">
+                <Bell className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-yellow-primary" />
+              </Button>
+              <Button variant="ghost" size="icon" className="text-yellow-primary hover:bg-yellow-primary/10 h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10">
+                <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-yellow-primary" />
+              </Button>
+              <Button variant="ghost" size="icon" className="text-yellow-primary hover:bg-yellow-primary/10 h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10">
+                <Folder className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-yellow-primary" />
+              </Button>
+              <Button variant="ghost" size="icon" className="text-yellow-primary hover:bg-yellow-primary/10 h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10">
+                <User className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-yellow-primary" />
+              </Button>
+            </div>
+          )}
         </div>
         
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">

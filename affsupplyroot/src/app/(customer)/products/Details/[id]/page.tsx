@@ -12,8 +12,8 @@ import {
 } from "lucide-react"
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
+import useAuth from "@/hooks/useAuth"
 
-import 'antd/dist/reset.css'
 import { ProductGallery } from "./ProductGallery"
 import { ProductInfo } from "./ProductInfo"
 import { RelatedProducts } from "./RelatedProducts"
@@ -21,6 +21,8 @@ import { RelatedProducts } from "./RelatedProducts"
 export default function ProductDetailsPage() {
   const params = useParams()
   const productId = params.id
+  const { state } = useAuth()
+  const { user, token } = state
   const [product, setProduct] = useState<{
     id: string
     name: string
@@ -50,7 +52,7 @@ export default function ProductDetailsPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{
-        background: 'linear-gradient(135deg, #F5F1E8 0%, #E8DCC4 50%, #F5F1E8 100%)'
+        background: 'linear-gradient(135deg, #E8E2D5 0%, #D4C4A8 50%, #E8E2D5 100%)'
       }}>
         <div className="text-amber-800 text-lg font-semibold">Đang tải sản phẩm...</div>
       </div>
@@ -59,7 +61,7 @@ export default function ProductDetailsPage() {
 
   return (
     <div className="min-h-screen font-manuale" style={{
-      background: 'linear-gradient(135deg, #F5F1E8 0%, #E8DCC4 50%, #F5F1E8 100%)'
+      background: 'linear-gradient(135deg, #E8E2D5 0%, #D4C4A8 50%, #E8E2D5 100%)'
     }}>
       <div className="relative overflow-hidden bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 border-b border-amber-200/50 shadow-sm">
         <div className="container mx-auto px-4 py-4">
@@ -78,23 +80,25 @@ export default function ProductDetailsPage() {
               <span className="text-amber-800 font-semibold">{product?.name || 'Chi tiết'}</span>
             </div>
             
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon" className="text-amber-700 hover:text-green-700 hover:bg-amber-100 h-10 w-10 rounded-full">
-                <ShoppingBag className="h-5 w-5" />
-              </Button>
-              <Button variant="ghost" size="icon" className="text-amber-700 hover:text-green-700 hover:bg-amber-100 h-10 w-10 rounded-full">
-                <Bell className="h-5 w-5" />
-              </Button>
-              <Button variant="ghost" size="icon" className="text-amber-700 hover:text-green-700 hover:bg-amber-100 h-10 w-10 rounded-full">
-                <MessageCircle className="h-5 w-5" />
-              </Button>
-              <Button variant="ghost" size="icon" className="text-amber-700 hover:text-green-700 hover:bg-amber-100 h-10 w-10 rounded-full">
-                <Folder className="h-5 w-5" />
-              </Button>
-              <Button variant="ghost" size="icon" className="text-amber-700 hover:text-green-700 hover:bg-amber-100 h-10 w-10 rounded-full">
-                <User className="h-5 w-5" />
-              </Button>
-            </div>
+            {token && user && (
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="icon" className="text-amber-700 hover:text-green-700 hover:bg-amber-100 h-10 w-10 rounded-full">
+                  <ShoppingBag className="h-5 w-5" />
+                </Button>
+                <Button variant="ghost" size="icon" className="text-amber-700 hover:text-green-700 hover:bg-amber-100 h-10 w-10 rounded-full">
+                  <Bell className="h-5 w-5" />
+                </Button>
+                <Button variant="ghost" size="icon" className="text-amber-700 hover:text-green-700 hover:bg-amber-100 h-10 w-10 rounded-full">
+                  <MessageCircle className="h-5 w-5" />
+                </Button>
+                <Button variant="ghost" size="icon" className="text-amber-700 hover:text-green-700 hover:bg-amber-100 h-10 w-10 rounded-full">
+                  <Folder className="h-5 w-5" />
+                </Button>
+                <Button variant="ghost" size="icon" className="text-amber-700 hover:text-green-700 hover:bg-amber-100 h-10 w-10 rounded-full">
+                  <User className="h-5 w-5" />
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -103,7 +107,7 @@ export default function ProductDetailsPage() {
         <div className="container mx-auto px-3 py-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-12 lg:items-stretch">
             <div className="lg:col-span-5 flex">
-              <ProductGallery productId={Array.isArray(productId) ? productId[0] : productId || "1"} />
+              <ProductGallery />
             </div>
             
             <div className="lg:col-span-7">
