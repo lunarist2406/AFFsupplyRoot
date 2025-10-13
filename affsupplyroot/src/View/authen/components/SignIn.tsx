@@ -10,6 +10,8 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import useAuth from "@/hooks/useAuth";
 import { toast } from "sonner";
+import Cookies from "js-cookie"
+import { redirectMap } from "@/variable/menuHeader";
 
 const SignInSchema = Yup.object().shape({
   email: Yup.string().email("Email không hợp lệ").required("Email là bắt buộc"),
@@ -31,18 +33,41 @@ export default function SignIn({
     }
   }, [state.user, router]);
 
-    const handleSubmit = async (values: { email: string; password: string }) => {
-      try {
-        const res = await login(values.email, values.password);
-        console.log("login response:", res);
-        if (res?.data?.user) {
-          toast.success("Đăng nhập thành công!");
-          setTimeout(() => router.push("/"), 1000);
-        }
-      } catch (error: any) {
-        toast.error(error?.message || state.error || "Đăng nhập thất bại!");
-      }
-    };
+const handleSubmit = async (values: { email: string; password: string }) => {
+  try {
+    const res = await login(values.email, values.password);
+    console.log("login response:", res);
+
+    if (res?.data?.user && res?.data?.backendToken) {
+      const { backendToken, user } = res.data;
+
+      // ✅ Set cookies để middleware đọc được
+      Cookies.set("backendToken", backendToken.accessToken, {
+        expires: 1,
+        path: "/",
+      });
+
+      Cookies.set("role", user.roleID.toString(), {
+        expires: 1,
+        path: "/",
+      });
+
+      // ✅ Cập nhật context
+      setField("user", user);
+      setField("token", backendToken.accessToken);
+
+      toast.success("Đăng nhập thành công ");
+      const target = redirectMap[user.roleID] || "/";
+      setTimeout(() => router.push(target), 1000);
+    } else {
+      toast.error(res?.data?.message || "Không lấy được thông tin người dùng!");
+    }
+  } catch (error: any) {
+    toast.error(error?.message || state.error || "Đăng nhập thất bại 😢");
+    console.error("Login error:", error);
+  }
+};
+
 
   return (
     <motion.div
