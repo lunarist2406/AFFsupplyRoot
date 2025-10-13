@@ -2,71 +2,105 @@
 
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Star, ShoppingCart, Package } from "lucide-react"
-
-const allProducts = Array.from({ length: 15 }, (_, i) => ({
-  id: i + 1,
-  name: `Gạo ST - 25 ${i + 1}`,
-  price: 45000 + (i * 5000),
-  originalPrice: 55000 + (i * 5000),
-  stock: 40 + (i * 2),
-  sold: 1247 + (i * 100),
-  rating: 5.0
-}))
+import { useState, useEffect } from "react"
+import { getProductsByCategoryGlobal } from "@/services/product"
+import { ProductByCategoryGlobal } from "@/types/product"
 
 interface ProductContentProps {
   searchTerm?: string
   sortBy?: string
+  selectedCategoryId?: number | null
+  selectedSubCategoryId?: number | null
+  currentCategorySlug?: string
 }
 
-export function ProductContent({ searchTerm = "", sortBy = "name-asc" }: ProductContentProps) {
+export function ProductContent({ searchTerm = "", sortBy = "name-asc", selectedCategoryId = null, selectedSubCategoryId = null, currentCategorySlug = "" }: ProductContentProps) {
   const router = useRouter()
-  
-  // Filter và sort products
-  let filteredProducts = allProducts
+  const [allProducts, setAllProducts] = useState<ProductByCategoryGlobal[]>([])
+  const [loading, setLoading] = useState(false)
 
-  // Search filter
-  if (searchTerm) {
+  useEffect(() => {
+    const fetchProducts = async () => {
+      if (!selectedCategoryId) {
+        return
+      }
+      
+      setLoading(true)
+      try {
+        const response = await getProductsByCategoryGlobal(selectedCategoryId, 1, 30, searchTerm)
+        setAllProducts(response.data.products)
+      } catch (error) {
+        console.error("Không thể tải sản phẩm:", error)
+        setAllProducts([])
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    fetchProducts()
+  }, [selectedCategoryId, searchTerm])
+
+  let filteredProducts = [...allProducts]
+
+  if (selectedSubCategoryId) {
     filteredProducts = filteredProducts.filter(product => 
-      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      product.id === selectedSubCategoryId
     )
   }
 
   // Sort products
   switch(sortBy) {
     case "name-asc":
-      filteredProducts = filteredProducts.sort((a, b) => a.name.localeCompare(b.name))
+      filteredProducts = filteredProducts.sort((a, b) => a.title.localeCompare(b.title))
       break
     case "name-desc":
-      filteredProducts = filteredProducts.sort((a, b) => b.name.localeCompare(a.name))
+      filteredProducts = filteredProducts.sort((a, b) => b.title.localeCompare(a.title))
       break
     case "price-asc":
-      filteredProducts = filteredProducts.sort((a, b) => a.price - b.price)
+      filteredProducts = filteredProducts.sort((a, b) => a.basePrice - b.basePrice)
       break
     case "price-desc":
-      filteredProducts = filteredProducts.sort((a, b) => b.price - a.price)
+      filteredProducts = filteredProducts.sort((a, b) => b.basePrice - a.basePrice)
       break
-    case "rating-desc":
-      filteredProducts = filteredProducts.sort((a, b) => b.rating - a.rating)
-      break
-    case "sold-desc":
-      filteredProducts = filteredProducts.sort((a, b) => b.sold - a.sold)
-      break
+
   }
 
   const products = filteredProducts
 
-  const handleCardClick = (productId: number) => {
-    router.push(`/products/details/${productId}`)
+  const handleCardClick = (product: ProductByCategoryGlobal) => {
+    if (currentCategorySlug) {
+      router.push(`/products/${currentCategorySlug}/${product.slug}`)
+    } else {
+      router.push(`/products/${product.slug}`)
+    }
+  }
+  
+  const getProductImage = (product: ProductByCategoryGlobal) => {
+    if (product.ProductImage.length > 0) {
+      return product.ProductImage[0].url
+    }
+    return "/Gao-ST25.png"
   }
   return (
-    <div className="flex-1 p-4 pt-0 min-h-full" style={{ 
+    <div className="w-full p-4 pt-0 min-h-full" style={{ 
       background: 'linear-gradient(180deg, #353D39 100%, #7E8C7C 100%, #353D39 5%)',
     }}>
-      {products.length === 0 ? (
+      {loading ? (
+        <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
+          <div className="bg-white/10 rounded-full p-6 mb-6 animate-pulse">
+            <Package className="h-16 w-16 text-yellow-primary" />
+          </div>
+          <h3 className="text-xl font-semibold text-white mb-3">
+            Đang tải sản phẩm...
+          </h3>
+          <p className="text-gray-300 mb-6 max-w-md">
+            Vui lòng chờ trong giây lát.
+          </p>
+        </div>
+      ) : products.length === 0 ? (
         <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
           <div className="bg-white/10 rounded-full p-6 mb-6">
             <Package className="h-16 w-16 text-yellow-primary" />
@@ -82,18 +116,18 @@ export function ProductContent({ searchTerm = "", sortBy = "name-asc" }: Product
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
           {products.map((product) => (
           <Card key={product.id} 
                 className="bg-[#353D39] hover:bg-[#404A46] transition-all duration-300 border-[#4A5551] shadow-lg hover:shadow-xl cursor-pointer" 
                 style={{gap:'0', padding: '0'}}
-                onClick={() => handleCardClick(product.id)}>
+                onClick={() => handleCardClick(product)}>
             <CardContent className="p-0">
               <div className="relative">
                 <div className="h-32 bg-[#FBF8EF] rounded-lg overflow-hidden shadow-inner">
                   <Image 
-                    src="/Gao-ST25.png" 
-                    alt={product.name}
+                    src={getProductImage(product)} 
+                    alt={product.title}
                     width={128}
                     height={128}
                     className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-300"
@@ -102,20 +136,23 @@ export function ProductContent({ searchTerm = "", sortBy = "name-asc" }: Product
               </div>
               
               <div className="p-2" >
-                <h3 className="font-semibold text-white text-sm mb-2">{product.name}</h3>
+                <h3 className="font-semibold text-white text-sm mb-2 line-clamp-2">{product.title}</h3>
                 
                 <div className="mb-2">
                   <span className="text-sm font-bold text-yellow-primary">
-                    Giá: {product.price.toLocaleString('vi-VN')} VND
-                  </span>
-                  <span className="text-xs text-gray-400 line-through ml-1">
-                    {product.originalPrice.toLocaleString('vi-VN')} vnd
+                    Giá: {product.basePrice.toLocaleString('vi-VN')} VND
                   </span>
                 </div>
                 
-                <div className="text-xs text-gray-300 mb-3">
+                <div className="text-xs text-gray-300 mb-1">
                   Số lượng còn lại: {product.stock}
                 </div>
+                
+                {product.SellerProfile && (
+                  <div className="text-xs text-gray-400 line-clamp-1">
+                    {product.SellerProfile.brandName}
+                  </div>
+                )}
               </div>
             </CardContent>
             
@@ -139,29 +176,14 @@ export function ProductContent({ searchTerm = "", sortBy = "name-asc" }: Product
             <div className="px-4 pb-4 flex justify-between items-center">
               <div className="flex items-center gap-1">
                 <Star className="h-3 w-3 fill-yellow-primary text-yellow-primary" />
-                <span className="text-xs font-medium text-gray-300">{product.rating}</span>
+                <span className="text-xs font-medium text-gray-300">5.0</span>
               </div>
               <div className="text-xs text-gray-300">
-                Đã bán: {product.sold}
+                Sản phẩm mới
               </div>
             </div>
           </Card>
           ))}
-        </div>
-      )}
-      
-      {products.length > 0 && (
-        <div className="mt-12 pt-6 border-t border-white/20">
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-white/80 text-sm gap-4">
-            <p className="text-xs text-green-secondary text-center sm:text-left">
-              © 2025 AFF supplyRoot. Tất cả các quyền được bảo lưu.
-            </p>
-            <div className="flex gap-4 sm:gap-6 justify-center sm:justify-end">
-              <Link href="/terms" className="text-yellow-primary text-xs sm:text-sm hover:text-yellow-secondary">Điều khoản</Link>
-              <Link href="/privacy" className="text-yellow-primary text-xs sm:text-sm hover:text-yellow-secondary">Quyền riêng tư</Link>
-              <Link href="/cookies" className="text-yellow-primary text-xs sm:text-sm hover:text-yellow-secondary">Cookies</Link>
-            </div>
-          </div>
         </div>
       )}
     </div>

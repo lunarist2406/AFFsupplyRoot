@@ -1,71 +1,94 @@
 "use client"
-import Image, { StaticImageData } from "next/image"
-import { useState } from "react"
-import { categories } from "@/View/home/variable"
-import { ChevronRight, ChevronDown, X } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
+import { useState, useEffect } from "react"
+import { ChevronRight, ChevronDown, X, Grid3X3 } from "lucide-react"
+import { getCategories, getProductsByCategoryGlobal } from "@/services/product"
+import { Category } from "@/types/product"
 
-interface CategoryWithSub {
+interface SubCategory {
+  id: number
   name: string
-  description: string
-  image: StaticImageData
-  products: string
-  subCategories?: { name: string; products: string }[]
+  slug: string
+  productCount: number
 }
-
-const categoriesWithSub: CategoryWithSub[] = [
-  {
-    ...categories[0],
-    subCategories: [
-      { name: "Gạo tẻ", products: "45 sản phẩm" },
-      { name: "Gạo nếp", products: "32 sản phẩm" },
-      { name: "Lúa mì", products: "28 sản phẩm" },
-      { name: "Ngô", products: "15 sản phẩm" }
-    ]
-  },
-  {
-    ...categories[1],
-    subCategories: [
-      { name: "Rau xanh", products: "180 sản phẩm" },
-      { name: "Củ quả", products: "150 sản phẩm" },
-      { name: "Trái cây", products: "120 sản phẩm" }
-    ]
-  },
-  ...categories.slice(2) 
-]
 
 interface CategorySidebarProps {
   isMobileMenuOpen?: boolean
-  setIsMobileMenuOpen?: (open: boolean) => void
+  setIsMobileMenuOpenAction?: (open: boolean) => void
+  selectedCategoryId?: number | null
+  selectedSubCategoryId?: number | null
+  onCategorySelectAction?: (categoryId: number | null, subCategoryId?: number | null) => void
 }
 
 export function CategorySidebar({ 
   isMobileMenuOpen = false, 
-  setIsMobileMenuOpen = () => {} 
+  setIsMobileMenuOpenAction = () => {},
+  selectedCategoryId = null,
+  selectedSubCategoryId = null,
+  onCategorySelectAction = () => {}
 }: CategorySidebarProps = {}) {
+  const [categories, setCategories] = useState<Category[]>([])
+  const [subCategories, setSubCategories] = useState<{[key: number]: SubCategory[]}>({})
   const [expandedCategories, setExpandedCategories] = useState<number[]>([])
 
-  const toggleCategory = (categoryIndex: number) => {
+  useEffect(() => {
+    fetchCategories()
+  }, [])  
+
+  const fetchCategories = async () => {
+    try {
+      const response = await getCategories(1, 10)
+      setCategories(response.data.items)
+      
+      const subCategoriesMap: {[key: number]: SubCategory[]} = {}
+      for (const category of response.data.items) {
+        try {
+          const productsResponse = await getProductsByCategoryGlobal(category.id, 1, 50)
+          const subCats = productsResponse.data.products.map(product => ({
+            id: product.id,
+            name: product.title,
+            slug: product.slug,
+            productCount: 1
+          }))
+          subCategoriesMap[category.id] = subCats
+        } catch (error) {
+          console.error(`Không thể tải danh mục con cho ${category.name}:`, error)
+          subCategoriesMap[category.id] = []
+        }
+      }
+      setSubCategories(subCategoriesMap)
+    } catch (error) {
+      console.error("Không thể tải danh mục:", error)
+    }
+  }
+
+  const handleCategoryClick = (categoryId: number, subCategoryId?: number) => {
+    onCategorySelectAction(categoryId, subCategoryId)
+  }
+
+  const toggleSubCategory = (categoryId: number) => {
     setExpandedCategories(prev => 
-      prev.includes(categoryIndex) 
-        ? prev.filter(index => index !== categoryIndex)
-        : [...prev, categoryIndex]
+      prev.includes(categoryId) 
+        ? prev.filter(id => id !== categoryId)
+        : [...prev, categoryId]
     )
   }
 
-  const isExpanded = (categoryIndex: number) => expandedCategories.includes(categoryIndex)
+  const isExpanded = (categoryId: number) => expandedCategories.includes(categoryId)
 
   return (
     <>
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-45 lg:hidden"
-          onClick={() => setIsMobileMenuOpen(false)}
+          className="inset-0 bg-black/50 z-45 lg:hidden"
+          onClick={() => setIsMobileMenuOpenAction(false)}
         />
       )}
 
       <div 
-        className={`fixed left-0 top-0 h-screen w-64 sm:w-72 shadow-xl z-50 overflow-y-auto transition-transform duration-300 
-          ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:block custom-scrollbar`}
+        className={`w-64 sm:w-72 shadow-xl overflow-y-auto transition-transform duration-300 
+          ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:block custom-scrollbar h-full`}
         style={{ 
           background: 'linear-gradient(180deg, #2A332F 0%, #4A5551 50%, #2A332F 100%)'
         }}
@@ -73,17 +96,11 @@ export function CategorySidebar({
       <div className="p-3">
         <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#3A433F]">
           <div className="flex items-center gap-3">
-            <Image
-              src="/logo.png"
-              alt="Logo"
-              width={32}
-              height={32}
-              className="object-contain"
-            />
+            <Grid3X3 className="h-8 w-8 text-yellow-primary" />
             <h2 className="text-2xl font-bold text-yellow-primary whitespace-nowrap">Danh Mục Nông Sản</h2>
           </div>
           <button
-            onClick={() => setIsMobileMenuOpen(false)}
+            onClick={() => setIsMobileMenuOpenAction(false)}
             className="lg:hidden text-white hover:text-yellow-primary"
           >
             <X className="h-6 w-6 text-white" />
@@ -91,71 +108,84 @@ export function CategorySidebar({
         </div>
         
         <div className="space-y-3">
-          {categoriesWithSub.map((category, index) => (
-            <div key={index} className="bg-[#2A332F] rounded-xl border border-[#3A433F] overflow-hidden hover:shadow-lg transition-all duration-300 hover:bg-[#353D39]">
-              <div
-                onClick={() => category.subCategories ? toggleCategory(index) : undefined}
-                className="group flex items-center justify-between p-4 hover:bg-yellow-primary/10 transition-all duration-200 cursor-pointer"
+            {categories.map((category) => (
+              <div 
+                key={category.id} 
+                className={`bg-[#2A332F] rounded-xl border overflow-hidden hover:shadow-lg transition-all duration-300
+                  ${selectedCategoryId === category.id ? 'border-yellow-primary bg-[#353D39]' : 'border-[#3A433F] hover:bg-[#353D39]'}`}
               >
-                <div className="flex items-center gap-4 flex-1">
-                  <div className="relative w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 shadow-md group-hover:shadow-lg transition-shadow">
-                    <Image
-                      src={category.image}
-                      alt={category.name}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-300"
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-base font-bold text-gray-100 group-hover:text-yellow-primary transition-colors mb-1">
-                      {category.name}
-                    </h3>
-                    <p className="text-sm text-yellow-primary font-medium">
-                      {category.products}
-                    </p>
-                  </div>
-                </div>
-                {category.subCategories ? (
-                  isExpanded(index) ? (
-                    <ChevronDown className="h-5 w-5 text-white group-hover:text-yellow-primary transition-colors flex-shrink-0" />
+                <div
+                  onClick={() => toggleSubCategory(category.id)}
+                  className="group flex items-center justify-between p-4 hover:bg-yellow-primary/10 transition-all duration-200 cursor-pointer"
+                >
+                      <div className="flex items-center gap-4 flex-1">
+                        <div className="relative w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 shadow-md group-hover:shadow-lg transition-shadow">
+                            <Image
+                              src={category.image}
+                              alt={category.name}
+                              fill
+                              className="object-cover group-hover:scale-110 transition-transform duration-300"
+                              loading="lazy"
+                              priority={false}
+                            />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className={`text-base font-bold transition-colors mb-1
+                            ${selectedCategoryId === category.id ? 'text-yellow-primary' : 'text-gray-100 group-hover:text-yellow-primary'}`}>
+                            {category.name}
+                          </h3>
+                        </div>
+                      </div>
+                  {isExpanded(category.id) ? (
+                    <ChevronDown className="h-5 w-5 text-yellow-primary transition-colors flex-shrink-0" />
                   ) : (
                     <ChevronRight className="h-5 w-5 text-white group-hover:text-yellow-primary transition-colors flex-shrink-0" />
-                  )
-                ) : (
-                  <ChevronRight className="h-5 w-5 text-white group-hover:text-yellow-primary transition-colors flex-shrink-0" />
+                  )}
+                </div>
+
+                {/* Sub Categories */}
+                {isExpanded(category.id) && (
+                  <div className="border-t border-[#3A433F] bg-[#353D39]">
+                    <div className="p-3 space-y-2">
+                      {!subCategories[category.id] ? (
+                        <div className="flex items-center justify-center py-4">
+                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-yellow-primary"></div>
+                          <span className="ml-2 text-sm text-gray-300">Đang tải...</span>
+                        </div>
+                      ) : subCategories[category.id].length === 0 ? (
+                        <div className="text-center py-4">
+                          <span className="text-sm text-gray-400">Chưa có sản phẩm</span>
+                        </div>
+                      ) : (
+                        subCategories[category.id].map((subCategory, index) => (
+                        <Link
+                          key={index}
+                          href={`/products/${subCategory.slug}`}
+                          className={`w-full group flex items-center gap-3 p-3 rounded-lg hover:bg-yellow-primary/20 transition-all duration-200 cursor-pointer active:scale-95
+                            ${selectedSubCategoryId === subCategory.id ? 'bg-yellow-primary/30 border border-yellow-primary' : ''}`}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleCategoryClick(category.id, subCategory.id)
+                          }}
+                        >
+                          <div className="w-2 h-2 bg-yellow-primary rounded-full flex-shrink-0 group-hover:scale-125 transition-transform"></div>
+                          <div className="flex-1 min-w-0 text-left">
+                            <h4 className="text-sm font-semibold text-gray-200 group-hover:text-yellow-primary transition-colors mb-0.5">
+                              {subCategory.name}
+                            </h4>
+                            <p className="text-xs text-yellow-primary font-medium">
+                              {subCategory.productCount} sản phẩm
+                            </p>
+                          </div>
+                        </Link>
+                        ))
+                      )}
+                    </div>
+                  </div>
                 )}
               </div>
-
-              {category.subCategories && isExpanded(index) && (
-                <div className="border-t border-[#3A433F] bg-[#353D39]">
-                  <div className="p-3 space-y-2">
-                    {category.subCategories.map((subCategory) => (
-                      <button
-                        key={subCategory.name}
-                        className="w-full group flex items-center gap-3 p-3 rounded-lg hover:bg-yellow-primary/20 transition-all duration-200 cursor-pointer active:scale-95"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          console.log(`Clicked: ${subCategory.name}`)
-                        }}
-                      >
-                        <div className="w-2 h-2 bg-yellow-primary rounded-full flex-shrink-0 group-hover:scale-125 transition-transform"></div>
-                        <div className="flex-1 min-w-0 text-left">
-                          <h4 className="text-sm font-semibold text-gray-200 group-hover:text-yellow-primary transition-colors mb-0.5">
-                            {subCategory.name}
-                          </h4>
-                          <p className="text-xs text-yellow-primary font-medium">
-                            {subCategory.products}
-                          </p>
-                        </div>
-                        <ChevronRight className="h-4 w-4 text-white group-hover:text-yellow-primary transition-colors flex-shrink-0 opacity-0 group-hover:opacity-100" />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
       </div>
     </div>
     </>
