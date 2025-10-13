@@ -1,15 +1,37 @@
 import { FaUser, FaBox, FaSignOutAlt, FaTachometerAlt, FaUsers, FaChartBar, FaComments, FaWarehouse, FaShoppingCart, FaCreditCard, FaDollarSign, FaStore, FaChartLine, FaTruck, FaTv, FaShieldAlt } from "react-icons/fa"
 
+
+export const roleMap: Record<number, string> = {
+  1: "admin",
+  2: "manager",
+  3: "staff",
+  4: "seller",
+  5: "shopstaff",
+  6: "customer",
+}
+
+export const roleAccessMap = [
+  { path: "/admin", roles: [1] }, 
+  { path: "/profile", roles: [4] },
+]
+export const redirectMap: Record<number, string> = {
+        1: "/admin",
+        2: "/manager",
+        3: "/staff",
+        4: "/",
+        5: "/",
+        6: "/", // user bình thường
+};
 export const roleMenus: Record<
   string,
   { label: string; href?: string; icon: React.ReactNode }[]
 > = {
-  customer: [
+  6: [
     { label: "Profile", href: "/profile", icon: <FaUser className="text-yellow-secondary w-4 h-4" /> },
     { label: "Orders", href: "/orders", icon: <FaBox className="text-yellow-secondary w-4 h-4" /> },
     { label: "Đăng xuất",href: "/", icon: <FaSignOutAlt className="text-yellow-secondary w-4 h-4" /> },
   ],
-supply : [
+  4 : [
   { label: "Cửa hàng", href: "/profile", icon: <FaStore className="text-yellow-secondary w-4 h-4" /> },
 
   { label: "Livestream", href: "/livestream", icon: <FaTv className="text-yellow-secondary w-4 h-4" /> },
@@ -24,13 +46,13 @@ supply : [
   { label: "Vận chuyển", href: "/shipping", icon: <FaTruck className="text-yellow-secondary w-4 h-4" /> },
   { label: "Đăng xuất", href: "/", icon: <FaSignOutAlt className="text-yellow-secondary w-4 h-4" /> },
 ],
-  admin: [
+  1: [
     { label: "Dashboard", href: "/admin", icon: <FaTachometerAlt className="text-yellow-secondary w-4 h-4" /> },
     { label: "Quản lý người dùng", href: "/admin/users", icon: <FaUsers className="text-yellow-secondary w-4 h-4" /> },
     { label: "Quản lý phân quyền", href: "/admin/permissions", icon: <FaShieldAlt className="text-yellow-secondary w-4 h-4" /> },
     {  label: "Đăng xuất",href: "/", icon: <FaSignOutAlt className="text-yellow-secondary w-4 h-4" /> },
   ],
-  staff: [
+  3: [
     { label: "Dashboard", href: "/staff", icon: <FaTachometerAlt className="text-yellow-secondary w-4 h-4" /> },
     {  label: "Đăng xuất",href: "/",  icon: <FaSignOutAlt className="text-yellow-secondary w-4 h-4" /> },
   ],

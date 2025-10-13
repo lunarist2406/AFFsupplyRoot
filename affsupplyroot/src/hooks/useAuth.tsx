@@ -1,6 +1,7 @@
 "use client";
 import { useReducer, useEffect } from "react";
 import api from "@/lib/Axios/axios";
+import { roleMap } from "@/variable/menuHeader";
 
 interface User {
   id: number;
@@ -53,10 +54,14 @@ function reducer(state: AuthState, action: Action): AuthState {
     case "START":
       return { ...state, loading: true, error: null };
     case "SUCCESS":
+      const userWithRoleName = {
+        ...action.payload.data.user,
+        roleName: roleMap[action.payload.data.user.roleID],
+      };
       return {
         ...state,
         loading: false,
-        user: action.payload.data.user,
+        user: userWithRoleName,
         roleId: action.payload.data.user.roleID,
         token: action.payload.data.backendToken.accessToken,
         refreshToken: action.payload.data.backendToken.refreshToken,

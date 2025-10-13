@@ -1,19 +1,7 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
+import { roleAccessMap, roleMap } from "./variable/menuHeader"
 
-const roleMap: Record<number, string> = {
-  1: "admin",
-  2: "manager",
-  3: "staff",
-  4: "seller",
-  5: "shopstaff",
-  6: "user",
-}
-
-const roleAccessMap = [
-  { path: "/admin", roles: [1] }, 
-  { path: "/profile", roles: [4] }, 
-]
 
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
