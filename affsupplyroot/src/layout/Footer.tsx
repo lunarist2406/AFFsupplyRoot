@@ -11,11 +11,9 @@ import { socialLinks } from "@/variable/SocialLinks"
 export default function Footer() {
   return (
     <footer className="w-full bg-gradient-to-r from-green-950 via-gray-600 to-green-950 text-white font-manuale">
-      {/* Container để giới hạn width + padding responsive */}
       <div className="container mx-auto px-6 sm:px-10 lg:px-2 py-8 sm:py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-12">
           
-          {/* Cột trái: Logo + mô tả + mạng xã hội */}
           <motion.div
             initial={{ x: -40, opacity: 0 }}
             whileInView={{ x: 0, opacity: 1 }}
