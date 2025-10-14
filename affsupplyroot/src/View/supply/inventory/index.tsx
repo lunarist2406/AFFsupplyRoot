@@ -36,6 +36,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Progress } from "@/components/ui/progress"
 import { categories, products, recentActivities, stats } from "./variable/inventory"
+import CategoryCard from "./components/CategoryCard"
 
 export default function InventoryView() {
   const [selectedCategory, setSelectedCategory] = useState("all")
@@ -207,29 +208,7 @@ export default function InventoryView() {
         <div className="grid lg:grid-cols-4 gap-6">
           {/* Sidebar - Categories */}
           <div className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Danh mục sản phẩm</CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="space-y-1">
-                  {categories.map((category) => (
-                    <button
-                      key={category.id}
-                      onClick={() => setSelectedCategory(category.id)}
-                      className={`w-full flex items-center justify-between px-4 py-3 text-left hover:bg-gray-50 transition-colors ${
-                        selectedCategory === category.id ? "bg-green-50 border-r-2 border-green-500" : ""
-                      }`}
-                    >
-                      <span className="font-medium">{category.name}</span>
-                      <Badge variant="secondary" className="text-xs">
-                        {category.count}
-                      </Badge>
-                    </button>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            <CategoryCard />
 
             {/* Recent Activities */}
             <Card>

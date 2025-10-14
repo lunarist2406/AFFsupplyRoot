@@ -8,12 +8,11 @@ const api = axios.create({
   },
 });
 
-// Add interceptor để tự động attach token nếu có
 api.interceptors.request.use(
   (config) => {
     const user = localStorage.getItem("user");
     if (user) {
-      const token = JSON.parse(user).token; // nếu sau này backend có trả token
+      const token = JSON.parse(user).token; 
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
