@@ -2,7 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL:process.env.NEXT_PUBLIC_API_URL,
-  timeout: 3000, // timeout 5s
+  timeout: 10000, // timeout 15s
   headers: {
     "Content-Type": "application/json",
   },
@@ -11,9 +11,10 @@ const api = axios.create({
 // Add interceptor để tự động attach token nếu có
 api.interceptors.request.use(
   (config) => {
-    const user = localStorage.getItem("user");
-    if (user) {
-      const token = JSON.parse(user).token; // nếu sau này backend có trả token
+    const authUser = localStorage.getItem("authUser");
+    if (authUser) {
+      const userData = JSON.parse(authUser);
+      const token = userData.data?.backendToken?.accessToken;
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }

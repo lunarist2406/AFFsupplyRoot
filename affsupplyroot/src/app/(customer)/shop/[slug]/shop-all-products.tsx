@@ -111,8 +111,8 @@ export default function ShopAllProducts({ shopSlug }: { shopSlug: string }) {
                   </CardContent>
                 </Link>
                 <CardFooter className="p-4 pt-0">
-                  <Button className="w-full bg-yellow-primary hover:bg-yellow-secondary text-black text-sm font-medium" onClick={(e) => { e.preventDefault() }}>
-                    <ShoppingCart className="h-4 w-4 mr-2" /> Thêm vào giỏ
+                  <Button className="w-full bg-yellow-primary hover:bg-yellow-secondary text-black text-sm font-medium cursor-pointer" onClick={(e) => { e.preventDefault() }}>
+                    <ShoppingCart className="h-4 w-4 mr-2 " /> Thêm vào giỏ
                   </Button>
                 </CardFooter>
               </Card>

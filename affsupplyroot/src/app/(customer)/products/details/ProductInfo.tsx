@@ -1,7 +1,6 @@
 "use client"
 
-import { useState } from "react"
-// import { Button } from "@/components/ui/button"
+import { useState, memo } from "react"
 import { ProductDetail } from "@/types/product"
 import { motion } from "framer-motion"
 import {
@@ -17,7 +16,7 @@ interface ProductInfoProps {
   product: ProductDetail
 }
 
-export function ProductInfo({ product }: ProductInfoProps) {
+export const ProductInfo = memo(function ProductInfo({ product }: ProductInfoProps) {
   const [quantity, setQuantity] = useState(product.minOrderQty || 1)
   const [isLiked, setIsLiked] = useState(false)
 
@@ -38,7 +37,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => setIsLiked(!isLiked)}
-              className={`p-2 rounded-full transition-all ${
+              className={`p-2 rounded-full transition-all cursor-pointer ${
                 isLiked ? 'bg-red-100 text-red-500' : 'bg-gray-100 text-gray-600 hover:text-red-500'
               }`}
             >
@@ -47,7 +46,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
             <motion.button 
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              className="p-2 rounded-full bg-gray-100 text-gray-600 hover:text-blue-600 transition-all"
+              className="p-2 rounded-full bg-gray-100 text-gray-600 hover:text-blue-600 transition-all cursor-pointer"
             >
               <FaShare className="h-5 w-5" />
             </motion.button>
@@ -131,7 +130,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => setQuantity(Math.max(product.minOrderQty || 1, quantity - 1))}
-              className="px-4 py-2 hover:bg-gray-100 transition"
+              className="px-4 py-2 hover:bg-gray-100 transition cursor-pointer"
               disabled={quantity <= (product.minOrderQty || 1)}
             >
               <FaMinus className="h-3 w-3 text-gray-600" />
@@ -157,7 +156,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => setQuantity(quantity + 1)}
-              className="px-4 py-2 hover:bg-gray-100 transition"
+              className="px-4 py-2 hover:bg-gray-100 transition cursor-pointer"
             >
               <FaPlus className="h-3 w-3 text-gray-600" />
             </motion.button>
@@ -169,20 +168,20 @@ export function ProductInfo({ product }: ProductInfoProps) {
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="flex-1 bg-orange-50 text-orange-600 border-2 border-orange-500 font-bold py-4 rounded-lg hover:bg-orange-100 transition-all flex items-center justify-center gap-2"
+          className="flex-1 bg-orange-50 text-orange-600 border-2 border-orange-500 font-bold py-4 rounded-lg hover:bg-orange-100 transition-all flex items-center justify-center gap-2 cursor-pointer"
         >
-          <FaCartShopping className="h-5 w-5" />
+          <FaCartShopping className="h-5 w-5 cursor-pointer" />
           Thêm vào giỏ hàng
         </motion.button>
         
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="flex-1 bg-orange-500 text-white font-bold py-4 rounded-lg hover:bg-orange-600 transition-all shadow-lg"
+          className="flex-1 bg-orange-500 text-white font-bold py-4 rounded-lg hover:bg-orange-600 transition-all shadow-lg cursor-pointer"
         >
           Mua ngay
         </motion.button>
       </div>
     </motion.div>
   )
-}
+})

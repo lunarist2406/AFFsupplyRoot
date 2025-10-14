@@ -61,7 +61,7 @@ export default function ChangePasswordPage() {
 
     try {
       await changePassword(userId, { 
-        currentPassword,
+        oldPassword: currentPassword,
         newPassword 
       })
       

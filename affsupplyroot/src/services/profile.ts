@@ -134,7 +134,7 @@ export const resetPassword = async (payload: ResetPasswordPayload) => {
 }
 
 export interface ChangePasswordPayload {
-  currentPassword: string
+  oldPassword: string
   newPassword: string
 }
 

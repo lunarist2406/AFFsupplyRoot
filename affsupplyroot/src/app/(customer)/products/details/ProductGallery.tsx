@@ -51,7 +51,6 @@ export function ProductGallery({ product }: ProductGalleryProps) {
           </Carousel>
         </div>
 
-        {/* Thumbnails một hàng */}
         <div className="flex gap-2 overflow-x-auto no-scrollbar">
           {images.map((url, idx) => (
             <button
@@ -61,7 +60,7 @@ export function ProductGallery({ product }: ProductGalleryProps) {
                 setSelected(idx)
                 carouselRef.current?.goTo(idx, true)
               }}
-              className={`relative rounded-lg overflow-hidden border-2 flex-shrink-0 ${
+              className={`relative rounded-lg overflow-hidden border-2 flex-shrink-0 cursor-pointer ${
                 selected === idx ? 'border-orange-500' : 'border-gray-200 hover:border-gray-300'
               }`}
               style={{ width: 88, height: 88 }}

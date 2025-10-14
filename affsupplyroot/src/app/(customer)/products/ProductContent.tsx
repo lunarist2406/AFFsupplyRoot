@@ -85,30 +85,46 @@ export function ProductContent({ searchTerm = "", sortBy = "name-asc", selectedC
     return "/Gao-ST25.png"
   }
   return (
-    <div className="w-full p-4 pt-0 min-h-full" style={{ 
-      background: 'linear-gradient(180deg, #353D39 100%, #7E8C7C 100%, #353D39 5%)',
-    }}>
+      <div className="w-full p-4 sm:p-6 min-h-full bg-gradient-to-b from-green-50 via-white to-green-50">
+        {/* Header Section */}
+        <div className="mb-6">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4 gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center shadow-md">
+                <Package className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl lg:text-2xl font-extrabold bg-gradient-to-r from-green-700 to-emerald-500 bg-clip-text text-transparent">
+                  Nông sản tươi ngon
+                </h1>
+                <p className="text-xs lg:text-sm text-gray-600 font-medium">Sản phẩm chất lượng cao</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
       {loading ? (
         <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
-          <div className="bg-white/10 rounded-full p-6 mb-6 animate-pulse">
-            <Package className="h-16 w-16 text-yellow-primary" />
+          <div className="bg-gray-100 rounded-full p-6 mb-6 animate-pulse">
+            <Package className="h-16 w-16 text-green-500" />
           </div>
-          <h3 className="text-xl font-semibold text-white mb-3">
+          <h3 className="text-xl font-semibold text-gray-800 mb-3">
             Đang tải sản phẩm...
           </h3>
-          <p className="text-gray-300 mb-6 max-w-md">
+          <p className="text-gray-500 mb-6 max-w-md">
             Vui lòng chờ trong giây lát.
           </p>
         </div>
       ) : products.length === 0 ? (
         <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
-          <div className="bg-white/10 rounded-full p-6 mb-6">
-            <Package className="h-16 w-16 text-yellow-primary" />
+          <div className="bg-gray-100 rounded-full p-6 mb-6">
+            <Package className="h-16 w-16 text-green-500" />
           </div>
-          <h3 className="text-xl font-semibold text-white mb-3">
+          <h3 className="text-xl font-semibold text-gray-800 mb-3">
             Không tìm thấy sản phẩm nào
           </h3>
-          <p className="text-gray-300 mb-6 max-w-md">
+          <p className="text-gray-500 mb-6 max-w-md">
             {searchTerm 
               ? `Không tìm thấy sản phẩm nào phù hợp với từ khóa "${searchTerm}". Hãy thử tìm kiếm với từ khóa khác.`
               : "Hiện tại chưa có sản phẩm nào trong danh mục này."
@@ -116,74 +132,81 @@ export function ProductContent({ searchTerm = "", sortBy = "name-asc", selectedC
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
-          {products.map((product) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+          {products.map((product) => {
+            const hasTier = Array.isArray(product.PricingTier) && product.PricingTier.length > 0
+            const minTierPrice = hasTier ? Math.min(...product.PricingTier.map(t => t.price)) : null
+            return (
           <Card key={product.id} 
-                className="bg-[#353D39] hover:bg-[#404A46] transition-all duration-300 border-[#4A5551] shadow-lg hover:shadow-xl cursor-pointer" 
+                className="bg-white hover:shadow-2xl transition-all duration-300 border border-gray-300 shadow-md hover:border-green-400/50 hover:ring-2 hover:ring-green-100 cursor-pointer overflow-hidden rounded-xl" 
                 style={{gap:'0', padding: '0'}}
                 onClick={() => handleCardClick(product)}>
             <CardContent className="p-0">
               <div className="relative">
-                <div className="h-32 bg-[#FBF8EF] rounded-lg overflow-hidden shadow-inner">
+                <div className="h-48 bg-gray-100 overflow-hidden">
                   <Image 
                     src={getProductImage(product)} 
                     alt={product.title}
-                    width={128}
-                    height={128}
+                    width={200}
+                    height={200}
                     className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-300"
                   />
                 </div>
-              </div>
-              
-              <div className="p-2" >
-                <h3 className="font-semibold text-white text-sm mb-2 line-clamp-2">{product.title}</h3>
-                
-                <div className="mb-2">
-                  <span className="text-sm font-bold text-yellow-primary">
-                    Giá: {product.basePrice.toLocaleString('vi-VN')} VND
-                  </span>
-                </div>
-                
-                <div className="text-xs text-gray-300 mb-1">
-                  Số lượng còn lại: {product.stock}
-                </div>
-                
-                {product.SellerProfile && (
-                  <div className="text-xs text-gray-400 line-clamp-1">
-                    {product.SellerProfile.brandName}
+                {/* Badge */}
+                {(product.soldCount > 0 || (product.PricingTier && product.PricingTier.length > 0)) && (
+                  <div className="absolute top-3 left-3">
+                    <span className={`text-white text-xs px-3 py-1 rounded-full font-medium shadow-md ${product.soldCount > 0 ? 'bg-green-500' : 'bg-orange-500'}`}>
+                      {product.soldCount > 0 ? 'Bán chạy' : 'Giảm giá'}
+                    </span>
                   </div>
                 )}
               </div>
+              
+              <div className="p-4 border-t border-gray-200">
+                <h3 className="font-semibold text-gray-900 hover:text-green-700 transition-colors text-sm mb-2 line-clamp-2 leading-tight">{product.title}</h3>
+                
+                <div className="mb-3 flex items-baseline gap-2">
+                  {hasTier && minTierPrice !== null && minTierPrice < product.basePrice ? (
+                    <>
+                      <span className="text-xl font-extrabold text-green-700">{minTierPrice.toLocaleString('vi-VN')}₫</span>
+                      <span className="text-sm text-gray-400 line-through">{product.basePrice.toLocaleString('vi-VN')}₫</span>
+                      <span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full font-medium">Giá từ</span>
+                    </>
+                  ) : (
+                    <span className="text-xl font-extrabold text-green-700">{product.basePrice.toLocaleString('vi-VN')}₫</span>
+                  )}
+                </div>
+                
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="flex items-center gap-1">
+                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    <span className="text-sm text-gray-600 font-medium">{(product.avgRating ?? 0).toFixed(1)}</span>
+                  </div>
+                  <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Đã bán {product.soldCount?.toLocaleString('vi-VN') ?? 0}</span>
+                </div>
+                
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-sm text-gray-500">Kho: {product.stock}</span>
+                  {product.stock > 0 ? (
+                    <span className="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-medium">Còn hàng</span>
+                  ) : (
+                    <span className="bg-red-100 text-red-800 text-xs px-3 py-1 rounded-full font-medium">Hết hàng</span>
+                  )}
+                </div>
+              </div>
             </CardContent>
             
-            <CardFooter className="p-2 pt-0 flex gap-1 sm:gap-2">
+            <CardFooter className="p-4 pt-0">
               <Button 
-                className="w-16 sm:w-20 bg-yellow-primary hover:bg-yellow-secondary text-black text-xs h-8 sm:h-9 font-medium shadow-md hover:shadow-lg transition-all duration-200 flex-shrink-0 cursor-pointer"
+                className="w-full bg-green-600 hover:bg-green-700 text-white text-sm h-11 font-medium transition-all duration-200 cursor-pointer rounded-lg shadow-lg hover:shadow-2xl"
                 onClick={(e) => e.stopPropagation()}
               >
-                <ShoppingCart className="h-3 w-3" />
-                <span className="ml-1">Mua</span>
-              </Button>
-              <Button 
-                className="flex-1 bg-green-primary hover:bg-green-secondary text-white text-xs h-8 sm:h-9 font-medium transition-all duration-200 min-w-0 cursor-pointer"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <ShoppingCart className="h-3 w-3 flex-shrink-0" />
-                <span className="ml-1">Thêm vào giỏ</span>
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                Thêm vào giỏ
               </Button>
             </CardFooter>
-            
-            <div className="px-4 pb-4 flex justify-between items-center">
-              <div className="flex items-center gap-1">
-                <Star className="h-3 w-3 fill-yellow-primary text-yellow-primary" />
-                <span className="text-xs font-medium text-gray-300">5.0</span>
-              </div>
-              <div className="text-xs text-gray-300">
-                Sản phẩm mới
-              </div>
-            </div>
           </Card>
-          ))}
+          )})}
         </div>
       )}
     </div>

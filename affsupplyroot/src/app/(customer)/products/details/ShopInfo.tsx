@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Star, MapPin, Phone, Users, MessageCircle, Heart, Store } from "lucide-react"
 import { motion } from "framer-motion"
 import Link from "next/link"
-import { useState } from "react"
+import { useState, memo, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { followShop, unfollowShop } from "@/services/shop"
 import { toast } from "sonner"
@@ -61,7 +61,7 @@ interface ShopInfoProps {
   hideViewShop?: boolean
 }
 
-export function ShopInfo({ shop, hideViewShop = false }: ShopInfoProps) {
+export const ShopInfo = memo(function ShopInfo({ shop, hideViewShop = false }: ShopInfoProps) {
   const router = useRouter()
   const [isFollowed, setIsFollowed] = useState(shop.isFollowed)
   const [followersCount, setFollowersCount] = useState(shop.totalFollowers)
@@ -69,7 +69,7 @@ export function ShopInfo({ shop, hideViewShop = false }: ShopInfoProps) {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
   const [hasReviewed, setHasReviewed] = useState(false)
 
-  const handleFollow = async () => {
+  const handleFollow = useCallback(async () => {
     if (isFollowing) return
     
     setIsFollowing(true)
@@ -101,11 +101,11 @@ export function ShopInfo({ shop, hideViewShop = false }: ShopInfoProps) {
     } finally {
       setIsFollowing(false)
     }
-  }
+  }, [isFollowing, isFollowed, shop.id, router])
 
-  const handleChat = () => {
+  const handleChat = useCallback(() => {
     toast.info("Tính năng chat đang được phát triển")
-  }
+  }, [])
 
   return (
     <motion.div
@@ -116,7 +116,7 @@ export function ShopInfo({ shop, hideViewShop = false }: ShopInfoProps) {
       <Card className="w-full bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-xl">
         <CardContent className="p-6">
           <div className="flex gap-6">
-            <div className="flex-shrink-0 w-96">
+            <div className="flex-shrink-0 w-[28rem]">
               <div className="flex items-center gap-4 mb-4">
                 <Link href={`/shop/${shop.slug}`} prefetch>
                   <motion.div 
@@ -157,7 +157,9 @@ export function ShopInfo({ shop, hideViewShop = false }: ShopInfoProps) {
                   <div className="flex gap-2 mb-4">
                     <div className="flex items-center gap-1 bg-yellow-100 px-3 py-1 rounded-full">
                       <Star className="h-3 w-3 fill-yellow-500 text-yellow-500" />
-                      <span className="text-xs font-bold text-yellow-600">{shop.avgRating.toFixed(1)} ({shop.totalReviews} đánh giá)</span>
+                      <span className="text-xs font-bold text-yellow-600">
+                        {shop.avgRating > 0 ? shop.avgRating.toFixed(1) : "Chưa có"} ({shop.totalReviews} đánh giá)
+                      </span>
                     </div>
                     <div className="flex items-center gap-1 bg-blue-100 px-3 py-1 rounded-full">
                       <Users className="h-3 w-3 text-blue-600" />
@@ -187,6 +189,8 @@ export function ShopInfo({ shop, hideViewShop = false }: ShopInfoProps) {
                     <p className="font-medium">{shop.description}</p>
                   </div>
                 )}
+                
+                
               </div>
               
               <div className="space-y-3 mt-4">
@@ -195,7 +199,7 @@ export function ShopInfo({ shop, hideViewShop = false }: ShopInfoProps) {
                     <Button 
                       variant="outline" 
                       size="sm"
-                      className="w-full border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white font-medium"
+                      className="w-full border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white font-medium cursor-pointer"
                     >
                       <Store className="h-4 w-4 mr-1" />
                       Xem shop
@@ -208,7 +212,7 @@ export function ShopInfo({ shop, hideViewShop = false }: ShopInfoProps) {
                     onClick={handleChat}
                     variant="outline" 
                     size="sm"
-                    className="border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white font-medium"
+                    className="border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white font-medium cursor-pointer"
                   >
                     <MessageCircle className="h-4 w-4 mr-1" />
                     Chat
@@ -218,7 +222,7 @@ export function ShopInfo({ shop, hideViewShop = false }: ShopInfoProps) {
                     <Button 
                       variant="outline" 
                       size="sm"
-                      className="w-full border-purple-500 text-purple-500 hover:bg-purple-500 hover:text-white font-medium"
+                      className="w-full border-purple-500 text-purple-500 hover:bg-purple-500 hover:text-white font-medium cursor-pointer"
                     >
                       <Star className="h-4 w-4 mr-1" />
                       Xem đánh giá
@@ -232,7 +236,7 @@ export function ShopInfo({ shop, hideViewShop = false }: ShopInfoProps) {
                     }}
                     variant="outline" 
                     size="sm"
-                    className="border-green-500 text-green-500 hover:bg-green-500 hover:text-white font-medium"
+                    className="border-green-500 text-green-500 hover:bg-green-500 hover:text-white font-medium cursor-pointer"
                   >
                     <Star className="h-4 w-4 mr-1" />
                     {hasReviewed ? "Sửa" : "Đánh giá"}
@@ -244,7 +248,7 @@ export function ShopInfo({ shop, hideViewShop = false }: ShopInfoProps) {
                   disabled={isFollowing}
                   variant={isFollowed ? "default" : "outline"}
                   size="sm"
-                  className={`w-full font-medium ${
+                  className={`w-full font-medium cursor-pointer ${
                     isFollowed 
                       ? "bg-orange-500 hover:bg-orange-600 text-white border-orange-500" 
                       : "border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white"
@@ -261,23 +265,55 @@ export function ShopInfo({ shop, hideViewShop = false }: ShopInfoProps) {
               <div className="grid grid-cols-1 gap-0">
                 <div className="flex justify-between items-center py-3 border-b border-gray-100">
                   <span className="text-gray-600 font-medium">Đánh Giá</span>
-                  <span className="text-orange-600 font-bold text-lg">{shop.avgRating.toFixed(1)}</span>
+                  <div className="text-right">
+                    <span className="text-orange-600 font-bold text-lg">
+                      {shop.avgRating > 0 ? shop.avgRating.toFixed(1) : "Chưa có"}
+                    </span>
+                    {shop.totalReviews > 0 && (
+                      <div className="text-xs text-gray-500 mt-1">
+                        ({shop.totalReviews} đánh giá)
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                  <span className="text-gray-600 font-medium">Sản Phẩm</span>
-                  <span className="text-orange-600 font-bold text-lg">27</span>
+                  <span className="text-gray-600 font-medium">Danh Mục</span>
+                  <div className="text-right">
+                    {shop.categoriesShop && shop.categoriesShop.length > 0 ? (
+                      <div className="flex flex-col gap-1">
+                        <span className="text-orange-600 font-bold text-lg">{shop.categoriesShop.length}</span>
+                        <div className="flex flex-wrap gap-1 justify-end">
+                          {shop.categoriesShop.slice(0, 2).map((category) => (
+                            <span 
+                              key={category.id}
+                              className="text-xs px-2 py-0.5 bg-orange-100 text-orange-700 rounded-full"
+                            >
+                              {category.name}
+                            </span>
+                          ))}
+                          {shop.categoriesShop.length > 2 && (
+                            <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full">
+                              +{shop.categoriesShop.length - 2}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <span className="text-orange-600 font-bold text-lg">0</span>
+                    )}
+                  </div>
                 </div>
                 <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                  <span className="text-gray-600 font-medium">Tỉ Lệ Phản Hồi</span>
-                  <span className="text-orange-600 font-bold text-lg">95%</span>
-                </div>
-                <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                  <span className="text-gray-600 font-medium">Thời Gian Phản Hồi</span>
-                  <span className="text-orange-600 font-bold text-lg">trong vài giờ</span>
+                  <span className="text-gray-600 font-medium">Trạng Thái</span>
+                  <span className="text-orange-600 font-bold text-lg">
+                    {shop.status === "APPROVED" ? "Đã xác thực" : shop.status}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center py-3 border-b border-gray-100">
                   <span className="text-gray-600 font-medium">Tham Gia</span>
-                  <span className="text-orange-600 font-bold text-lg">20 tháng trước</span>
+                  <span className="text-orange-600 font-bold text-lg">
+                    {new Date(shop.createdAt).toLocaleDateString('vi-VN')}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center py-3">
                   <span className="text-gray-600 font-medium">Người Theo Dõi</span>
@@ -300,4 +336,4 @@ export function ShopInfo({ shop, hideViewShop = false }: ShopInfoProps) {
       />
     </motion.div>
   )
-}
+})

@@ -202,22 +202,50 @@ export default function ProductPage() {
         }
 
         if (slug) {
+          // Tìm product với slug này trong tất cả categories
+          let foundProduct = null
+          for (const cat of categories) {
+            const productsResponse = await getCachedOrFetch(
+              categoryProductsCache,
+              cat.id,
+              async () => {
+                const response = await getProductsByCategoryGlobal(cat.id, 1, 50)
+                return { data: response.data.products }
+              }
+            )
+            foundProduct = productsResponse.find(p => p.slug === slug)
+            
+            if (foundProduct) {
+              setSelectedCategoryId(cat.id)
+              setSelectedSubCategoryId(foundProduct.id)
+              setCurrentCategoryName(cat.name)
+              setCurrentCategorySlug(cat.slug)
+              setDetailProduct(null) // KHÔNG hiển thị detail
+              setShopDetail(null)
+              setIsInitialLoading(false)
+              return
+            }
+          }
+          
+          // Nếu không tìm thấy product, kiểm tra xem có phải category không
           const category = categories.find(cat => cat.slug === slug)
           if (category) {
             setSelectedCategoryId(category.id)
             setCurrentCategoryName(category.name)
             setCurrentCategorySlug(category.slug)
+            setSelectedSubCategoryId(null)
+            setDetailProduct(null)
+            setShopDetail(null)
           }
         } else if (categories.length > 0) {
           const firstCategory = categories[0]
           setSelectedCategoryId(firstCategory.id)
           setCurrentCategoryName(firstCategory.name)
           setCurrentCategorySlug(firstCategory.slug)
+          setSelectedSubCategoryId(null)
+          setDetailProduct(null)
+          setShopDetail(null)
         }
-
-        setSelectedSubCategoryId(null)
-        setDetailProduct(null)
-        setShopDetail(null)
       } catch (error) {
         console.error("Error loading page:", error)
       } finally {
@@ -229,22 +257,39 @@ export default function ProductPage() {
   }, [slug, productSlug])
 
   const handleCategorySelect = async (categoryId: number | null, subCategoryId?: number | null) => {
-    setSelectedCategoryId(categoryId)
-    setSelectedSubCategoryId(subCategoryId || null)
+    if (!categoryId || !subCategoryId) return
     
-    if (categoryId) {
-      try {
+    try {
+      // Tìm product slug từ subCategoryId
+      const productsResponse = await getCachedOrFetch(
+        categoryProductsCache,
+        categoryId,
+        async () => {
+          const response = await getProductsByCategoryGlobal(categoryId, 1, 50)
+          return { data: response.data.products }
+        }
+      )
+      
+      const product = productsResponse.find(p => p.id === subCategoryId)
+      if (product) {
+        // Update state TRƯỚC
+        setSelectedCategoryId(categoryId)
+        setSelectedSubCategoryId(subCategoryId)
+        setDetailProduct(null)
+        
+        // Tìm category name
         const response = await getCategories(1, 10)
         const category = response.data.items.find(cat => cat.id === categoryId)
         if (category) {
           setCurrentCategoryName(category.name)
           setCurrentCategorySlug(category.slug)
         }
-      } catch (error) {
-        console.error("Không thể tải danh mục:", error)
+        
+        // Thay đổi URL mà KHÔNG trigger reload - dùng window.history
+        window.history.replaceState(null, '', `/products/${product.slug}`)
       }
-    } else {
-      setCurrentCategoryName("Tất cả sản phẩm")
+    } catch (error) {
+      console.error("Error selecting category:", error)
     }
   }
 
@@ -300,7 +345,7 @@ export default function ProductPage() {
   }
 
   return (
-    <div className="flex font-manuale h-screen">
+    <div className="flex font-manuale h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50">
       {/* Sidebar */}
       <CategorySidebar 
         isMobileMenuOpen={isMobileMenuOpen} 
@@ -313,32 +358,29 @@ export default function ProductPage() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Header Section */}
-        <div style={{ 
-          background: 'linear-gradient(180deg, #353D39 100%, #4A5551 100%, #353D39 5%)',
-          padding: '12px' 
-        }} className="p-3 sm:p-4 flex-shrink-0 pt-3">
+        <div className="bg-gradient-to-r from-white via-green-50 to-emerald-50 border-b border-green-200 p-4 sm:p-5 shadow-md">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-5 gap-3">
             <div className="flex items-center gap-2 text-sm sm:text-base">
               <Button
                 onClick={() => setIsMobileMenuOpen(true)}
                 variant="ghost"
                 size="icon"
-                className="lg:hidden text-yellow-primary hover:bg-yellow-primary/10 h-8 w-8 mr-2"
+                className="lg:hidden text-gray-600 hover:bg-green-100 h-8 w-8 mr-2"
               >
                 <Menu className="h-5 w-5" />
               </Button>
-              <Link href="/" className="text-yellow-primary text-base hover:text-yellow-secondary font-medium">Trang chủ</Link>
-              <ChevronRight className="h-4 w-4 text-gray-400" />
-              <span className="text-yellow-primary text-base font-medium">{currentCategoryName || "Lương thực"}</span>
+              <Link href="/" className="text-green-700 text-lg hover:text-green-800 font-bold transition-colors">Trang chủ</Link>
+              <ChevronRight className="h-5 w-5 text-green-600" />
+              <span className="text-green-800 text-lg font-extrabold">{currentCategoryName || "Lương thực"}</span>
             </div>
           </div>
           
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <div className="w-full sm:flex-1 relative">
-              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
+              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-green-600" />
               <Input 
                 placeholder="Tìm kiếm sản phẩm của bạn"
-                className="pr-12 pl-4 bg-white/95 border border-gray-200 rounded-lg h-9 text-gray-700 placeholder:text-gray-500 text-sm focus:border-yellow-primary focus:ring-1 focus:ring-yellow-primary"
+                className="pr-12 pl-4 bg-white border border-green-300 rounded-lg h-11 text-gray-700 placeholder:text-gray-500 text-sm focus:border-green-500 focus:ring-2 focus:ring-green-500 shadow-sm"
                 value={searchTerm}
                 onChange={(e) => handleSearch(e.target.value)}
               />
@@ -347,21 +389,21 @@ export default function ProductPage() {
             <div className="relative w-full sm:w-auto">
               <Button 
                 onClick={() => setShowSortDropdown(!showSortDropdown)}
-                className="bg-yellow-primary hover:bg-yellow-secondary text-black rounded-lg h-9 px-3 sm:px-4 text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2 w-full sm:w-auto"
+                className="bg-white hover:bg-green-50 text-gray-700 border border-green-300 rounded-lg h-11 px-4 text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2 w-full sm:w-auto shadow-sm"
               >
-                <Filter className="h-4 w-4" />
+                <Filter className="h-4 w-4 text-green-600" />
                 {getSortText()}
-                <ChevronDown className="h-4 w-4" />
+                <ChevronDown className="h-4 w-4 text-green-600" />
               </Button>
               
               {showSortDropdown && (
-                <div className="absolute top-full right-0 mt-1 w-full sm:w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                <div className="absolute top-full right-0 mt-1 w-full sm:w-48 bg-white border border-green-200 rounded-lg shadow-xl z-50">
                   {sortOptions.map((option) => (
                     <button
                       key={option.value}
                       onClick={() => handleSortSelect(option.value)}
-                      className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors first:rounded-t-lg last:rounded-b-lg ${
-                        sortBy === option.value ? 'bg-yellow-primary/10 text-yellow-primary' : 'text-gray-700'
+                      className={`w-full text-left px-4 py-2 text-sm hover:bg-green-50 transition-colors first:rounded-t-lg last:rounded-b-lg ${
+                        sortBy === option.value ? 'bg-green-100 text-green-700 font-semibold' : 'text-gray-700'
                       }`}
                     >
                       {option.label}

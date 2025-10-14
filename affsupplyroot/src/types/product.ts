@@ -95,6 +95,8 @@ export interface ProductByCategoryGlobal {
   stock: number
   minOrderQty: number
   isActive: boolean
+  avgRating: number
+  soldCount: number
   CategoryGlobal: {
     id: number
     name: string

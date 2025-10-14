@@ -175,10 +175,10 @@ export function ShopProducts({ shopSlug, currentProductId }: ShopProductsProps) 
         </Link>
         <CardFooter className="p-4 pt-0">
           <Button 
-            className="w-full bg-yellow-primary hover:bg-yellow-secondary text-black text-sm font-medium"
+            className="w-full bg-yellow-primary hover:bg-yellow-secondary text-black text-sm font-medium cursor-pointer"
             onClick={(e) => { e.preventDefault(); console.log("Add to cart:", product.id) }}
           >
-            <ShoppingCart className="h-4 w-4 mr-2" /> Thêm vào giỏ
+            <ShoppingCart className="h-4 w-4 mr-2 " /> Thêm vào giỏ
           </Button>
         </CardFooter>
       </Card>
@@ -231,7 +231,7 @@ export function ShopProducts({ shopSlug, currentProductId }: ShopProductsProps) 
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-bold text-gray-900">Sản Phẩm Khác Của Shop</h3>
         <Link prefetch href={`/shop/${shopSlug}`}>
-          <Button variant="outline" className="border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white">
+          <Button variant="outline" className="border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white cursor-pointer">
             Xem tất cả
           </Button>
         </Link>

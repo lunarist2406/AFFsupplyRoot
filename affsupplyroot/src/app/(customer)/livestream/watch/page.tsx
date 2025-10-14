@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
-import { ProductSidebar } from "@/app/(customer)/products/ProductSidebar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
@@ -66,10 +65,6 @@ export default function LivestreamWatchPage() {
 
   return (
     <SidebarProvider>
-      <ProductSidebar 
-        isMobileMenuOpen={isMobileSidebarOpen}
-        setIsMobileMenuOpen={setIsMobileSidebarOpen}
-      />
       
       <SidebarInset>
         <div className="flex flex-1 flex-col font-manuale">
