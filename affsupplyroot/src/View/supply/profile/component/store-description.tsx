@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 interface StoreDescriptionProps {
-  description: string
+  description: string | undefined;
 }
 
 export function StoreDescription({ description }: StoreDescriptionProps) {
