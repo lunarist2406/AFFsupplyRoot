@@ -169,3 +169,58 @@
       time: "1 ngày trước",
     },
   ]
+ export const getStatusColor = (status:any) => {
+    switch (status) {
+      case "in_stock":
+        return "bg-green-100 text-green-800"
+      case "low_stock":
+        return "bg-yellow-100 text-yellow-800"
+      case "out_of_stock":
+        return "bg-red-100 text-red-800"
+      default:
+        return "bg-gray-100 text-gray-800"
+    }
+  }
+
+ export const getStatusText = (status:any) => {
+    switch (status) {
+      case "in_stock":
+        return "Còn hàng"
+      case "low_stock":
+        return "Sắp hết"
+      case "out_of_stock":
+        return "Hết hàng"
+      default:
+        return "Không xác định"
+    }
+  }
+
+export  const getQualityColor = (quality:any) => {
+    switch (quality) {
+      case "excellent":
+        return "text-green-600"
+      case "good":
+        return "text-blue-600"
+      case "fair":
+        return "text-yellow-600"
+      case "poor":
+        return "text-red-600"
+      default:
+        return "text-gray-600"
+    }
+  }
+
+export  const getQualityText = (quality:any) => {
+    switch (quality) {
+      case "excellent":
+        return "Xuất sắc"
+      case "good":
+        return "Tốt"
+      case "fair":
+        return "Khá"
+      case "poor":
+        return "Kém"
+      default:
+        return "Chưa đánh giá"
+    }
+  }

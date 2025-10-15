@@ -4,18 +4,26 @@ import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
-interface Certification {
-  name: string
-  issuer: string
-  image: string
-  validUntil: string
+interface SellerKycDocument {
+  id: number
+  type: string
+  url: string
 }
 
 interface CertificationsGridProps {
-  certifications: Certification[]
+  documents?: SellerKycDocument[]
 }
 
-export function CertificationsGrid({ certifications }: CertificationsGridProps) {
+export function CertificationsGrid({ documents }: CertificationsGridProps) {
+  if (!documents || documents.length === 0) return null
+
+  const typeDisplayMap: Record<string, string> = {
+    ID_CARD_FRONT: "ID Card Front",
+    ID_CARD_BACK: "ID Card Back",
+    BUSINESS_LICENSE: "Business License",
+    FOOD_SAFETY_CERT: "Food Safety Certificate",
+  }
+
   return (
     <Card className="w-full">
       <CardHeader>
@@ -25,30 +33,27 @@ export function CertificationsGrid({ certifications }: CertificationsGridProps) 
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {certifications.map((cert, index) => (
+          {documents.map((doc) => (
             <div
-              key={index}
+              key={doc.id}
               className="border rounded-lg p-4 sm:p-6 text-center flex flex-col items-center hover:shadow-md transition-shadow"
             >
               <Image
-                src={cert.image || "/placeholder.svg"}
-                alt={cert.name}
+                src={doc.url || "/placeholder.svg"}
+                alt={typeDisplayMap[doc.type] || doc.type}
                 width={100}
                 height={100}
                 className="mx-auto mb-3 sm:mb-4 rounded object-cover w-20 h-20 sm:w-24 sm:h-24"
               />
               <h3 className="font-semibold text-sm sm:text-base mb-1">
-                {cert.name}
+                {typeDisplayMap[doc.type] || doc.type}
               </h3>
-              <p className="text-xs sm:text-sm text-muted-foreground mb-2">
-                {cert.issuer}
-              </p>
               <Badge
                 variant="outline"
                 className="text-[10px] sm:text-xs whitespace-nowrap"
               >
-                Có hiệu lực đến{" "}
-                {new Date(cert.validUntil).toLocaleDateString("vi-VN")}
+                {/* tạm thời nếu chưa có ngày hết hạn */}
+                Có hiệu lực đến {new Date().toLocaleDateString("vi-VN")}
               </Badge>
             </div>
           ))}
