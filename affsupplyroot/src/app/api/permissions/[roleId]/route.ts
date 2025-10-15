@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 
-const BACKEND_API_URL = process.env.BACKEND_API_URL || "http://localhost:8000"
+const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL
 
 export async function GET(request: NextRequest, { params }: { params: { roleID: string } }) {
   try {
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest, { params }: { params: { roleID: 
       )
     }
 
-    const response = await fetch(`${BACKEND_API_URL}/api/v1/permission/${roleID}`, {
+    const response = await fetch(`${NEXT_PUBLIC_API_URL}/api/v1/permission/${roleID}`, {
       method: "GET",
       headers: {
         accept: "*/*",
@@ -65,7 +65,7 @@ export async function PUT(request: NextRequest, { params }: { params: { roleID: 
 
     const body = await request.json()
 
-    const response = await fetch(`${BACKEND_API_URL}/api/v1/permission/${roleID}`, {
+    const response = await fetch(`${NEXT_PUBLIC_API_URL}/api/v1/permission/${roleID}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

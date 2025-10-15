@@ -2,7 +2,7 @@
 import React, { useState } from "react"
 import Image from "next/image"
 import { motion } from "framer-motion"
-import { FaUserCircle } from "react-icons/fa"
+import { FaUserCircle, FaUser, FaSignOutAlt } from "react-icons/fa"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import {
   DropdownMenu,
@@ -29,11 +29,19 @@ export default function Header() {
   // ✅ Destructure user từ state
   const { user } = state
 
-  // ✅ Lấy menu dựa theo role
-  const menus = user ? roleMenus[user.roleID] || [{ label: "Đăng xuất" }] : []
+  const roleKey = user ? (roleMenus[user.roleID] ? user.roleID : String(user.roleID)) : undefined
+  const roleItems = user && roleKey ? roleMenus[roleKey] || [] : []
+  const menus = user
+    ? [
+        { label: "Hồ sơ của tôi", href: "/account/profile", icon: <FaUser className="text-yellow-secondary w-4 h-4" /> },
+        ...roleItems,
+        { label: "Đăng xuất", icon: <FaSignOutAlt className="text-yellow-secondary w-4 h-4" /> },
+      ]
+    : []
 
   // 👉 Gom logic click menu
-  const handleMenuClick = (item: any) => {
+  type MenuItem = { label: string; href?: string }
+  const handleMenuClick = (item: MenuItem) => {
     if (item.label === "Đăng xuất") {
       logout()
       router.push("/authentication")
