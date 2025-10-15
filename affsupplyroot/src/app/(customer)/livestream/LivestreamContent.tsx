@@ -6,7 +6,6 @@ import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Eye, Users, ShoppingBag } from "lucide-react"
-import { useState } from "react"
 
 const allLivestreams = [
   ...Array.from({ length: 4 }, (_, i) => ({

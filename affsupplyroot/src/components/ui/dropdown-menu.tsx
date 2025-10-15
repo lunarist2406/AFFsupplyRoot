@@ -115,7 +115,6 @@ function DropdownMenuRadioGroup({
   return (
     <DropdownMenuPrimitive.RadioGroup
       data-slot="dropdown-menu-radio-group"
-      modal = {false}
       {...props}
     />
   )

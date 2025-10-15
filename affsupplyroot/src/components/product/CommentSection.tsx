@@ -4,7 +4,6 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Textarea } from "../ui/textarea"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { 
   MessageCircle, 
@@ -24,6 +23,7 @@ import {
 } from "@/services/product-interaction"
 import { toast } from "sonner"
 import useAuth from "@/hooks/useAuth"
+import { Textarea } from "../ui/textarea"
 
 interface CommentSectionProps {
   productId: number
@@ -185,7 +185,7 @@ export default function CommentSection({ productId, className = "", hasPurchased
                     <Textarea
                       placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..."
                       value={newComment}
-                      onChange={(e) => setNewComment(e.target.value)}
+                      onChange={(e:any) => setNewComment(e.target.value)}
                       className="min-h-[100px] resize-none border-gray-200 focus:border-orange-400 focus:ring-orange-400"
                     />
                   </div>

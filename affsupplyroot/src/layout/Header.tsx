@@ -35,7 +35,6 @@ export default function Header() {
     ? [
         { label: "Hồ sơ của tôi", href: "/account/profile", icon: <FaUser className="text-yellow-secondary w-4 h-4" /> },
         ...roleItems,
-        { label: "Đăng xuất", icon: <FaSignOutAlt className="text-yellow-secondary w-4 h-4" /> },
       ]
     : []
 
