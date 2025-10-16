@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import Link from "next/link"
 import { Star, ShoppingCart, Package } from "lucide-react"
+import { useCart } from "@/hooks/useCart"
 
 interface ShopProduct {
   id: number
@@ -17,12 +18,14 @@ interface ShopProduct {
   soldCount: number
   avgRating: number
   totalReviews: number
+  minOrderQty: number
   CategoryGlobal: { id: number; name: string }
   ProductImage: Array<{ url: string; isMain: boolean }>
   PricingTier: Array<{ minQty: number; price: number }>
 }
 
 export default function ShopAllProducts({ shopSlug }: { shopSlug: string }) {
+  const { addItem } = useCart()
   const [products, setProducts] = useState<ShopProduct[]>([])
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(1)
@@ -61,6 +64,28 @@ export default function ShopAllProducts({ shopSlug }: { shopSlug: string }) {
       if (low < p.basePrice) return `${low.toLocaleString('vi-VN')} - ${p.basePrice.toLocaleString('vi-VN')} VND`
     }
     return `${p.basePrice.toLocaleString('vi-VN')} VND`
+  }
+
+  const handleAddToCart = (e: React.MouseEvent, p: ShopProduct) => {
+    e.preventDefault()
+    e.stopPropagation()
+    
+    if (p.stock <= 0) {
+      return
+    }
+
+    addItem({
+      id: p.id,
+      title: p.title,
+      slug: p.slug,
+      image: getImg(p),
+      basePrice: p.basePrice,
+      minOrderQty: p.minOrderQty || 1,
+      stock: p.stock,
+      shopId: 0,
+      shopName: shopSlug,
+      shopSlug: shopSlug,
+    })
   }
 
   if (loading && products.length === 0) {
@@ -111,8 +136,13 @@ export default function ShopAllProducts({ shopSlug }: { shopSlug: string }) {
                   </CardContent>
                 </Link>
                 <CardFooter className="p-4 pt-0">
-                  <Button className="w-full bg-yellow-primary hover:bg-yellow-secondary text-black text-sm font-medium cursor-pointer" onClick={(e) => { e.preventDefault() }}>
-                    <ShoppingCart className="h-4 w-4 mr-2 " /> Thêm vào giỏ
+                  <Button 
+                    className="w-full bg-yellow-primary hover:bg-yellow-secondary text-black text-sm font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" 
+                    onClick={(e) => handleAddToCart(e, p)}
+                    disabled={p.stock <= 0}
+                  >
+                    <ShoppingCart className="h-4 w-4 mr-2" /> 
+                    {p.stock > 0 ? 'Thêm vào giỏ' : 'Hết hàng'}
                   </Button>
                 </CardFooter>
               </Card>

@@ -97,6 +97,10 @@ export interface ProductByCategoryGlobal {
   isActive: boolean
   avgRating: number
   soldCount: number
+  unit: string
+  brand: string
+  origin: string
+  certifications: string
   CategoryGlobal: {
     id: number
     name: string
