@@ -2,7 +2,7 @@
 import React, { useState } from "react"
 import Image from "next/image"
 import { motion } from "framer-motion"
-import { FaUserCircle, FaUser} from "react-icons/fa"
+import { FaUserCircle, FaUser, FaSignOutAlt } from "react-icons/fa"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import {
   DropdownMenu,
@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import useAuth from "@/hooks/useAuth"
 import { roleMenus } from "@/variable/menuHeader"
+import { CartIcon } from "@/components/cart/CartIcon"
 
 export default function Header() {
   const [desktopOpen, setDesktopOpen] = useState(false)
@@ -35,6 +36,7 @@ export default function Header() {
     ? [
         { label: "Hồ sơ của tôi", href: "/account/profile", icon: <FaUser className="text-yellow-secondary w-4 h-4" /> },
         ...roleItems,
+        { label: "Đăng xuất", icon: <FaSignOutAlt className="text-yellow-secondary w-4 h-4" /> },
       ]
     : []
 
@@ -78,7 +80,9 @@ export default function Header() {
           <SearchCustomize />
         </div>
 
-        <div className="justify-self-end">
+        <div className="justify-self-end flex items-center gap-3">
+          <CartIcon />
+          
           {!user ? (
             <Button
               onClick={() => router.push("/authentication")}
@@ -129,6 +133,8 @@ export default function Header() {
           <div className="w-[300px]">
             <SearchCustomize />
           </div>
+
+          <CartIcon />
 
           {!user ? (
             <Button

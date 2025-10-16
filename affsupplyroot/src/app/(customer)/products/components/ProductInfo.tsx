@@ -11,6 +11,7 @@ import {
   FaHeart,
   FaShare,
 } from "react-icons/fa6"
+import { useCart } from "@/hooks/useCart"
 
 interface ProductInfoProps {
   product: ProductDetail
@@ -19,17 +20,44 @@ interface ProductInfoProps {
 export const ProductInfo = memo(function ProductInfo({ product }: ProductInfoProps) {
   const [quantity, setQuantity] = useState(product.minOrderQty || 1)
   const [isLiked, setIsLiked] = useState(false)
+  const { addItem } = useCart()
+
+  const getProductImage = () => {
+    if (product.ProductImage && product.ProductImage.length > 0) {
+      return product.ProductImage[0].url
+    }
+    return "/Gao-ST25.png"
+  }
+
+  const handleAddToCart = () => {
+    if (product.stock <= 0) {
+      return
+    }
+
+    addItem({
+      id: product.id,
+      title: product.title,
+      slug: product.slug,
+      image: getProductImage(),
+      basePrice: product.basePrice,
+      minOrderQty: product.minOrderQty,
+      stock: product.stock,
+      shopId: product.SellerProfile.id,
+      shopName: product.SellerProfile.brandName,
+      shopSlug: product.SellerProfile.slug,
+    })
+  }
 
   return (
     <motion.div 
-      initial={{ opacity: 0, x: 20 }}
+      initial={false} 
       animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.5 }}
-      className="bg-white rounded-2xl p-6 border border-gray-200 shadow-lg space-y-5 flex-1 w-full"
+      transition={{ duration: 0.2 }} 
+      className="bg-white rounded-2xl p-6 border border-gray-200 shadow-lg space-y-2 flex-1 w-full"
     >
       <div className="space-y-3">
         <div className="flex items-start justify-between gap-4">
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 leading-tight">
+          <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 bg-clip-text text-transparent leading-tight">
             {product.title}
           </h1>
           <div className="flex items-center gap-2">
@@ -75,7 +103,7 @@ export const ProductInfo = memo(function ProductInfo({ product }: ProductInfoPro
         </div>
       </div>
 
-      <div className="bg-gray-50 rounded-xl p-5 space-y-4">
+      <div className="bg-gray-50 rounded-xl p-5 space-y-2">
         <div className="flex items-baseline gap-3">
           <span className="text-3xl font-bold text-orange-500">
             {product.basePrice.toLocaleString('vi-VN')}₫
@@ -83,7 +111,6 @@ export const ProductInfo = memo(function ProductInfo({ product }: ProductInfoPro
           <span className="text-gray-500 text-sm">/ {product.unit || 'sản phẩm'}</span>
         </div>
         
-        {/* Quick facts nổi bật hơn */}
         <div className="flex flex-wrap gap-2">
           {product.CategoryGlobal?.name && (
             <span className="text-xs px-2 py-1 rounded-full bg-orange-50 border border-orange-200 text-orange-700">Danh mục: <b>{product.CategoryGlobal.name}</b></span>
@@ -96,33 +123,50 @@ export const ProductInfo = memo(function ProductInfo({ product }: ProductInfoPro
           )}
         </div>
         
+      </div>
+
+      {/* Thông tin chi tiết sản phẩm */}
+      <div className="p-2 space-y-4 ">
+        {/* Giá theo số lượng */}
         {product.PricingTier && product.PricingTier.length > 0 && (
-          <div className="text-sm text-gray-700">
-            <span className="font-medium">Giá theo số lượng:</span>
-            <span className="ml-2 text-gray-600">
+          <div className="bg-white rounded-lg p-3 border border-blue-200">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <span className="font-semibold text-blue-700 text-sm">Giá theo số lượng</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
               {product.PricingTier.map((tier, idx) => (
-                <span key={idx}>
-                  {tier.minQty}+ = {tier.price.toLocaleString('vi-VN')}₫{idx < product.PricingTier.length - 1 ? ', ' : ''}
-                </span>
+                <div key={idx} className="bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
+                  <span className="text-sm font-medium text-blue-800">
+                    {tier.minQty}+ = <span className="font-bold text-blue-900">{tier.price.toLocaleString('vi-VN')}₫</span>
+                  </span>
+                </div>
               ))}
-            </span>
+            </div>
           </div>
         )}
+
+        {/* Thông tin kho hàng và tối thiểu */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="bg-white rounded-lg p-3 border border-green-200">
+            <div className="flex items-center gap-2 mb-1">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span className="font-semibold text-green-700 text-sm">Kho hàng</span>
+            </div>
+            <span className="text-lg font-bold text-green-800">{product.stock} sản phẩm</span>
+          </div>
+          
+          <div className="bg-white rounded-lg p-3 border border-orange-200">
+            <div className="flex items-center gap-2 mb-1">
+              <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+              <span className="font-semibold text-orange-700 text-sm">Tối thiểu</span>
+            </div>
+            <span className="text-lg font-bold text-orange-800">{product.minOrderQty} sản phẩm</span>
+          </div>
+        </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3 text-sm text-gray-700">
-        <span>
-          <span className="text-gray-600">Kho hàng:</span>
-          <span className="font-semibold text-gray-900 ml-1">{product.stock} sản phẩm</span>
-        </span>
-        <span className="text-gray-300">|</span>
-        <span>
-          <span className="text-gray-600">Tối thiểu:</span>
-          <span className="font-semibold text-gray-900 ml-1">{product.minOrderQty} sản phẩm</span>
-        </span>
-      </div>
-
-      <div className="space-y-3">
+      <div className="space-y-1">
         <div className="flex items-center gap-4">
           <span className="text-gray-700 font-medium min-w-[80px]">Số lượng:</span>
           <div className="flex items-center border border-gray-300 rounded-lg">
@@ -168,18 +212,21 @@ export const ProductInfo = memo(function ProductInfo({ product }: ProductInfoPro
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="flex-1 bg-orange-50 text-orange-600 border-2 border-orange-500 font-bold py-4 rounded-lg hover:bg-orange-100 transition-all flex items-center justify-center gap-2 cursor-pointer"
+          onClick={handleAddToCart}
+          disabled={product.stock <= 0}
+          className="flex-1 bg-orange-50 text-orange-600 border-2 border-orange-500 font-bold py-4 rounded-lg hover:bg-orange-100 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <FaCartShopping className="h-5 w-5 cursor-pointer" />
-          Thêm vào giỏ hàng
+          {product.stock > 0 ? 'Thêm vào giỏ hàng' : 'Hết hàng'}
         </motion.button>
         
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="flex-1 bg-orange-500 text-white font-bold py-4 rounded-lg hover:bg-orange-600 transition-all shadow-lg cursor-pointer"
+          disabled={product.stock <= 0}
+          className="flex-1 bg-orange-500 text-white font-bold py-4 rounded-lg hover:bg-orange-600 transition-all shadow-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Mua ngay
+          {product.stock > 0 ? 'Mua ngay' : 'Hết hàng'}
         </motion.button>
       </div>
     </motion.div>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { getShopBySlug } from "@/services/shop"
-import { ShopInfo } from "@/app/(customer)/products/details/ShopInfo"
+import { ShopInfo } from "@/app/(customer)/products/components/ShopInfo"
 import type { ShopDetail } from "@/services/shop"
 
 interface Props {

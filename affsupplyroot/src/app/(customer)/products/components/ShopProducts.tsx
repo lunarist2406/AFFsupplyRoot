@@ -2,7 +2,6 @@
 
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-// Types từ shop service
 interface ShopProduct {
   id: number
   title: string
@@ -49,6 +48,7 @@ import Image from "next/image"
 import Link from "next/link"
 import React, { useState, useEffect, useMemo, useCallback, useRef } from "react"
 import { getShopProducts } from "@/services/shop"
+import { useCart } from "@/hooks/useCart"
 
 interface ShopProductsProps {
   shopSlug: string
@@ -56,6 +56,7 @@ interface ShopProductsProps {
 }
 
 export function ShopProducts({ shopSlug, currentProductId }: ShopProductsProps) {
+  const { addItem } = useCart()
   const [products, setProducts] = useState<ShopProduct[]>([])
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(1)
@@ -124,6 +125,28 @@ export function ShopProducts({ shopSlug, currentProductId }: ShopProductsProps) 
 
   const blurDataURL = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnPjxyZWN0IHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnIGZpbGw9JyNlZWUnLz48L3N2Zz4="
 
+  const handleAddToCart = useCallback((e: React.MouseEvent, product: ShopProduct) => {
+    e.preventDefault()
+    e.stopPropagation()
+    
+    if (product.stock <= 0) {
+      return
+    }
+
+    addItem({
+      id: product.id,
+      title: product.title,
+      slug: product.slug,
+      image: getProductImage(product),
+      basePrice: product.basePrice,
+      minOrderQty: product.minOrderQty,
+      stock: product.stock,
+      shopId: 0, // Sẽ được cập nhật nếu có thông tin shop
+      shopName: shopSlug,
+      shopSlug: shopSlug,
+    })
+  }, [addItem, getProductImage, shopSlug])
+
   const ProductCard = useMemo(() => React.memo(function CardItem({ product }: { product: ShopProduct }) {
     return (
       <Card 
@@ -175,15 +198,17 @@ export function ShopProducts({ shopSlug, currentProductId }: ShopProductsProps) 
         </Link>
         <CardFooter className="p-4 pt-0">
           <Button 
-            className="w-full bg-yellow-primary hover:bg-yellow-secondary text-black text-sm font-medium cursor-pointer"
-            onClick={(e) => { e.preventDefault(); console.log("Add to cart:", product.id) }}
+            className="w-full bg-yellow-primary hover:bg-yellow-secondary text-black text-sm font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={(e) => handleAddToCart(e, product)}
+            disabled={product.stock <= 0}
           >
-            <ShoppingCart className="h-4 w-4 mr-2 " /> Thêm vào giỏ
+            <ShoppingCart className="h-4 w-4 mr-2" /> 
+            {product.stock > 0 ? 'Thêm vào giỏ' : 'Hết hàng'}
           </Button>
         </CardFooter>
       </Card>
     )
-  }), [getProductImage, getFormattedPrice])
+  }), [getProductImage, getFormattedPrice, handleAddToCart])
 
   if (loading && products.length === 0) {
     return (

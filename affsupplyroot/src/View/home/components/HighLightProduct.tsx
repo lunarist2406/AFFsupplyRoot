@@ -47,7 +47,7 @@ export function FeaturedProducts() {
               >
                 <Card
                   className="group hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
-                  onClick={() => router.push("/products")}
+                  onClick={() => router.push("/products/trai-cay-tuoi")}
                 >
                   <div className="relative">
                     <Image
