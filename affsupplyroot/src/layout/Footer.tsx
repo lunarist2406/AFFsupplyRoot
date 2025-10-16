@@ -2,8 +2,7 @@
 import React from "react"
 import Image from "next/image"
 import { motion } from "framer-motion"
-import { FaFacebookMessenger, FaFacebook } from "react-icons/fa"
-import { SiZalo } from "react-icons/si"
+
 import footerCard from "../../public/FooterCard.jpg"
 import logo from "../../public/logo.png"
 import { socialLinks } from "@/variable/SocialLinks"

@@ -107,7 +107,9 @@ export default function SignUp() {
           console.log(res)
           toast.error(res?.message || "Đăng ký thất bại. Vui lòng thử lại!");
         }
-      } catch (error: any) {
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       catch (error: any) {
         toast.error(error?.message || "Có lỗi xảy ra khi đăng ký!");
       } finally {
         setSubmitting(false);

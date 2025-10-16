@@ -11,6 +11,7 @@ import { FiPlus, FiMoreVertical } from "react-icons/fi"
 import { toast } from "sonner"
 import useCategory from "@/hooks/useCategory"
 import useCategoryGlobal from "@/hooks/useCategoryGlobal"
+import Image from "next/image"
 
 export default function CategoryCard() {
   const { categoriesGlobal, fetchCategoriesGlobal } = useCategoryGlobal()
@@ -31,14 +32,14 @@ export default function CategoryCard() {
   useEffect(() => {
     fetchCategories()
     fetchCategoriesGlobal()
-  }, [])
+  }, [fetchCategories, fetchCategoriesGlobal])
 
   const handleOpenCreate = () => {
     setFormData({ name: "", description: "", categoryGlobalId: "", image: null })
     setEditId(null)
     setOpenModal(true)
   }
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
   const handleOpenEdit = (category: any) => {
     setFormData({
       name: category.name,
@@ -83,7 +84,7 @@ export default function CategoryCard() {
     setDeleteId(id)
     setOpenDeleteDialog(true)
   }
-
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const categoryGlobalList =
     categoriesGlobal &&
     typeof categoriesGlobal === "object" &&
@@ -113,6 +114,7 @@ export default function CategoryCard() {
           {categories.length === 0 ? (
             <p className="text-gray-400 text-xs sm:text-sm text-center py-2 sm:py-3">Chưa có danh mục nào</p>
           ) : (
+            /* eslint-disable @typescript-eslint/no-explicit-any */
             categories.map((category: any) => (
               <div
                 key={category.id}
@@ -188,10 +190,11 @@ export default function CategoryCard() {
                 <SelectValue placeholder="Chọn danh mục toàn cục" />
               </SelectTrigger>
               <SelectContent>
-                {categoryGlobalList.map((global: any) => (
+                {/* eslint-disable @typescript-eslint/no-explicit-any */
+                categoryGlobalList.map((global: any) => (
                   <SelectItem key={global.id} value={global.id.toString()}>
                     <div className="flex items-center gap-2">
-                      <img
+                      <Image
                         src={global.image || "/placeholder.svg"}
                         alt={global.name}
                         className="w-4 h-4 sm:w-5 sm:h-5 rounded object-cover"

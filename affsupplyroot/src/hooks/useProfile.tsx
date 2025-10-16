@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, useEffect, useCallback } from "react";
 import api from "@/lib/Axios/axios";
 import useAuth from "./useAuth";
 
@@ -9,21 +10,24 @@ export default function useProfile() {
   const [error, setError] = useState(null);
 
   // --- GET Profile ---
-  const fetchProfile = async () => {
-    if (!state?.token) return;
-    setLoading(true);
-    try {
-      const res = await api.get("/api/v1/profile", {
-        headers: { Authorization: `Bearer ${state.token}` },
-      });
-      setProfile(res.data.data);
-    } catch (err:any) {
-      setError(err.response?.data?.message || err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const fetchProfile = useCallback(async () => {
+      if (!state?.token) return;
+      setLoading(true);
+      try {
+        const res = await api.get("/api/v1/profile", {
+          headers: { Authorization: `Bearer ${state.token}` },
+        });
+        setProfile(res.data.data);
+      } catch (err: any) {
+        setError(err.response?.data?.message || err.message);
+      } finally {
+        setLoading(false);
+      }
+    }, [state?.token]);
 
+    useEffect(() => {
+      fetchProfile();
+    }, [fetchProfile]);
   // --- PATCH Update Profile ---
   const updateProfile = async (payload:any) => {
     if (!state?.token) return;
@@ -141,11 +145,6 @@ export default function useProfile() {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchProfile();
-  }, [state?.token]);
-
   return {
     profile,
     loading,

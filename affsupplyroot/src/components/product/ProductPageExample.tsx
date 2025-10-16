@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
+import Image from "next/image"
 import ProductInteraction from "./ProductInteraction"
 
 interface ProductPageExampleProps {
@@ -25,7 +25,7 @@ export default function ProductPageExample({
       {/* Product Info */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
         <div>
-          <img
+          <Image
             src={productImage}
             alt={productName}
             className="w-full h-96 object-cover rounded-lg"

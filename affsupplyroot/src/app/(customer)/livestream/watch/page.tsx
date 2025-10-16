@@ -70,21 +70,67 @@ export default function LivestreamWatchPage() {
         <div className="flex flex-1 flex-col font-manuale">
           <div className="bg-gradient-to-b from-[#353D39] via-[#4A5551] to-[#353D39] p-3 sm:p-4">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-3">
-              <div className="flex items-center gap-2 text-xs sm:text-sm">
-                <Button
-                  onClick={() => setIsMobileSidebarOpen(true)}
-                  variant="ghost"
-                  size="icon"
-                  className="lg:hidden text-yellow-300 hover:bg-yellow-300/10 h-8 w-8 mr-2"
+            {/* Nút menu + breadcrumb */}
+            <div className="flex items-center gap-2 text-xs sm:text-sm">
+              <Button
+                onClick={() => setIsMobileSidebarOpen(true)}
+                variant="ghost"
+                size="icon"
+                className="lg:hidden text-yellow-300 hover:bg-yellow-300/10 h-8 w-8 mr-2"
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+              <Link href="/" className="text-yellow-300 text-base hover:text-yellow-200">Trang chủ</Link>
+              <ChevronRight className="h-4 w-4 text-gray-400" />
+              <Link href="/livestream" className="text-yellow-300 text-base hover:text-yellow-200">Livestreams</Link>
+              <ChevronRight className="h-4 w-4 text-gray-400" />
+              <span className="text-yellow-300 text-base">Xem</span>
+            </div>
+
+            {/* Sidebar mobile (hiện khi click Menu) */}
+            {isMobileSidebarOpen && (
+              <div className="fixed inset-0 z-50 flex">
+                {/* Overlay mờ */}
+                <div
+                  className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                  onClick={() => setIsMobileSidebarOpen(false)}
+                ></div>
+
+                {/* Sidebar nội dung */}
+                <div
+                  className="relative z-10 w-64 bg-[#353D39] text-yellow-300 p-4 flex flex-col 
+                            transform transition-transform duration-300 ease-in-out translate-x-0 animate-slide-in"
                 >
-                  <Menu className="h-5 w-5" />
-                </Button>
-                <Link href="/" className="text-yellow-300 text-base hover:text-yellow-200">Trang chủ</Link>
-                <ChevronRight className="h-4 w-4 text-gray-400" />
-                <Link href="/livestream" className="text-yellow-300 text-base hover:text-yellow-200">Livestreams</Link>
-                <ChevronRight className="h-4 w-4 text-gray-400" />
-                <span className="text-yellow-300 text-base">Xem</span>
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-lg font-semibold">Menu</h2>
+                    <Button
+                      onClick={() => setIsMobileSidebarOpen(false)}
+                      variant="ghost"
+                      size="icon"
+                      className="text-yellow-300 hover:bg-yellow-300/10"
+                    >
+                      ✕
+                    </Button>
+                  </div>
+
+                  <nav className="flex flex-col gap-2">
+                    <Link href="/" className="hover:text-yellow-200 flex items-center gap-2">
+                      <ChevronRight className="h-4 w-4" /> Trang chủ
+                    </Link>
+                    <Link href="/livestream" className="hover:text-yellow-200 flex items-center gap-2">
+                      <ChevronRight className="h-4 w-4" /> Livestreams
+                    </Link>
+                    <Link href="/profile" className="hover:text-yellow-200 flex items-center gap-2">
+                      <ChevronRight className="h-4 w-4" /> Tài khoản
+                    </Link>
+                    <Link href="/cart" className="hover:text-yellow-200 flex items-center gap-2">
+                      <ChevronRight className="h-4 w-4" /> Giỏ hàng
+                    </Link>
+                  </nav>
+                </div>
               </div>
+            )}
+
               
               {token && user && (
                 <div className="flex items-center gap-1 sm:gap-2">

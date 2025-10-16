@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Montserrat, Manuale } from "next/font/google";
 import ToastProvider from "@/components/ToastProvider";
-import Header from "@/layout/Header";
-import Footer from "@/layout/Footer";
 const montserrat = Montserrat({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],

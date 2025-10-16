@@ -353,7 +353,7 @@ export default function AdminPermissionsPage() {
     } finally {
       setLoading(false)
     }
-  }, [selectedRole, roles])
+  }, [selectedRole])
 
   const onSave = useCallback(async () => {
     if (selectedRole == null) return

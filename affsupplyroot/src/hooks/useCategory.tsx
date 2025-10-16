@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import api from '@/lib/Axios/axios';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import useAuth from './useAuth';
 
 const API_BASE = 'api/v1/categories-shop';
@@ -10,32 +11,35 @@ export default function useCategory() {
   const [error, setError] = useState<any>(null);
   const { state } = useAuth();
 
-  const fetchCategories = async () => {
-    if (!state?.token) return; 
-    setLoading(true);
+    const fetchCategories = useCallback(async () => {
+      if (!state?.token) return; 
+      setLoading(true);
 
-    try {
-      const res = await api.get(API_BASE, {
-        headers: {
-          Authorization: `Bearer ${state.token}`,
-        },
-      });
+      try {
+        const res = await api.get(API_BASE, {
+          headers: { Authorization: `Bearer ${state.token}` },
+        });
 
-      const data = res.data;
-      if (Array.isArray(data)) setCategories(data);
-      else if (data?.data && Array.isArray(data.data)) setCategories(data.data);
-      else if (data?.items && Array.isArray(data.items)) setCategories(data.items);
-      else {
-        console.warn('Unexpected categories format:', data);
-        setCategories([]);
+        const data = res.data;
+        if (Array.isArray(data)) setCategories(data);
+        else if (data?.data && Array.isArray(data.data)) setCategories(data.data);
+        else if (data?.items && Array.isArray(data.items)) setCategories(data.items);
+        else {
+          console.warn("Unexpected categories format:", data);
+          setCategories([]);
+        }
+      } catch (err: any) {
+        console.error("Lỗi fetchCategories:", err);
+        setError(err);
+      } finally {
+        setLoading(false);
       }
-    } catch (err: any) {
-      console.error('Lỗi fetchCategories:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    }, [state?.token]);
+
+    useEffect(() => {
+      fetchCategories();
+    }, [fetchCategories]);
+
 
   const fetchCategoryDetail = async (id: any) => {
     if (!state?.token) return;
@@ -110,9 +114,7 @@ export default function useCategory() {
     }
   };
 
-  useEffect(() => {
-    fetchCategories();
-  }, [state?.token]);
+
 
   return {
     categories,

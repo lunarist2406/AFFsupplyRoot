@@ -1,4 +1,5 @@
-import { useState, useCallback, useEffect } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, useCallback, useEffect, useMemo } from "react";
 import useAuth from "./useAuth";
 import api from "@/lib/Axios/axios";
 
@@ -10,11 +11,11 @@ export default function useProducts() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const headers = {
+  // 🔹 Memoize headers để dependency stable
+  const headers = useMemo(() => ({
     Authorization: `Bearer ${state?.token}`,
     "Content-Type": "application/json",
-    
-  };
+  }), [state?.token]);
 
   // 🟢 Fetch sản phẩm
   const fetchProducts = useCallback(
@@ -43,7 +44,7 @@ export default function useProducts() {
         setLoading(false);
       }
     },
-    [state?.token]
+    [headers, state?.token]
   );
 
   // 🟢 Lấy chi tiết sản phẩm
@@ -52,83 +53,66 @@ export default function useProducts() {
       if (!state?.token) return null;
       try {
         const response = await api.get(`${API_BASE}/${id}`, { headers });
-            console.log("GetProductById response:", response.data);
-
+        console.log("GetProductById response:", response.data);
         return response.data?.data;
-        
       } catch (err) {
         console.error("❌ Lỗi lấy chi tiết sản phẩm:", err);
         throw err;
       }
     },
-    [state?.token]
+    [headers, state?.token]
   );
 
   // 🟢 Tạo sản phẩm mới
-const createProduct = useCallback(
-  async (formData: any, fileList: File[]) => {
-    const form = new FormData();
+  const createProduct = useCallback(
+    async (formData: any, fileList: File[]) => {
+      const form = new FormData();
 
-    // 📝 String fields
-    [
-      "title",
-      "description",
-      "origin",
-      "brand",
-      "unit",
-      "certifications",
-      "storageInstructions",
-      "usageInstructions",
-    ].forEach((key) => {
-      if (formData[key]) form.append(key, String(formData[key]));
-    });
+      // String fields
+      [
+        "title", "description", "origin", "brand", "unit", 
+        "certifications", "storageInstructions", "usageInstructions"
+      ].forEach((key) => {
+        if (formData[key]) form.append(key, String(formData[key]));
+      });
 
-    // 🔢 Number fields
-    [
-      "basePrice",
-      "stock",
-      "minOrderQty",
-      "categoryGlobalID",
-      "categoryShopID",
-    ].forEach((key) => {
-      if (formData[key] !== undefined && formData[key] !== null)
-        form.append(key, String(Number(formData[key])));
-    });
+      // Number fields
+      ["basePrice", "stock", "minOrderQty", "categoryGlobalID", "categoryShopID"]
+        .forEach((key) => {
+          if (formData[key] !== undefined && formData[key] !== null)
+            form.append(key, String(Number(formData[key])));
+        });
 
-    // ✅ Boolean
-    form.append("isActive", String(Boolean(formData.isActive)));
+      // Boolean
+      form.append("isActive", String(Boolean(formData.isActive)));
 
-    // 🧩 Array fields
-    ["region", "condition", "season"].forEach((key) => {
-      let value = formData[key] ?? [];
-      if (!Array.isArray(value)) value = [value];
-      value
-        .flat(Infinity)
-        .map(String)
-        .map((v: any) => v.trim())
-        .filter(Boolean)
-        .forEach((v: any) => form.append(key, v));
-    });
+      // Array fields
+      ["region", "condition", "season"].forEach((key) => {
+        let value = formData[key] ?? [];
+        if (!Array.isArray(value)) value = [value];
+        value
+          .flat(Infinity)
+          .map(String)
+          .map((v: any) => v.trim())
+          .filter(Boolean)
+          .forEach((v: any) => form.append(key, v));
+      });
 
-    // 🖼️ Images
-        fileList.forEach((file) => form.append("images", file));
+      // Images
+      fileList.forEach((file) => form.append("images", file));
 
-    // 👀 Debug log
-    console.log("FormData entries:", [...form.entries()]);
+      // Override header JSON cũ cho multipart
+      const response = await api.post(API_BASE, form, {
+        headers: {
+          Authorization: `Bearer ${state?.token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
-    // 🧠 Quan trọng: override header JSON cũ
-    const response = await api.post(API_BASE, form, {
-      headers: {
-        Authorization: `Bearer ${state?.token}`,
-        "Content-Type": "multipart/form-data",
-      },
-    });
-
-    return response.data;
-  },
-  [state?.token]
-);
-
+      return response.data;
+    },
+    [state?.token]
+  );
 
   // 🟢 Cập nhật sản phẩm
   const updateProduct = useCallback(
@@ -141,7 +125,7 @@ const createProduct = useCallback(
         throw err;
       }
     },
-    [state?.token]
+    [headers]
   );
 
   // 🟢 Xóa sản phẩm
@@ -155,7 +139,7 @@ const createProduct = useCallback(
         throw err;
       }
     },
-    [state?.token]
+    [headers]
   );
 
   // 🟢 Upload ảnh sản phẩm
@@ -163,7 +147,6 @@ const createProduct = useCallback(
     async (id: number, images: File[]) => {
       const form = new FormData();
       images.forEach((img) => form.append("images", img));
-
       const response = await api.post(`${API_BASE}/${id}/images`, form, {
         headers: {
           ...headers,
@@ -172,7 +155,7 @@ const createProduct = useCallback(
       });
       return response.data;
     },
-    [state?.token]
+    [headers]
   );
 
   // 🟢 Đặt ảnh chính
@@ -185,7 +168,7 @@ const createProduct = useCallback(
       );
       return response.data;
     },
-    [state?.token]
+    [headers]
   );
 
   // 🟢 Xóa ảnh
@@ -197,11 +180,8 @@ const createProduct = useCallback(
       );
       return response.data;
     },
-    [state?.token]
+    [headers]
   );
-
-  // 🟢 Cập nhật thông tin sản phẩm
-
 
   // 🟢 Cập nhật trạng thái (ẩn / kích hoạt)
   const changeStatus = useCallback(
@@ -209,7 +189,7 @@ const createProduct = useCallback(
       const response = await api.patch(`${API_BASE}/${id}/change-status`, {}, { headers });
       return response.data;
     },
-    [state?.token]
+    [headers]
   );
 
   // --- Auto fetch khi token có sẵn ---

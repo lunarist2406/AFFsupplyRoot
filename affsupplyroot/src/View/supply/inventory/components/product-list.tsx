@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
-
 import { useState } from "react"
 import { Eye, Edit, Trash2, MoreHorizontal, AlertTriangle, MapPin, Power } from "lucide-react"
 import Image from "next/image"
@@ -39,7 +39,7 @@ export function ProductList({ products }: ProductListProps) {
   const [loading, setLoading] = useState(false)
   const [openEditDialog, setOpenEditDialog] = useState(false)
 
-  const { fetchProducts, getProductById, updateProduct, deleteProduct, changeStatus } = useProducts()
+  const { fetchProducts, getProductById,deleteProduct, changeStatus } = useProducts()
 
   const handleView = async (id: number) => {
     try {
@@ -48,7 +48,7 @@ export function ProductList({ products }: ProductListProps) {
       setSelectedProduct(product)
       setOpenDialog(true)
     } catch (err) {
-      toast.error("Không thể xem chi tiết sản phẩm!")
+      toast.error(`Không thể xem chi tiết sản phẩm!+${err}`)
     } finally {
       setLoading(false)
     }
@@ -85,7 +85,13 @@ export function ProductList({ products }: ProductListProps) {
   }
 
   return (
+    
     <>
+      {loading && (
+        <div className="absolute inset-0 bg-black/30 flex justify-center items-center z-50">
+          <span className="text-white animate-spin">⏳</span>
+        </div>
+      )}
       <Card className="font-manuale">
         <CardHeader className="p-3 sm:p-6">
           <CardTitle className="text-base sm:text-lg">Danh sách sản phẩm ({products.length})</CardTitle>

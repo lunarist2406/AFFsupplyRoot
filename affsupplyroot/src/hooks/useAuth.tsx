@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useReducer, useEffect } from "react";
 import api from "@/lib/Axios/axios";
@@ -10,12 +11,6 @@ interface User {
   name: string;
   avatar?: string;
   permissions: string[];
-}
-
-interface BackendToken {
-  accessToken: string;
-  refreshToken: string;
-  expiresIn: number;
 }
 
 interface AuthState {

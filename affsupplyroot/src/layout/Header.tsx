@@ -2,7 +2,7 @@
 import React, { useState } from "react"
 import Image from "next/image"
 import { motion } from "framer-motion"
-import { FaUserCircle, FaUser, FaSignOutAlt } from "react-icons/fa"
+import { FaUserCircle, FaUser} from "react-icons/fa"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import {
   DropdownMenu,

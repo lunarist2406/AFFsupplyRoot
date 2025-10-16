@@ -24,6 +24,7 @@ import {
 import { toast } from "sonner"
 import useAuth from "@/hooks/useAuth"
 import { Textarea } from "../ui/textarea"
+import Image from "next/image"
 
 interface CommentSectionProps {
   productId: number
@@ -195,7 +196,7 @@ export default function CommentSection({ productId, className = "", hasPurchased
                   <div className="flex gap-2 flex-wrap ml-13">
                     {selectedImages.map((image, index) => (
                       <div key={index} className="relative">
-                        <img
+                        <Image
                           src={URL.createObjectURL(image)}
                           alt={`Preview ${index + 1}`}
                           className="w-16 h-16 object-cover rounded-lg border-2 border-gray-200"
@@ -346,7 +347,7 @@ export default function CommentSection({ productId, className = "", hasPurchased
                           {comment.images && comment.images.length > 0 && (
                             <div className="flex gap-3 flex-wrap">
                               {comment.images.map((image, index) => (
-                                <img
+                                <Image
                                   key={index}
                                   src={image}
                                   alt={`Comment image ${index + 1}`}

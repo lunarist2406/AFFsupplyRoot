@@ -5,15 +5,13 @@ import { Card } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AiFillHome } from "react-icons/ai";
 import { FaBox, FaRegCommentDots, FaRegImage, FaAward } from "react-icons/fa";
-import { achievements, farmImages, featuredProducts, reviews, storeInfo as fallbackStoreInfo } from "./variable"
+import { achievements, farmImages, featuredProducts, reviews, } from "./variable"
 import { StoreCover } from "./component/store-cover"
 import { StoreHeaderInfo } from "./component/store-header-info"
 import { StoreStatsActions } from "./component/store-stats-actions"
 import { StoreDescription } from "./component/store-description"
 import { StoreActivityStats } from "./component/store-activity-stats"
 import { StoreAchievements } from "./component/store-achievements"
-import { StoreContactInfo } from "./component/store-contact-info"
-import { StorePolicies } from "./component/store-policies"
 import { FeaturedProductsSidebar } from "./component/featured-products-sidebar"
 import { ProductsGrid } from "./component/products-grid"
 import { ReviewsList } from "./component/reviews-list"
@@ -25,7 +23,7 @@ export default function SupplyProfile() {
   const [isFollowing, setIsFollowing] = useState(false)
   const { shopProfile } = useShopProfile();
   console.log(shopProfile) // <-- dùng hook của bạn
-  const storeData = shopProfile || fallbackStoreInfo; // nếu API chưa về dùng fallback
+  // const storeData = shopProfile || fallbackStoreInfo; // nếu API chưa về dùng fallback
   // console.log("storeData:", storeData)
   const handleChangeCover = () => console.log("Change cover image")
   const handleShare = () => console.log("Share store")

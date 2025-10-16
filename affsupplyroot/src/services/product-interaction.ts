@@ -74,7 +74,7 @@ export const createComment = async (
   formData.append('content', payload.content)
   
   if (payload.images && payload.images.length > 0) {
-    payload.images.forEach((image, index) => {
+    payload.images.forEach((image) => {
       formData.append(`images`, image)
     })
   }
@@ -96,7 +96,7 @@ export const updateComment = async (
   formData.append('content', payload.content)
   
   if (payload.images && payload.images.length > 0) {
-    payload.images.forEach((image, index) => {
+    payload.images.forEach((image) => {
       formData.append(`images`, image)
     })
   }

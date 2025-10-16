@@ -62,7 +62,10 @@ const handleSubmit = async (values: { email: string; password: string }) => {
     } else {
       toast.error(res?.data?.message || "Không lấy được thông tin người dùng!");
     }
-  } catch (error: any) {
+    
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   catch (error: any) {
     toast.error(error?.message || state.error || "Đăng nhập thất bại 😢");
     console.error("Login error:", error);
   }

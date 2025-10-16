@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { MessageCircle, Heart } from "lucide-react"
+import { MessageCircle } from "lucide-react"
 import LikeButton from "./LikeButton"
 import CommentSection from "./CommentSection"
 

@@ -10,10 +10,8 @@ import {
   FileText,
   UserCircle,
   Activity,
-  LogOut,
 } from "lucide-react"
-import Cookies from "js-cookie"
-import { useRouter } from "next/navigation"
+
 
 // Import các component pages
 import { AdminDashboard } from "./components/admin-dashboard"

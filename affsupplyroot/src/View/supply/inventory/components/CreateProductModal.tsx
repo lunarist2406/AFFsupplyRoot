@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
-
 import type React from "react"
 
 import { useEffect, useState } from "react"
@@ -106,7 +106,7 @@ export default function CreateProductModal({
   useEffect(() => {
     fetchCategories()
     fetchCategoriesGlobal()
-  }, [])
+  }, [fetchCategories, fetchCategoriesGlobal])
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return
@@ -549,7 +549,7 @@ export default function CreateProductModal({
               {pricingTiers.length === 0 && (
                 <div className="text-center py-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
                   <p className="text-sm text-gray-500">
-                    Chưa có mức giá nào. Nhấn "Thêm mức giá" để tạo bảng giá theo số lượng.
+                    Chưa có mức giá nào. Nhấn thêm mức giá để tạo bảng giá theo số lượng.
                   </p>
                 </div>
               )}

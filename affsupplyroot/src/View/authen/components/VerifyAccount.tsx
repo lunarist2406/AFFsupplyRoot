@@ -25,7 +25,7 @@ export default function VerifyAccount({
   const [target, setTarget] = useState("");
   const [timer, setTimer] = useState(0);
   const { forgotPassword,verifyOtp } = useAuth();
-  const { resetEmail, setResetEmail } = useResetEmail();
+  const {setResetEmail } = useResetEmail();
 
   useEffect(() => {
     let interval: NodeJS.Timeout;

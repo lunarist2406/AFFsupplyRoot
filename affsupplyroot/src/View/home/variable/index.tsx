@@ -1,11 +1,9 @@
  import {
   FaShoppingBag,
-  FaChartLine,
   FaBox,
   FaTruck,
   FaVideo,
   FaNewspaper,
-  FaHeadphones,
   FaShieldAlt,
   FaStore,
   FaUsers,

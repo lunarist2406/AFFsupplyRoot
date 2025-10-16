@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, useEffect, useCallback } from 'react'
 import useAuth from './useAuth'
 import api from '@/lib/Axios/axios'
 
@@ -42,28 +43,32 @@ interface UpdateProfilePayload {
 }
 
 const API_BASE = "api/v1/shop/profile"
-
 export default function useShopProfile() {
   const { state } = useAuth()
   const [shopProfile, setShopProfile] = useState<ShopProfile | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // --- GET profile ---
-  const fetchProfile = async () => {
-    if (!state?.token) return
-    setLoading(true)
+    // --- GET profile ---
+  const fetchProfile = useCallback(async () => {
+    if (!state?.token) return;
+
+    setLoading(true);
     try {
       const res = await api.get(API_BASE, {
         headers: { Authorization: `Bearer ${state.token}` },
-      })
-      setShopProfile(res.data.data)
+      });
+      setShopProfile(res.data.data);
     } catch (err: any) {
-      setError(err.response?.data?.message || err.message)
+      setError(err.response?.data?.message || err.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  }, [state?.token]); // chỉ thay đổi khi token thay đổi
+
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
 
   // --- PATCH update profile ---
   const updateProfile = async (payload: UpdateProfilePayload) => {
@@ -94,9 +99,6 @@ export default function useShopProfile() {
     }
   }
 
-  useEffect(() => {
-    fetchProfile()
-  }, [state?.token])
 
   return { shopProfile, loading, error, fetchProfile, updateProfile }
 }

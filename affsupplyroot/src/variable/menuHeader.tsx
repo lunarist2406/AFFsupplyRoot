@@ -1,4 +1,4 @@
-import { FaUser, FaBox, FaSignOutAlt, FaTachometerAlt, FaUsers, FaChartBar, FaComments, FaWarehouse, FaShoppingCart, FaCreditCard, FaDollarSign, FaStore, FaChartLine, FaTruck, FaTv, FaShieldAlt } from "react-icons/fa"
+import { FaBox, FaSignOutAlt, FaTachometerAlt, FaUsers, FaWarehouse,  FaStore, FaShieldAlt } from "react-icons/fa"
 
 
 export const roleMap: Record<number, string> = {

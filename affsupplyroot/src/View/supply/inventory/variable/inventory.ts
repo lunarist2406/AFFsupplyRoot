@@ -1,4 +1,5 @@
-  export const stats = {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export const stats = {
     totalProducts: 156,
     lowStock: 12,
     expiringSoon: 8,

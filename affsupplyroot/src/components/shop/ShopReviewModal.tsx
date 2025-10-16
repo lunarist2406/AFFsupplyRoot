@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -8,6 +8,7 @@ import { Star, X, Camera } from "lucide-react"
 import { createShopReview, updateShopReview, deleteShopReview, getMyShopReview, CreateShopReviewData } from "@/services/shop"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
 
 interface ShopReviewModalProps {
   isOpen: boolean
@@ -35,13 +36,7 @@ export function ShopReviewModal({ isOpen, onClose, shopId, shopName, onReviewSub
   const [myReview, setMyReview] = useState<MyReview | null>(null)
   const [isEditMode, setIsEditMode] = useState(false)
 
-  useEffect(() => {
-    if (isOpen && shopId) {
-      fetchMyReview()
-    }
-  }, [isOpen, shopId])
-
-  const fetchMyReview = async () => {
+  const fetchMyReview = useCallback(async () => {
     try {
       const response = await getMyShopReview(shopId)
       if (response.data) {
@@ -75,7 +70,14 @@ export function ShopReviewModal({ isOpen, onClose, shopId, shopName, onReviewSub
       setPreviewImages([])
       setIsEditMode(false)
     }
-  }
+  }, [shopId, router]) 
+
+  useEffect(() => {
+    if (isOpen && shopId) {
+      fetchMyReview()
+    }
+  }, [isOpen, shopId, fetchMyReview])
+
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || [])
@@ -260,7 +262,7 @@ export function ShopReviewModal({ isOpen, onClose, shopId, shopName, onReviewSub
               <div className="grid grid-cols-3 gap-2 mt-4">
                 {previewImages.map((preview, index) => (
                   <div key={index} className="relative">
-                    <img
+                    <Image
                       src={preview}
                       alt={`Preview ${index + 1}`}
                       className="w-full h-24 object-cover rounded-lg"

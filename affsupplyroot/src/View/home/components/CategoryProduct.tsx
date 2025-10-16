@@ -41,7 +41,7 @@ export function CategoryProduct() {
 
         {/* Cards */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-          {categories.map((category, index) => (
+          {categories.map((category) => (
             <MotionCard
               key={category.id}
               whileHover={{ y: -5, scale: 1.03 }}

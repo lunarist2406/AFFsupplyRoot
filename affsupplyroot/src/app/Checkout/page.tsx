@@ -13,6 +13,7 @@ import {
   FaCreditCard,
 } from "react-icons/fa";
 import { SiVisa, SiMastercard } from "react-icons/si";
+import Image from "next/image";
 
 
 const CustomDivider = () => (
@@ -28,7 +29,7 @@ type CartItem = {
 };
 
 export default function CheckoutPage() {
-  const [items, setItems] = useState<CartItem[]>([
+  const [items] = useState<CartItem[]>([
     {
       id: 1,
       name: "Thịt bò tươi chất lượng cao",
@@ -309,7 +310,7 @@ export default function CheckoutPage() {
               {items.map((it) => (
                 <div key={it.id} className="flex items-center gap-4 p-2">
                   <div className="relative h-14 w-14 overflow-hidden rounded">
-                    <img
+                    <Image
                       src={it.image}
                       alt={it.name}
                       className="h-full w-full object-contain bg-gray-50"
