@@ -4,6 +4,7 @@ import {
   ProductsByCategoryResponse,
   ProductDetailResponse
 } from "@/types/product"
+import { toast } from "sonner"
 
 // Lấy danh sách categories
 export const getCategories = async (
@@ -85,6 +86,7 @@ export const getProductBySlug = async (productSlug: string): Promise<ProductDeta
         }
       } catch (error) {
         // Bỏ qua lỗi nếu không tìm thấy trong category này
+        toast.error(`Error fetching products for category ID ${category.id}: ${error}`)
         continue
       }
     }

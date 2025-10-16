@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import useAuth from "@/hooks/useAuth";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import Link from "next/link";
 
 // Hàm tính strength password
 // Hàm tính strength password chuẩn quốc tế
@@ -253,13 +254,13 @@ export default function SignUp() {
           />
           <span className="text-gray-300 text-[0.7rem]">
             Tôi đồng ý với{" "}
-            <a href="/terms" className="text-yellow-400 hover:underline">
+            <Link href="/terms" className="text-yellow-400 hover:underline">
               Điều khoản sử dụng
-            </a>{" "}
+            </Link>{" "}
             và{" "}
-            <a href="/privacy" className="text-yellow-400 hover:underline">
+            <Link href="/privacy" className="text-yellow-400 hover:underline">
               Chính sách bảo mật
-            </a>
+            </Link>
           </span>
         </div>
 
