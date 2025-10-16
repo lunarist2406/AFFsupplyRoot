@@ -2,9 +2,9 @@ import { type NextRequest, NextResponse } from "next/server"
 
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL
 
-export async function GET(request: NextRequest, { params }: { params: { roleID: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { roleId: string } }) {
   try {
-    const roleID = params.roleID
+    const roleId = params.roleId
     const authHeader = request.headers.get("authorization")
 
     if (!authHeader) {
@@ -14,11 +14,11 @@ export async function GET(request: NextRequest, { params }: { params: { roleID: 
           statusCode: 401,
           message: "Thiếu token xác thực",
         },
-        { status: 401 },
+        { status: 401 }
       )
     }
 
-    const response = await fetch(`${NEXT_PUBLIC_API_URL}/api/v1/permission/${roleID}`, {
+    const response = await fetch(`${NEXT_PUBLIC_API_URL}/api/v1/permission/${roleId}`, {
       method: "GET",
       headers: {
         accept: "*/*",
@@ -42,14 +42,14 @@ export async function GET(request: NextRequest, { params }: { params: { roleID: 
         statusCode: 500,
         message,
       },
-      { status: 500 },
+      { status: 500 }
     )
   }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { roleID: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: { roleId: string } }) {
   try {
-    const roleID = params.roleID
+    const roleId = params.roleId
     const authHeader = request.headers.get("authorization")
 
     if (!authHeader) {
@@ -59,13 +59,13 @@ export async function PUT(request: NextRequest, { params }: { params: { roleID: 
           statusCode: 401,
           message: "Thiếu token xác thực",
         },
-        { status: 401 },
+        { status: 401 }
       )
     }
 
     const body = await request.json()
 
-    const response = await fetch(`${NEXT_PUBLIC_API_URL}/api/v1/permission/${roleID}`, {
+    const response = await fetch(`${NEXT_PUBLIC_API_URL}/api/v1/permission/${roleId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -90,7 +90,7 @@ export async function PUT(request: NextRequest, { params }: { params: { roleID: 
         statusCode: 500,
         message,
       },
-      { status: 500 },
+      { status: 500 }
     )
   }
 }
