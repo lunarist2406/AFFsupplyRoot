@@ -189,10 +189,17 @@ export default function AddressSection({ onCloseAction }: Props) {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Số điện thoại</label>
               <Input
+                type="tel"
                 value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
+                  setFormData({ ...formData, phone: value });
+                }}
                 placeholder="Nhập số điện thoại"
                 required
+                pattern="[0-9]{10}"
+                maxLength={10}
+                inputMode="numeric"
               />
             </div>
             
@@ -303,12 +310,19 @@ export default function AddressSection({ onCloseAction }: Props) {
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-gray-600 mb-1">{address.phone}</p>
-                  <p className="text-sm text-gray-600">
-                    {address.street}, {address.ward}, {address.district}, {address.province}
-                  </p>
+                  <div className="mb-1">
+                    <span className="font-medium text-xs text-gray-500 mr-1">Họ và tên:</span>
+                    <span className="text-sm text-gray-700">{address.fullName}</span>
+                  </div>
+                  <div className="mb-1">
+                    <span className="font-medium text-xs text-gray-500 mr-1">Số điện thoại:</span>
+                    <span className="text-sm text-gray-700">{address.phone}</span>
+                  </div>
+                  <div>
+                    <span className="font-medium text-xs text-gray-500 mr-1">Địa chỉ:</span>
+                    <span className="text-sm text-gray-700">{address.street}, {address.ward}, {address.district}, {address.province}</span>
+                  </div>
                 </div>
-                
                 <div className="flex gap-2 ml-4">
                   {!address.isDefault && (
                     <Button

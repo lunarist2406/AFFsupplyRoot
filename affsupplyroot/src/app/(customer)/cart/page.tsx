@@ -7,9 +7,24 @@ import Image from "next/image"
 import Link from "next/link"
 import { Minus, Plus, Trash2, ShoppingCart, ArrowLeft } from "lucide-react"
 import { motion } from "framer-motion"
+import { useRouter } from "next/navigation"
+import useAuth from "@/hooks/useAuth"
+import { toast } from "sonner"
 
 export default function CartPage() {
   const { items, updateQuantity, removeItem, getTotalPrice, getTotalItems } = useCart()
+  const router = useRouter()
+  const { state } = useAuth()
+  const { user } = state
+
+  const handleCheckout = () => {
+    if (!user) {
+      toast.error("Vui lòng đăng nhập để thanh toán")
+      router.push("/authentication")
+      return
+    }
+    router.push("/checkout")
+  }
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -83,7 +98,7 @@ export default function CartPage() {
                   <CardContent className="p-4 sm:p-6">
                     <div className="flex flex-col sm:flex-row gap-4">
                       <Link
-                        href={`/shop/${item.shopSlug}/${item.slug}`}
+                        href={`/${item.slug}`}
                         className="relative w-full sm:w-32 h-32 flex-shrink-0"
                       >
                         <Image
@@ -98,7 +113,7 @@ export default function CartPage() {
                         <div className="flex justify-between items-start gap-4">
                           <div className="flex-1 min-w-0">
                             <Link
-                              href={`/shop/${item.shopSlug}/${item.slug}`}
+                              href={`/${item.slug}`}
                               className="hover:text-green-600 transition-colors"
                             >
                               <h3 className="text-lg font-semibold text-gray-900 mb-1 line-clamp-2">
@@ -212,11 +227,12 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                <Link href="/checkout">
-                  <Button className="w-full bg-green-600 hover:bg-green-700 text-white py-6 text-lg font-bold rounded-lg shadow-lg mb-3">
-                    Tiến hành thanh toán
-                  </Button>
-                </Link>
+                <Button 
+                  onClick={handleCheckout}
+                  className="w-full bg-green-600 hover:bg-green-700 text-white py-6 text-lg font-bold rounded-lg shadow-lg mb-3"
+                >
+                  Tiến hành thanh toán
+                </Button>
 
                 <Link href="/products/trai-cay-tuoi">
                   <Button

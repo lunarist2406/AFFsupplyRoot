@@ -114,15 +114,15 @@ export const ShopInfo = memo(function ShopInfo({ shop, hideViewShop = false }: S
       transition={{ duration: 0.5 }}
     >
       <Card className="w-full bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-xl">
-        <CardContent className="p-6">
-          <div className="flex gap-6">
-            <div className="flex-shrink-0 w-[28rem]">
-              <div className="flex items-center gap-4 mb-4">
+        <CardContent className="p-2 sm:p-4">
+          <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
+            <div className="w-full lg:flex-shrink-0 lg:w-[28rem]">
+              <div className="flex flex-row items-start gap-3">
                 <Link href={`/shop/${shop.slug}`} prefetch>
                   <motion.div 
                     whileHover={{ scale: 1.05 }} 
                     whileTap={{ scale: 0.95 }}
-                    className="cursor-pointer"
+                    className="cursor-pointer flex-shrink-0"
                   >
                     <Avatar className="h-16 w-16 border-2 border-orange-400">
                       <AvatarImage 
@@ -136,7 +136,7 @@ export const ShopInfo = memo(function ShopInfo({ shop, hideViewShop = false }: S
                   </motion.div>
                 </Link>
                 
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     {shop.status === "APPROVED" && (
                       <Badge className="bg-green-500 text-white text-xs px-2 py-1 rounded">
@@ -145,16 +145,16 @@ export const ShopInfo = memo(function ShopInfo({ shop, hideViewShop = false }: S
                     )}
                   </div>
                   
-                  <h3 className="text-xl font-bold text-gray-900 mb-1">
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-1 truncate">
                     <Link href={`/shop/${shop.slug}`} prefetch className="cursor-pointer hover:text-orange-500 transition-colors">
                       {shop.brandName}
                     </Link>
                   </h3>
                   
-                  <p className="text-sm text-gray-600 mb-1">{shop.companyName}</p>
+                  <p className="text-sm text-gray-600 mb-1 truncate">{shop.companyName}</p>
                   <p className="text-xs text-gray-500 mb-3">Tham gia: {new Date(shop.createdAt).toLocaleDateString('vi-VN')}</p>
                   
-                  <div className="flex gap-2 mb-4">
+                  <div className="flex flex-wrap gap-2 mb-4">
                     <div className="flex items-center gap-1 bg-yellow-100 px-3 py-1 rounded-full">
                       <Star className="h-3 w-3 fill-yellow-500 text-yellow-500" />
                       <span className="text-xs font-bold text-yellow-600">
@@ -207,12 +207,12 @@ export const ShopInfo = memo(function ShopInfo({ shop, hideViewShop = false }: S
                   </Link>
                 )}
                 
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   <Button 
                     onClick={handleChat}
                     variant="outline" 
                     size="sm"
-                    className="border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white font-medium cursor-pointer"
+                    className="w-full border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white font-medium cursor-pointer"
                   >
                     <MessageCircle className="h-4 w-4 mr-1" />
                     Chat
@@ -231,12 +231,11 @@ export const ShopInfo = memo(function ShopInfo({ shop, hideViewShop = false }: S
                   
                   <Button 
                     onClick={() => {
-                      // Có thể thêm logic kiểm tra auth ở đây nếu cần
                       setIsReviewModalOpen(true)
                     }}
                     variant="outline" 
                     size="sm"
-                    className="border-green-500 text-green-500 hover:bg-green-500 hover:text-white font-medium cursor-pointer"
+                    className="w-full border-green-500 text-green-500 hover:bg-green-500 hover:text-white font-medium cursor-pointer"
                   >
                     <Star className="h-4 w-4 mr-1" />
                     {hasReviewed ? "Sửa" : "Đánh giá"}
@@ -260,11 +259,11 @@ export const ShopInfo = memo(function ShopInfo({ shop, hideViewShop = false }: S
               </div>
             </div>
 
-            <div className="flex-1 pl-6 border-l border-gray-200">
+            <div className="w-full lg:flex-1 lg:pl-6 lg:border-l lg:border-gray-200 mt-6 lg:mt-0">
               <h4 className="text-lg font-bold text-gray-900 mb-4">Thống kê shop</h4>
-              <div className="grid grid-cols-1 gap-0">
-                <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                  <span className="text-gray-600 font-medium">Đánh Giá</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
+                <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100">
+                  <span className="text-gray-600 font-medium text-sm">Đánh Giá</span>
                   <div className="text-right">
                     <span className="text-orange-600 font-bold text-lg">
                       {shop.avgRating > 0 ? shop.avgRating.toFixed(1) : "Chưa có"}
@@ -276,8 +275,8 @@ export const ShopInfo = memo(function ShopInfo({ shop, hideViewShop = false }: S
                     )}
                   </div>
                 </div>
-                <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                  <span className="text-gray-600 font-medium">Danh Mục</span>
+                <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100">
+                  <span className="text-gray-600 font-medium text-sm">Danh Mục</span>
                   <div className="text-right">
                     {shop.categoriesShop && shop.categoriesShop.length > 0 ? (
                       <div className="flex flex-col gap-1">
@@ -303,20 +302,20 @@ export const ShopInfo = memo(function ShopInfo({ shop, hideViewShop = false }: S
                     )}
                   </div>
                 </div>
-                <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                  <span className="text-gray-600 font-medium">Trạng Thái</span>
+                <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100">
+                  <span className="text-gray-600 font-medium text-sm">Trạng Thái</span>
                   <span className="text-orange-600 font-bold text-lg">
                     {shop.status === "APPROVED" ? "Đã xác thực" : shop.status}
                   </span>
                 </div>
-                <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                  <span className="text-gray-600 font-medium">Tham Gia</span>
+                <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100">
+                  <span className="text-gray-600 font-medium text-sm">Tham Gia</span>
                   <span className="text-orange-600 font-bold text-lg">
                     {new Date(shop.createdAt).toLocaleDateString('vi-VN')}
                   </span>
                 </div>
-                <div className="flex justify-between items-center py-3">
-                  <span className="text-gray-600 font-medium">Người Theo Dõi</span>
+                <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-100 sm:col-span-2 lg:col-span-1">
+                  <span className="text-gray-600 font-medium text-sm">Người Theo Dõi</span>
                   <span className="text-orange-600 font-bold text-lg">{followersCount}</span>
                 </div>
               </div>

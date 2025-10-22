@@ -1,12 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import api from "@/lib/Axios/axios"
 import { 
   CategoryResponse, 
   ProductsByCategoryResponse,
   ProductDetailResponse
 } from "@/types/product"
-import { toast } from "sonner"
+import { productSlugMapManager } from "@/hooks/useProductSlugMap"
 
-// Lấy danh sách categories
 export const getCategories = async (
   page: number = 1, 
   limit: number = 10, 
@@ -30,7 +30,6 @@ export const getCategories = async (
   }
 }
 
-// Lấy sản phẩm theo category global ID
 export const getProductsByCategoryGlobal = async (
   categoryId: number,
   page: number = 1,
@@ -55,7 +54,6 @@ export const getProductsByCategoryGlobal = async (
   }
 }
 
-// Lấy chi tiết sản phẩm theo ID
 export const getProductById = async (productId: number | string): Promise<ProductDetailResponse> => {
   try {
     const response = await api.get(`/api/v1/public/product/${productId}`)
@@ -66,27 +64,65 @@ export const getProductById = async (productId: number | string): Promise<Produc
   }
 }
 
-// Lấy chi tiết sản phẩm theo slug
+// Preload tất cả slug mappings vào cache (gọi khi app khởi động)
+export const preloadProductSlugMappings = async (): Promise<void> => {
+  try {
+    const categoriesResponse = await getCategories(1, 50)
+    const categories = categoriesResponse.data.items
+    
+    for (const category of categories) {
+      try {
+        const productsResponse = await getProductsByCategoryGlobal(category.id, 1, 100)
+        const products = productsResponse.data.products
+        
+        if (products.length > 0) {
+          const mappings = products.map(p => ({
+            slug: p.slug,
+            id: p.id,
+            categoryId: category.id
+          }))
+          productSlugMapManager.addMappings(mappings)
+        }
+      } catch (error) {
+      }
+    }
+    
+  } catch (error) {
+  }
+}
+
 export const getProductBySlug = async (productSlug: string): Promise<ProductDetailResponse> => {
   try {
-    // Tìm product ID từ slug bằng cách lấy tất cả categories và tìm trong products
-    const categoriesResponse = await getCategories(1, 50)
+    const cachedId = productSlugMapManager.getProductId(productSlug)
+    
+    if (cachedId) {
+      return await getProductById(cachedId)
+    }
+    const categoriesResponse = await getCategories(1, 20)
     const categories = categoriesResponse.data.items
     
     let productId: number | null = null
     
-    // Tìm product trong tất cả categories
     for (const category of categories) {
       try {
         const productsResponse = await getProductsByCategoryGlobal(category.id, 1, 100)
-        const product = productsResponse.data.products.find(p => p.slug === productSlug)
+        const products = productsResponse.data.products
+        
+        if (products.length > 0) {
+          const mappings = products.map(p => ({
+            slug: p.slug,
+            id: p.id,
+            categoryId: category.id
+          }))
+          productSlugMapManager.addMappings(mappings)
+        }
+        
+        const product = products.find(p => p.slug === productSlug)
         if (product) {
           productId = product.id
           break
         }
       } catch (error) {
-        // Bỏ qua lỗi nếu không tìm thấy trong category này
-        toast.error(`Error fetching products for category ID ${category.id}: ${error}`)
         continue
       }
     }
@@ -95,7 +131,6 @@ export const getProductBySlug = async (productSlug: string): Promise<ProductDeta
       throw new Error(`Product with slug "${productSlug}" not found`)
     }
     
-    // Lấy chi tiết sản phẩm bằng ID
     return await getProductById(productId)
   } catch (error) {
     console.error("Error fetching product by slug:", error)

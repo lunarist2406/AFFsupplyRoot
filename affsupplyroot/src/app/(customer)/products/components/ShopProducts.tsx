@@ -153,7 +153,7 @@ export function ShopProducts({ shopSlug, currentProductId }: ShopProductsProps) 
         key={product.id} 
         className="bg-white hover:shadow-lg transition-all duration-300 border border-gray-200 cursor-pointer group"
       >
-        <Link prefetch href={`/products/${product.CategoryGlobal.name.toLowerCase().replace(/\s+/g, '-')}/${product.slug}`}>
+        <Link prefetch href={`/${product.slug}`}>
           <CardContent className="p-0">
             <div className="relative">
               <div className="h-48 bg-gray-50 rounded-t-lg overflow-hidden">
