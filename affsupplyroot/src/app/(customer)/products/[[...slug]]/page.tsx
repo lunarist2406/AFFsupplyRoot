@@ -13,7 +13,6 @@ export default function ProductsMainPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [sortBy, setSortBy] = useState("name-asc")
 
-  // Lấy category slug từ URL - slug[0] là category, slug[1] là product (nếu có)
   const categorySlug = Array.isArray(params.slug) && params.slug.length > 0 ? params.slug[0] : null
 
   useEffect(() => {
@@ -23,7 +22,6 @@ export default function ProductsMainPage() {
         const items = res.data.items
         setCategories(items)
         
-        // Nếu không có category slug, tự động redirect đến danh mục đầu tiên
         if (!categorySlug && items.length > 0) {
           router.replace(`/products/${items[0].slug}`)
         }

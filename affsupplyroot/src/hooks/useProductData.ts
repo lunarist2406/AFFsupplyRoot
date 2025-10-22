@@ -2,6 +2,7 @@ import useSWR, { SWRConfiguration } from 'swr'
 import { getProductById, getProductsByCategoryGlobal } from '@/services/product'
 import { getShopBySlug } from '@/services/shop'
 import type { ProductDetail, ProductByCategoryGlobal } from '@/types/product'
+import { productSlugMapManager } from './useProductSlugMap'
 
 const swrConfig: SWRConfiguration = {
   revalidateOnFocus: false, 
@@ -11,7 +12,6 @@ const swrConfig: SWRConfiguration = {
   keepPreviousData: true,
   onError: (error) => {
     console.error('SWR Error:', error)
-    // TODO: Add toast notification for user feedback
   }
 }
 
@@ -55,10 +55,6 @@ export const useShop = (shopSlug: string | null) => {
   }
 }
 
-/**
- * Hook for fetching products by category with search support
- * Sử dụng SWR để cache và tự động revalidate data
- */
 export const useProductsByCategory = (
   categorySlug: string | null,
   searchTerm: string = '',
@@ -74,7 +70,18 @@ export const useProductsByCategory = (
         return []
       }
       const response = await getProductsByCategoryGlobal(categoryId, 1, 30, searchTerm)
-      return response.data.products || []
+      const products = response.data.products || []
+      
+      if (products.length > 0) {
+        const mappings = products.map(p => ({
+          slug: p.slug,
+          id: p.id,
+          categoryId: categoryId
+        }))
+        productSlugMapManager.addMappings(mappings)
+      }
+      
+      return products
     },
     swrConfig
   )

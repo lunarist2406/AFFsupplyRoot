@@ -115,7 +115,7 @@ export default function ShopAllProducts({ shopSlug }: { shopSlug: string }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {products.map(p => (
               <Card key={p.id} className="bg-white border border-gray-200 hover:shadow-lg transition-all">
-                <Link href={`/products/${p.CategoryGlobal.name.toLowerCase().replace(/\s+/g,'-')}/${p.slug}`}>
+                <Link href={`/${p.slug}`}>
                   <CardContent className="p-0">
                     <div className="h-48 bg-gray-50 rounded-t-lg overflow-hidden">
                       <Image src={getImg(p)} alt={p.title} width={400} height={400} className="w-full h-full object-cover" />

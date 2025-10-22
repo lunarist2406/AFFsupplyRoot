@@ -199,6 +199,8 @@ export default function CommentSection({ productId, className = "", hasPurchased
                         <Image
                           src={URL.createObjectURL(image)}
                           alt={`Preview ${index + 1}`}
+                          width={64}
+                          height={64}
                           className="w-16 h-16 object-cover rounded-lg border-2 border-gray-200"
                         />
                         <button
@@ -351,6 +353,8 @@ export default function CommentSection({ productId, className = "", hasPurchased
                                   key={index}
                                   src={image}
                                   alt={`Comment image ${index + 1}`}
+                                  width={80}
+                                  height={80}
                                   className="w-20 h-20 object-cover rounded-lg border border-gray-200 cursor-pointer hover:opacity-90 transition-opacity"
                                   onClick={() => window.open(image, '_blank')}
                                 />

@@ -18,7 +18,7 @@ export interface CartItem {
 
 interface CartContextType {
   items: CartItem[]
-  addItem: (item: Omit<CartItem, "quantity">) => void
+  addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void
   removeItem: (id: number) => void
   updateQuantity: (id: number, quantity: number) => void
   clearCart: () => void
@@ -43,17 +43,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  // Save cart to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(items))
   }, [items])
 
-  const addItem = (newItem: Omit<CartItem, "quantity">) => {
+  const addItem = (newItem: Omit<CartItem, "quantity">, customQuantity?: number) => {
     setItems((prevItems) => {
       const existingItem = prevItems.find((item) => item.id === newItem.id)
+      const quantityToAdd = customQuantity || newItem.minOrderQty
       
       if (existingItem) {
-        const newQuantity = existingItem.quantity + newItem.minOrderQty
+        const newQuantity = existingItem.quantity + quantityToAdd
         
         if (newQuantity > newItem.stock) {
           toast.error(`Không thể thêm. Chỉ còn ${newItem.stock} sản phẩm trong kho`)
@@ -68,8 +68,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
         )
       }
       
+      if (quantityToAdd < newItem.minOrderQty) {
+        toast.error(`Số lượng tối thiểu là ${newItem.minOrderQty}`)
+        return prevItems
+      }
+      
+      if (quantityToAdd > newItem.stock) {
+        toast.error(`Chỉ còn ${newItem.stock} sản phẩm trong kho`)
+        return prevItems
+      }
+      
       toast.success(`Đã thêm ${newItem.title} vào giỏ hàng`)
-      return [...prevItems, { ...newItem, quantity: newItem.minOrderQty }]
+      return [...prevItems, { ...newItem, quantity: quantityToAdd }]
     })
   }
 
