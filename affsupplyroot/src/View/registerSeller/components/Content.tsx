@@ -114,7 +114,7 @@ export default function Content() {
               className="absolute inset-0 bg-yellow-400/20 blur-2xl rounded-full"
             />
             <p className="relative text-gray-300 italic font-medium text-lg">
-              "Bắt đầu hôm nay – thành công ngày mai."
+              Bắt đầu hôm nay – thành công ngày mai.
             </p>
           </div>
         </motion.div>

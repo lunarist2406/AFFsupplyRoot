@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, useMemo, useCallback } from "react";
 import api from "@/lib/Axios/axios";
 import useAuth from "./useAuth";
 import { toast } from "sonner";
@@ -112,22 +113,22 @@ export default function useRegisterSeller() {
   // ==============================
   // 🟠 3️⃣ Lấy danh sách seller (admin)
   // ==============================
-  const fetchSellers = async (status?: string) => {
-    if (!token) return [];
-    setLoading(true);
-    try {
-      const { data } = await api.get<APIResponse<Seller[]>>("/api/v1/sellers", {
-        headers,
-        params: status ? { status } : {},
-      });
-      return data.data;
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Không thể tải danh sách seller");
-      return [];
-    } finally {
-      setLoading(false);
-    }
-  };
+const fetchSellers = useCallback(async (status?: string) => {
+  if (!token) return [];
+  setLoading(true);
+  try {
+    const { data } = await api.get<APIResponse<Seller[]>>("/api/v1/sellers", {
+      headers,
+      params: status ? { status } : {},
+    });
+    return data.data;
+  } catch (err: any) {
+    toast.error(err.response?.data?.message || "Không thể tải danh sách seller");
+    return [];
+  } finally {
+    setLoading(false);
+  }
+}, [token, headers]);
 
   // ==============================
   // 🔵 4️⃣ Lấy chi tiết seller

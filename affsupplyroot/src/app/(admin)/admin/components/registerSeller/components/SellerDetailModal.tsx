@@ -26,6 +26,7 @@ import {
 import { Seller } from '../variable/seller';
 import StatusBadge from './StatusBadge';
 import RejectDialog from './RejectDialog';
+import Image from 'next/image';
 
 
 interface SellerDetailDialogProps {
@@ -73,7 +74,7 @@ export default function SellerDetailDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-2xl max-h-[85vh] overflow-hidden flex flex-col">
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-hidden flex flex-col ">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold flex items-center gap-2">
               <Building2 className="h-6 w-6 text-primary" />
@@ -140,10 +141,12 @@ export default function SellerDetailDialog({
                     <Label className="text-sm font-medium">Logo</Label>
                   </div>
                   <div className="relative w-32 h-32 rounded-lg overflow-hidden border-2 border-muted">
-                    <img
+                    <Image
                       src={seller.logoUrl}
                       alt="Logo"
                       className="w-full h-full object-cover"
+                      height = {40}
+                      width = {40}
                     />
                   </div>
                 </div>

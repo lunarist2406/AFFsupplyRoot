@@ -30,6 +30,7 @@ import {
 import { Seller } from '../variable/seller';
 import StatusBadge from './StatusBadge';
 import RejectDialog from './RejectDialog';
+import Image from 'next/image';
 
 interface SellersTableProps {
   sellers: Seller[];
@@ -133,12 +134,14 @@ export default function SellersTable({
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-3">
                         {seller.logoUrl && (
-                          <img
-                            src={seller.logoUrl}
-                            alt=""
-                            className="h-10 w-10 rounded-md object-cover border"
-                          />
-                        )}
+                                <Image
+                                src={seller.logoUrl}
+                                alt="Logo"
+                                width={40}
+                                height={40}
+                                className="h-10 w-10 rounded-md object-cover border"
+                                />
+                                )}
                         <span>{seller.brandName}</span>
                       </div>
                     </TableCell>

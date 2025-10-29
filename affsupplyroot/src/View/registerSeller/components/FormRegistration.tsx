@@ -1,10 +1,14 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Upload, Building2, Phone, MapPin, FileText, ImageIcon, CheckCircle2, Store } from "lucide-react";
+import { Upload, Building2, Phone, MapPin, FileText, ImageIcon, CheckCircle2, Store, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import useRegisterSeller from "@/hooks/useRegisterSeller";
+import Image from "next/image";
+import * as yup from "yup";
+import { sellerSchema } from "../schemas/sellerSchema";
 
 const inputFields = [
   { id: "companyName", label: "Tên công ty", icon: Building2, placeholder: "Nhập tên công ty" },
@@ -21,7 +25,7 @@ const uploadFields = [
 ];
 
 export default function FormRegistration() {
-  const { registerSeller, loading, error } = useRegisterSeller();
+  const { registerSeller, loading } = useRegisterSeller();
   
   const [previews, setPreviews] = useState({
     idCardFront: "",
@@ -30,12 +34,40 @@ export default function FormRegistration() {
     foodSafetyCert: "",
   });
   const [focusedField, setFocusedField] = useState("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
     if (files && files[0]) {
       const fileURL = URL.createObjectURL(files[0]);
       setPreviews((prev) => ({ ...prev, [name]: fileURL }));
+      
+      // Clear error when file is selected
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+      setTouchedFields((prev) => ({ ...prev, [name]: true }));
+    }
+  };
+
+  const handleFieldBlur = (fieldName: string) => {
+    setFocusedField("");
+    setTouchedFields((prev) => ({ ...prev, [fieldName]: true }));
+  };
+
+  const validateField = async (fieldName: string, value: any) => {
+    try {
+      const fieldSchema = yup.reach(sellerSchema, fieldName) as yup.AnySchema;
+      await fieldSchema.validate(value);
+      setErrors((prev) => ({ ...prev, [fieldName]: "" }));
+    } catch (err: any) {
+      setErrors((prev) => ({ ...prev, [fieldName]: err.message }));
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    if (touchedFields[name]) {
+      validateField(name, value);
     }
   };
 
@@ -57,6 +89,10 @@ export default function FormRegistration() {
     };
 
     try {
+      // Validate all fields
+      await sellerSchema.validate(payload, { abortEarly: false });
+      
+      // Submit if validation passes
       await registerSeller(payload);
       toast.success("🎉 Đăng ký seller thành công!");
       form.reset();
@@ -66,8 +102,30 @@ export default function FormRegistration() {
         businessLicense: "",
         foodSafetyCert: "",
       });
-    } catch {
-      toast.error("❌ Gửi biểu mẫu thất bại. Vui lòng thử lại!");
+      setErrors({});
+      setTouchedFields({});
+    } catch (err: any) {
+      if (err instanceof yup.ValidationError) {
+        // Handle validation errors
+        const validationErrors: Record<string, string> = {};
+        err.inner.forEach((error) => {
+          if (error.path) {
+            validationErrors[error.path] = error.message;
+          }
+        });
+        setErrors(validationErrors);
+        
+        // Mark all fields as touched
+        const allTouched: Record<string, boolean> = {};
+        Object.keys(validationErrors).forEach((key) => {
+          allTouched[key] = true;
+        });
+        setTouchedFields(allTouched);
+        
+        toast.error("❌ Vui lòng kiểm tra lại thông tin!");
+      } else {
+        toast.error("❌ Gửi biểu mẫu thất bại. Vui lòng thử lại!");
+      }
     }
   };
 
@@ -103,34 +161,106 @@ export default function FormRegistration() {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
-            {inputFields.map((field, index) => {
+            {/* Hai cột đầu (Tên công ty + Thương hiệu) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {inputFields.slice(0, 2).map((field, index) => {
+                const Icon = field.icon;
+                const hasError = errors[field.id] && touchedFields[field.id];
+                return (
+                  <motion.div
+                    key={field.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 + index * 0.05 }}
+                  >
+                    <label htmlFor={field.id} className="block text-sm font-medium text-yellow-300 mb-2">
+                      {field.label}
+                    </label>
+                    <div className="relative">
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none z-10">
+                        <Icon
+                          className={`w-5 h-5 transition-colors ${
+                            focusedField === field.id ? "text-yellow-400" : 
+                            hasError ? "text-red-400" : "text-gray-500"
+                          }`}
+                        />
+                      </div>
+                      <input
+                        id={field.id}
+                        name={field.id}
+                        placeholder={field.placeholder}
+                        className={`w-full pl-12 pr-4 py-3 bg-gray-800/50 border rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 transition-all ${
+                          hasError
+                            ? "border-red-500 focus:border-red-400 focus:ring-red-400/20"
+                            : "border-gray-700/50 focus:border-yellow-400 focus:ring-yellow-400/20"
+                        }`}
+                        onFocus={() => setFocusedField(field.id)}
+                        onBlur={() => handleFieldBlur(field.id)}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    {hasError && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="flex items-center gap-1 mt-1.5 text-red-400 text-xs"
+                      >
+                        <AlertCircle className="w-3 h-3 flex-shrink-0" />
+                        <span>{errors[field.id]}</span>
+                      </motion.div>
+                    )}
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            {/* Các field còn lại */}
+            {inputFields.slice(2).map((field, index) => {
               const Icon = field.icon;
+              const hasError = errors[field.id] && touchedFields[field.id];
               return (
                 <motion.div
                   key={field.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 + index * 0.05 }}
+                  transition={{ delay: 0.45 + index * 0.05 }}
                 >
                   <label htmlFor={field.id} className="block text-sm font-medium text-yellow-300 mb-2">
                     {field.label}
                   </label>
                   <div className="relative">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                      <Icon className={`w-5 h-5 transition-colors ${
-                        focusedField === field.id ? 'text-yellow-400' : 'text-gray-500'
-                      }`} />
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none z-10">
+                      <Icon
+                        className={`w-5 h-5 transition-colors ${
+                          focusedField === field.id ? "text-yellow-400" : 
+                          hasError ? "text-red-400" : "text-gray-500"
+                        }`}
+                      />
                     </div>
                     <input
                       id={field.id}
                       name={field.id}
                       placeholder={field.placeholder}
-                      className="w-full pl-12 pr-4 py-3 bg-gray-800/50 border border-gray-700/50 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 transition-all"
+                      className={`w-full pl-12 pr-4 py-3 bg-gray-800/50 border rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 transition-all ${
+                        hasError
+                          ? "border-red-500 focus:border-red-400 focus:ring-red-400/20"
+                          : "border-gray-700/50 focus:border-yellow-400 focus:ring-yellow-400/20"
+                      }`}
                       onFocus={() => setFocusedField(field.id)}
-                      onBlur={() => setFocusedField("")}
-                      required
+                      onBlur={() => handleFieldBlur(field.id)}
+                      onChange={handleInputChange}
                     />
                   </div>
+                  {hasError && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex items-center gap-1 mt-1.5 text-red-400 text-xs"
+                    >
+                      <AlertCircle className="w-3 h-3 flex-shrink-0" />
+                      <span>{errors[field.id]}</span>
+                    </motion.div>
+                  )}
                 </motion.div>
               );
             })}
@@ -148,10 +278,25 @@ export default function FormRegistration() {
                 id="description"
                 name="description"
                 placeholder="Giới thiệu ngắn về doanh nghiệp..."
-                className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700/50 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 transition-all resize-none"
+                className={`w-full px-4 py-3 bg-gray-800/50 border rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 transition-all resize-none ${
+                  errors.description && touchedFields.description
+                    ? "border-red-500 focus:border-red-400 focus:ring-red-400/20"
+                    : "border-gray-700/50 focus:border-yellow-400 focus:ring-yellow-400/20"
+                }`}
                 rows={3}
-                required
+                onBlur={() => handleFieldBlur("description")}
+                onChange={handleInputChange}
               />
+              {errors.description && touchedFields.description && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-center gap-1 mt-1.5 text-red-400 text-xs"
+                >
+                  <AlertCircle className="w-3 h-3 flex-shrink-0" />
+                  <span>{errors.description}</span>
+                </motion.div>
+              )}
             </motion.div>
 
             {/* Upload Section */}
@@ -165,59 +310,82 @@ export default function FormRegistration() {
                 Tài liệu đính kèm
               </h3>
               <div className="grid grid-cols-2 gap-4">
-                {uploadFields.map((field, index) => (
-                  <motion.div
-                    key={field.id}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.75 + index * 0.05 }}
-                    className="relative group"
-                  >
-                    <label
-                      htmlFor={field.id}
-                      className="block text-xs text-gray-400 mb-2"
+                {uploadFields.map((field, index) => {
+                  const hasError = errors[field.id] && touchedFields[field.id];
+                  return (
+                    <motion.div
+                      key={field.id}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.75 + index * 0.05 }}
+                      className="relative group"
                     >
-                      {field.label}
-                    </label>
-                    
-                    {previews[field.id as keyof typeof previews] ? (
-                      <div className="relative">
-                        <img
-                          src={previews[field.id as keyof typeof previews]}
-                          alt={field.label}
-                          className="w-full h-32 object-cover rounded-lg border-2 border-yellow-400/30"
-                        />
-                        <div className="absolute top-2 right-2 bg-green-500 rounded-full p-1">
-                          <CheckCircle2 className="w-4 h-4 text-white" />
-                        </div>
-                        <label
-                          htmlFor={field.id}
-                          className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer rounded-lg"
-                        >
-                          <span className="text-white text-sm">Đổi ảnh</span>
-                        </label>
-                      </div>
-                    ) : (
                       <label
                         htmlFor={field.id}
-                        className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-700 rounded-lg cursor-pointer bg-gray-800/30 hover:bg-gray-800/50 hover:border-yellow-400/50 transition-all group"
+                        className="block text-xs text-gray-400 mb-2"
                       >
-                        <ImageIcon className="w-8 h-8 text-gray-600 group-hover:text-yellow-400 transition-colors" />
-                        <span className="text-xs text-gray-500 mt-2">Tải lên</span>
+                        {field.label}
                       </label>
-                    )}
-                    
-                    <input
-                      id={field.id}
-                      name={field.id}
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="hidden"
-                      required
-                    />
-                  </motion.div>
-                ))}
+                      
+                      {previews[field.id as keyof typeof previews] ? (
+                        <div className="relative">
+                          <Image
+                            src={previews[field.id as keyof typeof previews]}
+                            alt={field.label}
+                            className="w-full h-32 object-cover rounded-lg border-2 border-yellow-400/30"
+                            height={128}
+                            width={200}
+                          />
+                          <div className="absolute top-2 right-2 bg-green-500 rounded-full p-1">
+                            <CheckCircle2 className="w-4 h-4 text-white" />
+                          </div>
+                          <label
+                            htmlFor={field.id}
+                            className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer rounded-lg"
+                          >
+                            <span className="text-white text-sm">Đổi ảnh</span>
+                          </label>
+                        </div>
+                      ) : (
+                        <label
+                          htmlFor={field.id}
+                          className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-800/30 hover:bg-gray-800/50 transition-all group ${
+                            hasError
+                              ? "border-red-500 hover:border-red-400"
+                              : "border-gray-700 hover:border-yellow-400/50"
+                          }`}
+                        >
+                          <ImageIcon className={`w-8 h-8 transition-colors ${
+                            hasError
+                              ? "text-red-400"
+                              : "text-gray-600 group-hover:text-yellow-400"
+                          }`} />
+                          <span className="text-xs text-gray-500 mt-2">Tải lên</span>
+                        </label>
+                      )}
+                      
+                      <input
+                        id={field.id}
+                        name={field.id}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="hidden"
+                      />
+                      
+                      {hasError && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -5 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="flex items-center gap-1 mt-1.5 text-red-400 text-xs"
+                        >
+                          <AlertCircle className="w-3 h-3 flex-shrink-0" />
+                          <span>{errors[field.id]}</span>
+                        </motion.div>
+                      )}
+                    </motion.div>
+                  );
+                })}
               </div>
             </motion.div>
 
@@ -245,10 +413,6 @@ export default function FormRegistration() {
                 "Gửi đăng ký"
               )}
             </motion.button>
-
-            {error && (
-              <p className="text-red-400 text-sm text-center mt-2">{error}</p>
-            )}
           </form>
         </motion.div>
       </div>

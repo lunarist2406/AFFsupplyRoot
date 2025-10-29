@@ -1,13 +1,14 @@
 // app/controlling-seller/page.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import SellersTable from "./components/SellersTable";
 import SellerDetailDialog from "./components/SellerDetailModal";
 import useRegisterSeller, { Seller } from "@/hooks/useRegisterSeller";
+type SellerStatus = "PENDING" | "APPROVED" | "REJECTED";
 
 export default function ControllingSeller() {
   const {
@@ -24,19 +25,20 @@ export default function ControllingSeller() {
   const [openDetail, setOpenDetail] = useState(false);
 
   // Fetch seller list theo status
-  const loadSellers = async () => {
-    try {
-      const data = await fetchSellers(status);
-      setSellers(data || []);
-    } catch (error) {
-      console.error("Error fetching sellers:", error);
-      toast.error("Không thể tải danh sách người bán.");
-    }
-  };
+const loadSellers = useCallback(async () => {
+  try {
+    const data = await fetchSellers(status);
+    setSellers(data || []);
+  } catch (error) {
+    console.error("Error fetching sellers:", error);
+    toast.error("Không thể tải danh sách người bán.");
+  }
+}, [fetchSellers, status]);
 
-  useEffect(() => {
-    loadSellers();
-  }, [status]);
+useEffect(() => {
+  loadSellers();
+}, [loadSellers]);
+
 
   const handleViewDetail = async (id: string) => {
     try {
@@ -74,7 +76,7 @@ export default function ControllingSeller() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-6">
+    <div className="min-h-screen bg-gradient-to-r from-green-950 via-gray-600 to-green-950 dark:from-slate-950 dark:to-slate-900 p-6 font-manuale">
       <div className="max-w-7xl mx-auto">
         <div className="bg-card rounded-2xl shadow-xl border p-8">
           {/* Header */}
@@ -88,7 +90,7 @@ export default function ControllingSeller() {
           </div>
 
           {/* Tabs */}
-          <Tabs value={status} onValueChange={(v) => setStatus(v as any)}>
+          <Tabs value={status} onValueChange={(v) => setStatus(v as SellerStatus)}>
             <TabsList className="grid w-full grid-cols-3 lg:w-auto">
               <TabsTrigger value="PENDING" className="gap-2">
                 Chờ duyệt

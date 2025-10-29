@@ -112,6 +112,7 @@ export default function SignUp() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
        catch (error: any) {
         toast.error("Thông tin điền sai khi đăng ký! Đề nghị kiểm tra lại.");
+        console.log("Signup error:", error);
       } finally {
         setSubmitting(false);
       }
