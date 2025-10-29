@@ -106,12 +106,13 @@ export default function SignUp() {
           resetForm();
         } else {
           console.log(res)
-          toast.error(res?.message || "Đăng ký thất bại. Vui lòng thử lại!");
+          toast.error("Đăng ký thất bại. Vui lòng thử lại!");
         }
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
        catch (error: any) {
-        toast.error(error?.message || "Có lỗi xảy ra khi đăng ký!");
+        toast.error("Thông tin điền sai khi đăng ký! Đề nghị kiểm tra lại.");
+        console.log("Signup error:", error);
       } finally {
         setSubmitting(false);
       }
