@@ -23,7 +23,7 @@ export default function CartPage() {
       router.push("/authentication")
       return
     }
-    router.push("/checkout")
+    router.push("/Checkout")
   }
 
   const formatPrice = (price: number) => {
