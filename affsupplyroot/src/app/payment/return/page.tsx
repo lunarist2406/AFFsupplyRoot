@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,7 +12,7 @@ import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import { handleVnpayReturn } from "@/services/payment";
 import { toast } from "sonner";
 
-export default function PaymentReturnPage() {
+function PaymentReturnContent() {
   const searchParams = useSearchParams();
   const [status, setStatus] = useState<"success" | "failed" | "processing">("processing");
   const [message, setMessage] = useState("Đang xử lý kết quả thanh toán...");
@@ -21,7 +21,6 @@ export default function PaymentReturnPage() {
   useEffect(() => {
     const verifyPayment = async () => {
       try {
-        // Lấy tất cả parameters từ VNPAY
         const params = {
           vnp_Amount: searchParams.get("vnp_Amount") || undefined,
           vnp_BankCode: searchParams.get("vnp_BankCode") || undefined,
@@ -37,7 +36,6 @@ export default function PaymentReturnPage() {
           vnp_SecureHash: searchParams.get("vnp_SecureHash") || undefined,
         };
 
-        // Gọi API backend để xác thực thanh toán
         const response = await handleVnpayReturn(params);
         
         setIsVerified(true);
@@ -83,7 +81,6 @@ export default function PaymentReturnPage() {
       }
     };
 
-    // Chỉ verify một lần
     if (!isVerified && searchParams.toString()) {
       verifyPayment();
     }
@@ -192,5 +189,31 @@ export default function PaymentReturnPage() {
       </div>
       <Footer />
     </>
+  );
+}
+
+export default function PaymentReturnPage() {
+  return (
+    <Suspense fallback={
+      <>
+        <Header />
+        <div className="min-h-screen bg-gradient-to-b from-green-primary/20 via-green-primary/30 to-green-primary/20 py-12 px-4 flex items-center justify-center">
+          <Card className="shadow-lg max-w-2xl w-full">
+            <CardHeader className="text-center">
+              <div className="flex justify-center mb-4">
+                <Loader2 className="h-16 w-16 text-blue-500 animate-spin" />
+              </div>
+              <CardTitle className="text-2xl font-bold">Đang tải...</CardTitle>
+              <CardDescription className="text-base mt-2">
+                Vui lòng đợi trong giây lát
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
+        <Footer />
+      </>
+    }>
+      <PaymentReturnContent />
+    </Suspense>
   );
 }
