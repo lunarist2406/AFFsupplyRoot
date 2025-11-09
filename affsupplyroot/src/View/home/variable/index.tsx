@@ -18,7 +18,7 @@ export const services = [
     { icon: FaShoppingBag, label: "Sản Phẩm", links: "/products" },
     { icon: FaVideo, label: "Livestream", links:"livestream"},
     { icon: FaBox, label: "Nhà Cung Cấp",links:"/"},
-    { icon: FaNewspaper, label: "Tin tức",links:"/" },
+    { icon: FaNewspaper, label: "Đăng ký bán hàng",links:"/registerseller" },
 
   ]
  export const categories = [

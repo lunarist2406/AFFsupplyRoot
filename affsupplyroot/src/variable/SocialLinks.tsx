@@ -8,7 +8,7 @@ import { SiZalo } from "react-icons/si";
     },
     {
       icon: FaFacebookMessenger,
-      url: "https://m.me/affsupplyroot",
+      url: "https://www.facebook.com/profile.php?id=61581131460242",
     },
     {
       icon: SiZalo,

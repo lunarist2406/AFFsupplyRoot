@@ -197,8 +197,11 @@ export default function CategoryCard() {
                       <Image
                         src={global.image || "/placeholder.svg"}
                         alt={global.name}
-                        className="w-4 h-4 sm:w-5 sm:h-5 rounded object-cover"
+                        width={20}
+                        height={20}
+                        className="rounded object-cover"
                       />
+
                       <span className="text-xs sm:text-sm">{global.name}</span>
                     </div>
                   </SelectItem>

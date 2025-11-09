@@ -70,6 +70,13 @@ export const metadata: Metadata = {
       'max-video-preview': -1,
     },
   },
+    icons: {
+    icon: '/logo.png',
+    apple: '/logo.png',
+    shortcut: '/logo.png',
+  },
+  
+  
 };
 
 export default function RootLayout({
@@ -79,11 +86,13 @@ export default function RootLayout({
 }) {  
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/logo.png" />
+        <link rel="apple-touch-icon" href="/logo.png" />
+      </head>
       <body className={`${montserrat.variable} ${manuale.variable}`}>
         <ToastProvider>
-          <CartProvider>
-            {children}
-          </CartProvider>
+          <CartProvider>{children}</CartProvider>
         </ToastProvider>
       </body>
     </html>
