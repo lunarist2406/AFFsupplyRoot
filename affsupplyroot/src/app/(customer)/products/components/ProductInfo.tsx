@@ -80,7 +80,7 @@ export const ProductInfo = memo(function ProductInfo({ product }: ProductInfoPro
     }, quantity)
 
     toast.success("Đã thêm vào giỏ hàng, chuyển đến thanh toán...")
-    router.push("/checkout")
+    router.push("/Checkout")
   }
 
   return (

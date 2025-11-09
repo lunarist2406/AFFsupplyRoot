@@ -9,6 +9,9 @@ import Link from "next/link";
 import Header from "@/layout/Header";
 import Footer from "@/layout/Footer";
 import { createAddress, getProfile } from "@/services/profile";
+import { createOrderFromCart } from "@/services/order";
+import { createVnpayUrl } from "@/services/payment";
+import { syncCartToBackend } from "@/services/cart";
 import { toast } from "sonner";
 
 // Import components
@@ -21,14 +24,14 @@ import PaymentMethod from "./components/PaymentMethod";
 import BillingAddress from "./components/BillingAddress";
 
 export default function CheckoutPage() {
-  const { items, getTotalPrice } = useCart();
+  const { items, getTotalPrice, clearCart } = useCart();
 
   const [billingAddress, setBillingAddress] = useState<"same" | "different">(
     "same"
   );
-  const [paymentMethod, setPaymentMethod] = useState<"credit" | "momo">(
-    "credit"
-  );
+  const [paymentMethod, setPaymentMethod] = useState<"vnpay">("vnpay");
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [selectedAddressId, setSelectedAddressId] = useState<number | null>(null);
 
   const [billingAddressForm, setBillingAddressForm] = useState({
     fullName: "",
@@ -106,6 +109,7 @@ export default function CheckoutPage() {
               ward: defaultAddr.ward
             });
             setContactInfo((prev) => ({ ...prev, phone: defaultAddr.phone || prev.phone }));
+            setSelectedAddressId(defaultAddr.id); // Store the address ID
           }
         }
         const savedShippingAddress = localStorage.getItem('shippingAddress');
@@ -142,6 +146,97 @@ export default function CheckoutPage() {
   const subtotal = getTotalPrice();
   const shipping = 30000; 
   const total = subtotal + shipping;
+
+  // Debug: Log cart items
+  useEffect(() => {
+    console.log("Checkout page - Cart items:", items);
+    console.log("Checkout page - Total items:", items.length);
+  }, [items]);
+
+  const handleCheckout = async () => {
+    try {
+      setIsProcessing(true);
+
+      // Debug: Check cart items
+      console.log("Cart items:", items);
+      console.log("Selected address ID:", selectedAddressId);
+
+      // Validate cart
+      if (items.length === 0) {
+        toast.error("Giỏ hàng của bạn đang trống!");
+        setIsProcessing(false);
+        return;
+      }
+
+      // Validate address
+      if (!selectedAddressId) {
+        toast.error("Vui lòng chọn địa chỉ giao hàng!");
+        setIsProcessing(false);
+        return;
+      }
+
+      toast.info("Đang đồng bộ giỏ hàng...");
+      const cartItems = items.map(item => ({
+        id: item.id,
+        quantity: item.quantity
+      }));
+      
+      const syncSuccess = await syncCartToBackend(cartItems);
+      
+      if (!syncSuccess) {
+        toast.error("Không thể đồng bộ giỏ hàng. Vui lòng thử lại!");
+        setIsProcessing(false);
+        return;
+      }
+
+      // Step 1: Create order from cart
+      console.log("Creating order with addressId:", selectedAddressId);
+      const orderResponse = await createOrderFromCart({
+        addressId: selectedAddressId
+      });
+
+      console.log("Order response:", orderResponse);
+
+      if (!orderResponse.success) {
+        toast.error(orderResponse.message || "Không thể tạo đơn hàng!");
+        return;
+      }
+
+      const orderId = orderResponse.data.id;
+      toast.success("Đơn hàng đã được tạo thành công!");
+
+      // Step 2: Create VNPAY payment URL
+      console.log("Creating VNPAY URL for order:", orderId);
+      const paymentResponse = await createVnpayUrl({ orderId });
+      
+      console.log("Payment response:", paymentResponse);
+
+      if (paymentResponse.success && paymentResponse.message) {
+        // Clear cart before redirect
+        clearCart();
+        // Redirect to VNPAY payment page
+        window.location.href = paymentResponse.message;
+      } else {
+        toast.error("Không thể tạo liên kết thanh toán VNPAY!");
+      }
+
+    } catch (error: any) {
+      console.error("Lỗi khi thanh toán:", error);
+      console.error("Error details:", error?.response?.data);
+      
+      const errorMessage = error?.response?.data?.message || error?.message || "Có lỗi xảy ra!";
+      
+      if (error?.response?.status === 400) {
+        toast.error("Lỗi: " + errorMessage + " - Kiểm tra giỏ hàng và địa chỉ!");
+      } else if (error?.response?.status === 401) {
+        toast.error("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!");
+      } else {
+        toast.error(errorMessage);
+      }
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   if (items.length === 0) {
     return <EmptyCart />;
@@ -195,8 +290,12 @@ export default function CheckoutPage() {
                     Quay lại
                   </Button>
                 </Link>
-                <Button className="h-9 text-sm font-semibold text-black bg-yellow-primary hover:bg-yellow-600 px-4 cursor-pointer">
-                  Hoàn tất
+                <Button 
+                  onClick={handleCheckout}
+                  disabled={isProcessing || !selectedAddressId}
+                  className="h-9 text-sm font-semibold text-black bg-yellow-primary hover:bg-yellow-600 px-4 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isProcessing ? "Đang xử lý..." : "Hoàn tất"}
                 </Button>
               </div>
             </div>

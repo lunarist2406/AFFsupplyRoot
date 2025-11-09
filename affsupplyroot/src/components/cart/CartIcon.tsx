@@ -131,7 +131,7 @@ export function CartIcon() {
                 <span className="text-green-600">{formatPrice(getTotalPrice())}</span>
               </div>
 
-              <Link href="/checkout" className="block">
+              <Link href="/Checkout" className="block">
                 <Button className="w-full bg-green-600 hover:bg-green-700 text-white py-6 text-lg font-bold rounded-lg">
                   Thanh toán
                 </Button>
