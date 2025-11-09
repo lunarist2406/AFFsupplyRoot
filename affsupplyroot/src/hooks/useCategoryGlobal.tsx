@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import api from '@/lib/Axios/axios';
 
 const API_BASE = '/api/v1/categories-global';
@@ -11,25 +11,24 @@ export default function useCategoryGlobal() {
   const [error, setError] = useState<any>(null);
 
   // 📦 GET: danh sách Category Global (có thể có search, page, limit)
-  const fetchCategoriesGlobal = async (params?: { page?: number; limit?: number; search?: string }) => {
+  const fetchCategoriesGlobal = useCallback(async (params?: { page?: number; limit?: number; search?: string }) => {
     setLoading(true);
     try {
       const res = await api.get(API_PUBLIC_BASE, { params });
-      // ✅ API trả về data.data.items
       const items = res.data?.data?.items;
-      if (Array.isArray(items)) {
-        setCategoriesGlobal(items);
-      } else {
-        console.warn('⚠️ Dữ liệu trả về không phải là mảng:', res.data);
-        setCategoriesGlobal([]);
-      }
+      if (Array.isArray(items)) setCategoriesGlobal(items);
+      else setCategoriesGlobal([]);
     } catch (err) {
       console.error('❌ Lỗi khi fetch category global:', err);
       setCategoriesGlobal([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchCategoriesGlobal({ page: 1, limit: 10 });
+  }, [fetchCategoriesGlobal]);
 
   // 🔍 GET: chi tiết Category Global + danh sách sản phẩm
   const fetchCategoryGlobalById = async (id: number, params?: { page?: number; limit?: number; search?: string }) => {
@@ -91,10 +90,7 @@ export default function useCategoryGlobal() {
     }
   };
 
-  // 🔁 Lần đầu load danh sách
-  useEffect(() => {
-    fetchCategoriesGlobal({ page: 1, limit: 10 });
-  }, []);
+
 
   return {
     categoriesGlobal,

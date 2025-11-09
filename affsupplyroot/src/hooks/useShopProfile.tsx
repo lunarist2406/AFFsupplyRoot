@@ -32,7 +32,7 @@ export interface ShopProfile {
   user: User
 }
 
-interface UpdateProfilePayload {
+export interface UpdateProfilePayload {
   companyName?: string
   brandName?: string
   businessPhone?: string

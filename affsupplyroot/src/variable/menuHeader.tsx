@@ -1,4 +1,4 @@
-import { FaBox, FaSignOutAlt, FaTachometerAlt, FaUsers, FaWarehouse,  FaStore, FaShieldAlt } from "react-icons/fa"
+import { FaBox, FaSignOutAlt, FaTachometerAlt, FaUsers, FaShieldAlt, FaSpellCheck } from "react-icons/fa"
 
 
 export const roleMap: Record<number, string> = {
@@ -30,16 +30,12 @@ export const roleMenus: Record<
     { label: "Đơn hàng", href: "/orders", icon: <FaBox className="text-yellow-secondary w-4 h-4" /> },
     { label: "Đăng xuất", href: "/", icon: <FaSignOutAlt className="text-yellow-secondary w-4 h-4" /> },
   ],
-  4: [
-    { label: "Cửa hàng", href: "/profile", icon: <FaStore className="text-yellow-secondary w-4 h-4" /> },
-    { label: "Quản lý kho", href: "/inventory", icon: <FaWarehouse className="text-yellow-secondary w-4 h-4" /> },
-    { label: "Đăng xuất", href: "/", icon: <FaSignOutAlt className="text-yellow-secondary w-4 h-4" /> },
-  ],
   1: [
     { label: "Dashboard", href: "/admin", icon: <FaTachometerAlt className="text-yellow-secondary w-4 h-4" /> },
     { label: "Quản lý người dùng", href: "/admin/users", icon: <FaUsers className="text-yellow-secondary w-4 h-4" /> },
     { label: "Quản lý phân quyền", href: "/admin/permissions", icon: <FaShieldAlt className="text-yellow-secondary w-4 h-4" /> },
-    { label: "Đăng xuất", href: "/", icon: <FaSignOutAlt className="text-yellow-secondary w-4 h-4" /> },
+    { label: "Quản lý người bán", href: "/admin/registerseller", icon: <FaSpellCheck className="text-yellow-secondary w-4 h-4" /> },
+    {  label: "Đăng xuất",href: "/", icon: <FaSignOutAlt className="text-yellow-secondary w-4 h-4" /> },
   ],
   3: [
     { label: "Dashboard", href: "/staff", icon: <FaTachometerAlt className="text-yellow-secondary w-4 h-4" /> },

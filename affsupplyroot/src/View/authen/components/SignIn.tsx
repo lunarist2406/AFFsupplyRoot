@@ -60,13 +60,13 @@ const handleSubmit = async (values: { email: string; password: string }) => {
       const target = redirectMap[user.roleID] || "/";
       setTimeout(() => router.push(target), 1000);
     } else {
-      toast.error(res?.data?.message || "Không lấy được thông tin người dùng!");
+      toast.error("Sai tài khoản hoặc mật khẩu. Vui lòng thử lại!");
     }
     
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
    catch (error: any) {
-    toast.error(error?.message || state.error || "Đăng nhập thất bại 😢");
+    toast.error("Sai tài khoản hoặc mật khẩu. Vui lòng thử lại!");
     console.error("Login error:", error);
   }
 };
