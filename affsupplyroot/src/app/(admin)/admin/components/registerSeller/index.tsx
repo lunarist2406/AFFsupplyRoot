@@ -132,7 +132,6 @@ useEffect(() => {
         </div>
       </div>
 
-      {/* Seller Detail Dialog */}
       {selectedSeller && (
         <SellerDetailDialog
           open={openDetail}
