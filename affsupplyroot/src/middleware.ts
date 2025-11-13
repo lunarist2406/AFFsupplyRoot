@@ -19,7 +19,7 @@ export function middleware(request: NextRequest) {
 
   if (!token) {
     console.warn(`Guest tried to access protected route (${pathname}) -> redirect /authentication`)
-    return NextResponse.redirect(new URL("/authentication", request.url))
+    return NextResponse.redirect(new URL("/authentication?message=login_required", request.url));
   }
 
   if (!matchedRoute.roles.includes(roleId)) {

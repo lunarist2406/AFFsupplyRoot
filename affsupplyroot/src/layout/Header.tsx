@@ -2,7 +2,7 @@
 import React, { useState } from "react"
 import Image from "next/image"
 import { motion } from "framer-motion"
-import { FaUserCircle, FaUser } from "react-icons/fa"
+import { FaUserCircle, FaUser, FaSignOutAlt } from "react-icons/fa"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import {
   DropdownMenu,
@@ -36,6 +36,8 @@ export default function Header() {
     ? [
         { label: "Hồ sơ của tôi", href: "/account/profile", icon: <FaUser className="text-yellow-secondary w-4 h-4" /> },
         ...roleItems,
+        { label: "Đăng xuất", href: "/", icon: <FaSignOutAlt className="text-yellow-secondary w-4 h-4" /> },
+        
         
       ]
     : []

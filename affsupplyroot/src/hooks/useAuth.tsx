@@ -192,9 +192,20 @@ const verifyOtp = async (payload: { email: string; otp: string }) => {
     return api.post("/api/v1/auth/resend-otp", { email });
   };
 
-  const logout = () => {
-    dispatch({ type: "LOGOUT" });
-  };
+const logout = () => {
+  // Reset state
+  dispatch({ type: "LOGOUT" });
+
+  // Xóa localStorage
+  localStorage.removeItem("authUser");
+
+  // Xóa cookie (middleware dựa vào cookie)
+  document.cookie = "backendToken=; max-age=0; path=/";
+  document.cookie = "role=; max-age=0; path=/";
+
+  // Redirect về trang login
+  window.location.href = "/authentication";
+};
 
   return {
     state, 

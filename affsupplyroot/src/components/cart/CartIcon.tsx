@@ -1,5 +1,5 @@
 "use client"
-import { ShoppingCart } from "lucide-react"
+import { ShoppingCart, Minus, Plus, Trash2 } from "lucide-react"
 import { motion } from "framer-motion"
 import { useCart } from "@/hooks/useCart"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
@@ -7,10 +7,12 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import Image from "next/image"
 import Link from "next/link"
-import { Minus, Plus, Trash2 } from "lucide-react"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 export function CartIcon() {
   const { items, getTotalItems, getTotalPrice, updateQuantity, removeItem } = useCart()
+  const router = useRouter();
   const totalItems = getTotalItems()
 
   const formatPrice = (price: number) => {
@@ -18,6 +20,16 @@ export function CartIcon() {
       style: "currency",
       currency: "VND",
     }).format(price)
+  }
+
+  // 🔥 Hàm kiểm tra login trước khi checkout
+  const handleCheckoutClick = (e: React.MouseEvent) => {
+    const authUser = localStorage.getItem("authUser")
+    if (!authUser) {
+      e.preventDefault() // chặn chuyển trang
+      toast.warning("Vui lòng đăng nhập để tiếp tục thanh toán!")
+      router.push("/authentication")
+    }
   }
 
   return (
@@ -131,7 +143,8 @@ export function CartIcon() {
                 <span className="text-green-600">{formatPrice(getTotalPrice())}</span>
               </div>
 
-              <Link href="/Checkout" className="block">
+              {/* 👇 Thanh toán — check login trước */}
+              <Link href="/Checkout" onClick={handleCheckoutClick} className="block">
                 <Button className="w-full bg-green-600 hover:bg-green-700 text-white py-6 text-lg font-bold rounded-lg">
                   Thanh toán
                 </Button>
@@ -152,4 +165,3 @@ export function CartIcon() {
     </Sheet>
   )
 }
-
