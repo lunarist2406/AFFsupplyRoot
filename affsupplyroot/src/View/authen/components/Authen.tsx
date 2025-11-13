@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, {useState } from "react";
 import { FaSignInAlt, FaUserPlus, FaArrowLeft } from "react-icons/fa";
 import SignUp from "./SignUp";
 import MarketBoard from "./MarketBoard";
@@ -9,10 +9,10 @@ import ResetPassword from "./ResetPassword";
 import SignIn from "./SignIn";
 import VerifyAccount from "./VerifyAccount";
 
+
 export default function Authen() {
   const [form, setForm] = useState<"signin" | "signup" | "verify"|"reset">("signin");
   const router = useRouter();
-
   const renderForm = () => {
     switch (form) {
       case "signin":

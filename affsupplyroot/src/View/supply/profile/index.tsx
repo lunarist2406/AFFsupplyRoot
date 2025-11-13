@@ -67,13 +67,13 @@ export default function ShopProfilePage() {
   const handleUpdate = async () => {
     try {
       await updateProfile(formData)
-      toast.success("🎉 Cập nhật hồ sơ thành công!")
+      toast.success(" Cập nhật hồ sơ thành công!")
       setOpen(false)
       setPreviewAvatar(null)
       setPreviewBanner(null)
       fetchProfile()
     } catch {
-      toast.error("😢 Cập nhật thất bại!")
+      toast.error(" Cập nhật thất bại!")
     }
   }
 
@@ -98,7 +98,7 @@ export default function ShopProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 font-manuale ">
+    <div className="min-h-screen bg-gradient-to-r from-green-950 via-gray-600 to-green-950 font-manuale ">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header with Banner & Avatar */}
         <Card className="mb-8 border-none shadow-xl overflow-hidden bg-white">

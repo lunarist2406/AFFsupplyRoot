@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import { roleAccessMap, roleMap } from "./variable/menuHeader"
 
+
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
   const token = request.cookies.get("backendToken")?.value
@@ -12,33 +13,23 @@ export function middleware(request: NextRequest) {
 
   const matchedRoute = roleAccessMap.find((r) => pathname.startsWith(r.path))
 
-  // Nếu route không được bảo vệ thì bỏ qua
   if (!matchedRoute) {
     return NextResponse.next()
   }
 
-  // Nếu chưa đăng nhập (không có token)
   if (!token) {
     console.warn(`Guest tried to access protected route (${pathname}) -> redirect /authentication`)
-    const response = NextResponse.redirect(new URL("/authentication", request.url))
-    response.cookies.delete("backendToken")
-    response.cookies.delete("role")
-    return response
+    return NextResponse.redirect(new URL("/authentication?message=login_required", request.url));
   }
 
-  // Nếu role không hợp lệ cho route
   if (!matchedRoute.roles.includes(roleId)) {
     console.warn(`Invalid role (${roleId}) for ${matchedRoute.path} -> redirect /403`)
-    const response = NextResponse.redirect(new URL("/403", request.url))
-    response.cookies.delete("backendToken")
-    response.cookies.delete("role")
-    return response
+    return NextResponse.redirect(new URL("/403", request.url))
   }
 
-  // Nếu hợp lệ
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: ["/((?!_next|api|favicon.ico).*)"],
+  matcher: ["/((?!_next|api|favicon.ico).*)"], 
 }

@@ -1,4 +1,4 @@
-import { FaBox, FaSignOutAlt, FaTachometerAlt,FaWarehouse,  FaStore, FaSpellCheck, FaMoneyBillWave } from "react-icons/fa"
+import { FaBox, FaTachometerAlt,FaWarehouse,  FaStore, FaSpellCheck, FaMoneyBillWave } from "react-icons/fa"
 
 
 export const roleMap: Record<number, string> = {
@@ -12,10 +12,16 @@ export const roleMap: Record<number, string> = {
 
 export const roleAccessMap = [
   { path: "/admin", roles: [1] }, 
+  { path: "/inventory", roles: [4] }, 
   { path: "/profile", roles: [4] },
+  { path: "/registerseller", roles: [6] },
+  { path: "/Checkout", roles: [6] },
+  { path: "/payment", roles: [6] },
+
+
 ]
 export const redirectMap: Record<number, string> = {
-        1: "/admin",
+        1: "/",
         2: "/manager",
         3: "/staff",
         4: "/",
@@ -28,8 +34,6 @@ export const roleMenus: Record<
 > = {
   6: [
     { label: "Đơn hàng", href: "/orders", icon: <FaBox className="text-yellow-secondary w-4 h-4" /> },
-    { label: "Đăng xuất", href: "/", icon: <FaSignOutAlt className="text-yellow-secondary w-4 h-4" /> },
-
   ],
   4 : [
   { label: "Cửa hàng", href: "/profile", icon: <FaStore className="text-yellow-secondary w-4 h-4" /> },
