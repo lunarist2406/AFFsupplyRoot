@@ -87,7 +87,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/logo.png" />
+        <link rel="icon" href="/logo.ico" />
         <link rel="apple-touch-icon" href="/logo.png" />
       </head>
       <body className={`${montserrat.variable} ${manuale.variable}`}>
