@@ -14,11 +14,9 @@ export const roleAccessMap = [
   { path: "/admin", roles: [1] }, 
   { path: "/inventory", roles: [4] }, 
   { path: "/profile", roles: [4] },
-  { path: "/registerseller", roles: [6] },
-  { path: "/Checkout", roles: [6] },
-  { path: "/payment", roles: [6] },
-
-
+  { path: "/registerseller", roles: [6,4] },
+  { path: "/Checkout", roles: [6,4] },
+  { path: "/payment", roles: [6,4] },
 ]
 export const redirectMap: Record<number, string> = {
         1: "/",
