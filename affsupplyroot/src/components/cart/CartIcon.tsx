@@ -11,7 +11,7 @@ import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 
 export function CartIcon() {
-  const { items, getTotalItems, getTotalPrice, updateQuantity, removeItem } = useCart()
+  const { items, getTotalItems, getTotalPrice, updateQuantity, removeItem, getItemPrice } = useCart()
   const router = useRouter();
   const totalItems = getTotalItems()
 
@@ -94,9 +94,16 @@ export function CartIcon() {
                       <p className="text-xs text-gray-500 mb-2">
                         Shop: {item.shopName}
                       </p>
-                      <p className="text-green-600 font-bold text-sm mb-2">
-                        {formatPrice(item.basePrice)}
-                      </p>
+                      <div className="space-y-1">
+                        <p className="text-green-600 font-bold text-sm">
+                          {formatPrice(getItemPrice(item))}
+                        </p>
+                        {item.pricingTiers && item.pricingTiers.length > 0 && getItemPrice(item) < item.basePrice && (
+                          <p className="text-xs text-gray-400 line-through">
+                            {formatPrice(item.basePrice)}
+                          </p>
+                        )}
+                      </div>
 
                       <div className="flex items-center gap-2">
                         <Button

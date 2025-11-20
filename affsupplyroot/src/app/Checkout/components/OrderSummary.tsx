@@ -11,6 +11,7 @@ interface OrderSummaryProps {
   shipping: number;
   total: number;
   formatPrice: (price: number) => string;
+  getItemPrice: (item: CartItem) => number;
 }
 
 const CustomDivider = () => (
@@ -23,6 +24,7 @@ export default function OrderSummary({
   shipping,
   total,
   formatPrice,
+  getItemPrice,
 }: OrderSummaryProps) {
   return (
     <div className="rounded-lg bg-white p-5 shadow-sm w-full xl:basis-[45%] xl:order-2 border border-gray-200 xl:sticky xl:top-18 xl:max-h-[calc(100vh - 10px)] xl:overflow-y-auto">
@@ -60,9 +62,14 @@ export default function OrderSummary({
                 <div className="text-xs text-gray-500">
                   Shop: {item.shopName}
                 </div>
+                {item.pricingTiers && item.pricingTiers.length > 0 && (
+                  <div className="text-xs text-blue-600 font-medium mt-1">
+                    Giá: {formatPrice(getItemPrice(item))} x {item.quantity}
+                  </div>
+                )}
               </div>
               <div className="text-[15px] font-semibold text-yellow-secondary">
-                {formatPrice(item.basePrice * item.quantity)}
+                {formatPrice(getItemPrice(item) * item.quantity)}
               </div>
             </Link>
             {index < items.length - 1 && <CustomDivider />}

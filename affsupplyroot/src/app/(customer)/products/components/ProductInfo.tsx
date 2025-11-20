@@ -51,6 +51,7 @@ export const ProductInfo = memo(function ProductInfo({ product }: ProductInfoPro
       shopId: product.SellerProfile.id,
       shopName: product.SellerProfile.brandName,
       shopSlug: product.SellerProfile.slug,
+      pricingTiers: product.PricingTier || [],
     })
   }
 
@@ -77,6 +78,7 @@ export const ProductInfo = memo(function ProductInfo({ product }: ProductInfoPro
       shopId: product.SellerProfile.id,
       shopName: product.SellerProfile.brandName,
       shopSlug: product.SellerProfile.slug,
+      pricingTiers: product.PricingTier || [],
     }, quantity)
 
     setTimeout(() => {

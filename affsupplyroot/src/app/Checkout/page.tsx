@@ -24,7 +24,7 @@ import PaymentMethod from "./components/PaymentMethod";
 import BillingAddress from "./components/BillingAddress";
 
 export default function CheckoutPage() {
-  const { items, getTotalPrice, clearCart } = useCart();
+  const { items, getTotalPrice, clearCart, getItemPrice } = useCart();
 
   const [billingAddress, setBillingAddress] = useState<"same" | "different">(
     "same"
@@ -314,6 +314,7 @@ export default function CheckoutPage() {
               shipping={shipping}
               total={total}
               formatPrice={formatPrice}
+              getItemPrice={getItemPrice}
             />
 
             <div className="rounded-lg bg-white shadow-sm w-full xl:basis-[55%] xl:order-1 border border-gray-200 p-3 sm:p-4">
