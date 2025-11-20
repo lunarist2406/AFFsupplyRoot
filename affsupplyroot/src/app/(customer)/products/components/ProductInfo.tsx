@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, memo } from "react"
+import { useState, memo, useEffect } from "react"
 import { ProductDetail } from "@/types/product"
 import { motion } from "framer-motion"
 import {
@@ -15,6 +15,7 @@ import { useCart } from "@/hooks/useCart"
 import { useRouter } from "next/navigation"
 import useAuth from "@/hooks/useAuth"
 import { toast } from "sonner"
+import { likeProduct } from "@/services/product-interaction"
 
 interface ProductInfoProps {
   product: ProductDetail
@@ -22,11 +23,54 @@ interface ProductInfoProps {
 
 export const ProductInfo = memo(function ProductInfo({ product }: ProductInfoProps) {
   const [quantity, setQuantity] = useState(product.minOrderQty || 1)
-  const [isLiked, setIsLiked] = useState(false)
+  const [isLiked, setIsLiked] = useState(product.isLiked || false)
+  const [isLiking, setIsLiking] = useState(false)
   const { addItem } = useCart()
   const router = useRouter()
   const { state } = useAuth()
   const { user } = state
+
+  useEffect(() => {
+    setIsLiked(product.isLiked || false)
+  }, [product.isLiked])
+
+  const handleLike = async () => {
+    if (!user) {
+      toast.error("Vui lòng đăng nhập để thích sản phẩm")
+      return
+    }
+
+    setIsLiking(true)
+    try {
+      const response = await likeProduct(product.id)
+      setIsLiked(response.data.isLiked)
+      toast.success(response.data.isLiked ? "Đã thích sản phẩm!" : "Đã bỏ thích sản phẩm", {
+        id: `like-${product.id}`,
+        duration: 1500
+      })
+    } catch (error) {
+      console.error("Like error:", error)
+      const err = error as { response?: { data?: { message?: string } }; message?: string }
+      toast.error(err?.response?.data?.message || "Có lỗi xảy ra khi thích sản phẩm")
+    } finally {
+      setIsLiking(false)
+    }
+  }
+
+  const getCurrentPrice = () => {
+    if (!product.PricingTier || product.PricingTier.length === 0) {
+      return product.basePrice
+    }
+    
+    const applicableTier = product.PricingTier
+      .filter(tier => quantity >= tier.minQty)
+      .sort((a, b) => b.minQty - a.minQty)[0]
+    
+    return applicableTier ? applicableTier.price : product.basePrice
+  }
+
+  const currentPrice = getCurrentPrice()
+  const totalPrice = currentPrice * quantity
 
   const getProductImage = () => {
     if (product.ProductImage && product.ProductImage.length > 0) {
@@ -52,7 +96,7 @@ export const ProductInfo = memo(function ProductInfo({ product }: ProductInfoPro
       shopName: product.SellerProfile.brandName,
       shopSlug: product.SellerProfile.slug,
       pricingTiers: product.PricingTier || [],
-    })
+    }, quantity)
   }
 
   const handleBuyNow = () => {
@@ -102,12 +146,13 @@ export const ProductInfo = memo(function ProductInfo({ product }: ProductInfoPro
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              onClick={() => setIsLiked(!isLiked)}
+              onClick={handleLike}
+              disabled={isLiking}
               className={`p-2 rounded-full transition-all cursor-pointer ${
                 isLiked ? 'bg-red-100 text-red-500' : 'bg-gray-100 text-gray-600 hover:text-red-500'
-              }`}
+              } ${isLiking ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
-              <FaHeart className="h-4 w-4 sm:h-5 sm:w-5" />
+              <FaHeart className={`h-4 w-4 sm:h-5 sm:w-5 ${isLiked ? 'fill-current' : ''}`} />
             </motion.button>
             <motion.button 
               whileHover={{ scale: 1.1 }}
@@ -169,20 +214,59 @@ export const ProductInfo = memo(function ProductInfo({ product }: ProductInfoPro
       <div className="p-2 space-y-4 ">
         {/* Giá theo số lượng */}
         {product.PricingTier && product.PricingTier.length > 0 && (
-          <div className="bg-white rounded-lg p-3 border border-blue-200">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <span className="font-semibold text-blue-700 text-sm">Giá theo số lượng</span>
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-200 shadow-sm">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="h-1 w-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded"></div>
+              <span className="font-semibold text-gray-800 text-base">Giá theo số lượng</span>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {product.PricingTier.map((tier, idx) => (
-                <div key={idx} className="bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
-                  <span className="text-sm font-medium text-blue-800">
-                    {tier.minQty}+ = <span className="font-bold text-blue-900">{tier.price.toLocaleString('vi-VN')}₫</span>
-                  </span>
+            <div className="space-y-2">
+              {product.PricingTier.sort((a, b) => a.minQty - b.minQty).map((tier, idx) => {
+                const isActive = quantity >= tier.minQty && (idx === product.PricingTier!.length - 1 || quantity < product.PricingTier![idx + 1].minQty)
+                const discount = ((product.basePrice - tier.price) / product.basePrice * 100).toFixed(0)
+                
+                return (
+                  <div
+                    key={idx}
+                    className={`flex items-center justify-between p-3 rounded-lg transition-all ${
+                      isActive 
+                        ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg scale-105' 
+                        : 'bg-white border border-gray-200 hover:border-blue-300'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className={`font-semibold ${isActive ? 'text-white' : 'text-gray-700'}`}>
+                        Mua {tier.minQty}+ =
+                      </span>
+                      <span className={`text-lg font-bold ${isActive ? 'text-white' : 'text-green-600'}`}>
+                        {tier.price.toLocaleString('vi-VN')}₫
+                      </span>
+                    </div>
+                    
+                    {Number(discount) > 0 && (
+                      <div className={`text-xs font-semibold px-2 py-1 rounded ${
+                        isActive 
+                          ? 'bg-white/20 text-white' 
+                          : 'bg-red-100 text-red-600'
+                      }`}>
+                        Tiết kiệm {discount}%
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+            
+            {quantity >= 1 && (
+              <div className="mt-3 pt-3 border-t border-blue-200">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">Bạn đang chọn: <span className="font-semibold text-green-600">{quantity} sản phẩm</span></span>
+                  <span className="text-gray-600">Giá: <span className="font-bold text-green-600">{currentPrice.toLocaleString('vi-VN')}₫</span></span>
                 </div>
-              ))}
-            </div>
+                <div className="mt-1 text-sm font-medium text-gray-700">
+                  Tổng tiền: <span className="text-lg font-bold text-green-600">{totalPrice.toLocaleString('vi-VN')}₫</span>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
