@@ -65,25 +65,66 @@ export default function CheckoutPage() {
 
   const handleSaveAddress = async () => {
     try {
+      // Validate all fields before saving
+      const { fullName, phone, address, city, district, ward } = billingAddressForm;
+      
+      if (!fullName || !phone || !address || !city || !district || !ward) {
+        toast.error("Vui lòng điền đầy đủ thông tin địa chỉ trước khi lưu!");
+        return;
+      }
+
+      const phoneRegex = /^[0-9]{10,11}$/;
+      if (!phoneRegex.test(phone)) {
+        toast.error("Số điện thoại không hợp lệ! Vui lòng nhập 10-11 chữ số.");
+        return;
+      }
+
       const payload = {
-        fullName: billingAddressForm.fullName,
-        phone: billingAddressForm.phone,
-        province: billingAddressForm.city,
-        district: billingAddressForm.district,
-        ward: billingAddressForm.ward,
-        street: billingAddressForm.address,
+        fullName: billingAddressForm.fullName.trim(),
+        phone: billingAddressForm.phone.trim(),
+        province: billingAddressForm.city.trim(),
+        district: billingAddressForm.district.trim(),
+        ward: billingAddressForm.ward.trim(),
+        street: billingAddressForm.address.trim(),
         isDefault: false
       };
+
 
       const response = await createAddress(payload);
       
       if (response.success) {
         toast.success("Đã lưu địa chỉ thành công!");
+        
+        if (response.data && response.data.id) {
+          if (!selectedAddressId) {
+            setSelectedAddressId(response.data.id);
+            setShippingAddress({
+              fullName: billingAddressForm.fullName,
+              phone: billingAddressForm.phone,
+              address: billingAddressForm.address,
+              city: billingAddressForm.city,
+              district: billingAddressForm.district,
+              ward: billingAddressForm.ward
+            });
+            setBillingAddress("same");
+          }
+        }
       } else {
         toast.error("Lỗi khi lưu địa chỉ: " + response.message);
       }
-    } catch (error) {
-      toast.error("Lỗi khi lưu địa chỉ!");
+    } catch (error: any) {
+      console.error("Save address error:", error);
+      console.error("Error response:", error?.response?.data);
+      
+      if (error?.response?.status === 401) {
+        toast.error("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!");
+      } else if (error?.response?.status === 400) {
+        const errorMsg = error?.response?.data?.message || "Dữ liệu không hợp lệ";
+        toast.error("Lỗi: " + errorMsg);
+      } else {
+        const errorMessage = error?.response?.data?.message || error?.message || "Lỗi khi lưu địa chỉ!";
+        toast.error(errorMessage);
+      }
     }
   };
 
@@ -109,7 +150,9 @@ export default function CheckoutPage() {
               ward: defaultAddr.ward
             });
             setContactInfo((prev) => ({ ...prev, phone: defaultAddr.phone || prev.phone }));
-            setSelectedAddressId(defaultAddr.id); // Store the address ID
+            setSelectedAddressId(defaultAddr.id);
+          } else {
+            setBillingAddress("different");
           }
         }
         const savedShippingAddress = localStorage.getItem('shippingAddress');
@@ -157,10 +200,6 @@ export default function CheckoutPage() {
     try {
       setIsProcessing(true);
 
-      // Debug: Check cart items
-      console.log("Cart items:", items);
-      console.log("Selected address ID:", selectedAddressId);
-
       // Validate cart
       if (items.length === 0) {
         toast.error("Giỏ hàng của bạn đang trống!");
@@ -168,11 +207,30 @@ export default function CheckoutPage() {
         return;
       }
 
-      // Validate address
+      // Validate shipping address
       if (!selectedAddressId) {
         toast.error("Vui lòng chọn địa chỉ giao hàng!");
         setIsProcessing(false);
         return;
+      }
+
+      // Validate billing address if different from shipping
+      if (billingAddress === "different") {
+        const { fullName, phone, address, city, district, ward } = billingAddressForm;
+        
+        if (!fullName || !phone || !address || !city || !district || !ward) {
+          toast.error("Vui lòng điền đầy đủ thông tin địa chỉ thanh toán!");
+          setIsProcessing(false);
+          return;
+        }
+
+        // Validate phone number format
+        const phoneRegex = /^[0-9]{10,11}$/;
+        if (!phoneRegex.test(phone)) {
+          toast.error("Số điện thoại không hợp lệ! Vui lòng nhập 10-11 chữ số.");
+          setIsProcessing(false);
+          return;
+        }
       }
 
       toast.info("Đang đồng bộ giỏ hàng...");
