@@ -31,7 +31,7 @@ export const roleMenus: Record<
   { label: string; href?: string; icon: React.ReactNode }[]
 > = {
   6: [
-    { label: "Đơn hàng", href: "/orders", icon: <FaBox className="text-yellow-secondary w-4 h-4" /> },
+    { label: "Đơn hàng", href: "/account/orders", icon: <FaBox className="text-yellow-secondary w-4 h-4" /> },
   ],
   4 : [
   { label: "Cửa hàng", href: "/profile", icon: <FaStore className="text-yellow-secondary w-4 h-4" /> },
