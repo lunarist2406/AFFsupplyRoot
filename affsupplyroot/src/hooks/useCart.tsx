@@ -56,11 +56,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
         const newQuantity = existingItem.quantity + quantityToAdd
         
         if (newQuantity > newItem.stock) {
-          toast.error(`Không thể thêm. Chỉ còn ${newItem.stock} sản phẩm trong kho`)
+          toast.error(`Không thể thêm. Chỉ còn ${newItem.stock} sản phẩm trong kho`, {
+            id: `stock-limit-${newItem.id}`,
+            duration: 2000
+          })
           return prevItems
         }
         
-        toast.success(`Đã cập nhật số lượng ${newItem.title}`)
+        toast.success(`Đã cập nhật số lượng ${newItem.title}`, {
+          id: `update-${newItem.id}`,
+          duration: 2000
+        })
         return prevItems.map((item) =>
           item.id === newItem.id
             ? { ...item, quantity: newQuantity }
@@ -69,16 +75,25 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
       
       if (quantityToAdd < newItem.minOrderQty) {
-        toast.error(`Số lượng tối thiểu là ${newItem.minOrderQty}`)
+        toast.error(`Số lượng tối thiểu là ${newItem.minOrderQty}`, {
+          id: `min-qty-${newItem.id}`,
+          duration: 2000
+        })
         return prevItems
       }
       
       if (quantityToAdd > newItem.stock) {
-        toast.error(`Chỉ còn ${newItem.stock} sản phẩm trong kho`)
+        toast.error(`Chỉ còn ${newItem.stock} sản phẩm trong kho`, {
+          id: `stock-${newItem.id}`,
+          duration: 2000
+        })
         return prevItems
       }
       
-      toast.success(`Đã thêm ${newItem.title} vào giỏ hàng`)
+      toast.success(`Đã thêm ${newItem.title} vào giỏ hàng`, {
+        id: `add-${newItem.id}`,
+        duration: 2000
+      })
       return [...prevItems, { ...newItem, quantity: quantityToAdd }]
     })
   }
@@ -87,7 +102,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems((prevItems) => {
       const item = prevItems.find((item) => item.id === id)
       if (item) {
-        toast.success(`Đã xóa ${item.title} khỏi giỏ hàng`)
+        toast.success(`Đã xóa ${item.title} khỏi giỏ hàng`, {
+          id: `remove-${id}`,
+          duration: 2000
+        })
       }
       return prevItems.filter((item) => item.id !== id)
     })
@@ -98,11 +116,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
       prevItems.map((item) => {
         if (item.id === id) {
           if (quantity < item.minOrderQty) {
-            toast.error(`Số lượng tối thiểu là ${item.minOrderQty}`)
+            toast.error(`Số lượng tối thiểu là ${item.minOrderQty}`, {
+              id: `min-${id}`,
+              duration: 2000
+            })
             return item
           }
           if (quantity > item.stock) {
-            toast.error(`Chỉ còn ${item.stock} sản phẩm trong kho`)
+            toast.error(`Chỉ còn ${item.stock} sản phẩm trong kho`, {
+              id: `max-${id}`,
+              duration: 2000
+            })
             return item
           }
           return { ...item, quantity }
@@ -114,7 +138,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = () => {
     setItems([])
-    toast.success("Đã xóa tất cả sản phẩm khỏi giỏ hàng")
+    toast.success("Đã xóa tất cả sản phẩm khỏi giỏ hàng", {
+      id: 'clear-cart',
+      duration: 2000
+    })
   }
 
   const getTotalItems = () => {

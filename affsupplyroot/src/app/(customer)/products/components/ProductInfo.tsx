@@ -79,8 +79,9 @@ export const ProductInfo = memo(function ProductInfo({ product }: ProductInfoPro
       shopSlug: product.SellerProfile.slug,
     }, quantity)
 
-    toast.success("Đã thêm vào giỏ hàng, chuyển đến thanh toán...")
-    router.push("/Checkout")
+    setTimeout(() => {
+      router.push("/Checkout")
+    }, 500)
   }
 
   return (

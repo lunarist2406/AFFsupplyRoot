@@ -94,67 +94,86 @@ export default function BillingAddress({
       {billingAddress === "different" && (
         <div className="grid gap-3 mb-3">
           <div>
-            <Label htmlFor="billing-fullName" className="text-xs">Họ và tên</Label>
+            <Label htmlFor="billing-fullName" className="text-xs font-medium text-gray-700">
+              Họ và tên <span className="text-red-500">*</span>
+            </Label>
             <Input 
               id="billing-fullName"
               placeholder="Nhập họ và tên" 
               className="h-8 text-sm"
               value={billingAddressForm.fullName}
               onChange={(e) => onBillingFormChange({ ...billingAddressForm, fullName: e.target.value })}
+              required
             />
           </div>
           
           <div>
-            <Label htmlFor="billing-phone" className="text-xs">Số điện thoại</Label>
+            <Label htmlFor="billing-phone" className="text-xs font-medium text-gray-700">
+              Số điện thoại <span className="text-red-500">*</span>
+            </Label>
             <Input
               id="billing-phone"
-              placeholder="Nhập số điện thoại"
+              placeholder="Nhập số điện thoại (10-11 chữ số)"
               className="h-8 text-sm"
               value={billingAddressForm.phone}
               onChange={(e) => onBillingFormChange({ ...billingAddressForm, phone: e.target.value })}
+              type="tel"
+              required
             />
           </div>
           
           <div>
-            <Label htmlFor="billing-address" className="text-xs">Địa chỉ chi tiết</Label>
+            <Label htmlFor="billing-address" className="text-xs font-medium text-gray-700">
+              Địa chỉ chi tiết <span className="text-red-500">*</span>
+            </Label>
             <Input 
               id="billing-address"
               placeholder="Số nhà, tên đường..." 
               className="h-8 text-sm"
               value={billingAddressForm.address}
               onChange={(e) => onBillingFormChange({ ...billingAddressForm, address: e.target.value })}
+              required
             />
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
             <div>
-              <Label htmlFor="billing-city" className="text-xs">Tỉnh/TP</Label>
+              <Label htmlFor="billing-city" className="text-xs font-medium text-gray-700">
+                Tỉnh/TP <span className="text-red-500">*</span>
+              </Label>
               <Input
                 id="billing-city"
                 placeholder="Tỉnh/TP"
                 className="h-8 text-sm"
                 value={billingAddressForm.city}
                 onChange={(e) => onBillingFormChange({ ...billingAddressForm, city: e.target.value })}
+                required
               />
             </div>
             <div>
-              <Label htmlFor="billing-district" className="text-xs">Quận/Huyện</Label>
+              <Label htmlFor="billing-district" className="text-xs font-medium text-gray-700">
+                Quận/Huyện <span className="text-red-500">*</span>
+              </Label>
               <Input
                 id="billing-district"
                 placeholder="Quận/Huyện"
                 className="h-8 text-sm"
                 value={billingAddressForm.district}
                 onChange={(e) => onBillingFormChange({ ...billingAddressForm, district: e.target.value })}
+                required
               />
             </div>
             <div>
-              <Label htmlFor="billing-ward" className="text-xs">Phường/Xã</Label>
+              <Label htmlFor="billing-ward" className="text-xs font-medium text-gray-700">
+                Phường/Xã <span className="text-red-500">*</span>
+              </Label>
               <Input
                 id="billing-ward"
                 placeholder="Phường/Xã"
                 className="h-8 text-sm"
                 value={billingAddressForm.ward}
                 onChange={(e) => onBillingFormChange({ ...billingAddressForm, ward: e.target.value })}
+                required
               />
             </div>
           </div>
