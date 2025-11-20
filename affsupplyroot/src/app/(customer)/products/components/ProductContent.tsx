@@ -342,32 +342,19 @@ export function ProductContent({
                       </div>
 
                       <div className="mt-1">
-                        {pricing.isDiscounted ? (
-                          <div className="space-y-1">
-                            <div className="flex items-baseline gap-2">
-                              <span className="text-xl font-extrabold text-red-primary">
-                                {pricing.minTierPrice!.toLocaleString("vi-VN")}₫
-                              </span>
-                              {product.unit && (
-                                <span className="text-xs text-gray-500">/{product.unit}</span>
-                              )}
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm text-gray-400 line-through">
-                                {product.basePrice.toLocaleString("vi-VN")}₫
-                              </span>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="flex items-baseline gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <div className="flex items-baseline gap-1">
                             <span className="text-xl font-extrabold text-green-primary">
                               {product.basePrice.toLocaleString("vi-VN")}₫
                             </span>
-                            {product.unit && (
-                              <span className="text-xs text-gray-500">/{product.unit}</span>
-                            )}
+                            <span className="text-xs text-gray-500">/ {product.unit || "kg"}</span>
                           </div>
-                        )}
+                          {pricing.hasTier && pricing.minTierPrice && pricing.minTierPrice < product.basePrice && (
+                            <span className="text-[11px] text-blue-600 font-medium whitespace-nowrap">
+                              • Từ {pricing.minTierPrice.toLocaleString("vi-VN")}₫ khi mua sỉ
+                            </span>
+                          )}
+                        </div>
                       </div>
 
                       <Button

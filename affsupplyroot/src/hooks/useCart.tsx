@@ -2,6 +2,12 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react"
 import { toast } from "sonner"
 
+export interface PricingTier {
+  id?: number
+  minQty: number
+  price: number
+}
+
 export interface CartItem {
   id: number
   title: string
@@ -14,6 +20,7 @@ export interface CartItem {
   shopId: number
   shopName: string
   shopSlug: string
+  pricingTiers?: PricingTier[]
 }
 
 interface CartContextType {
@@ -24,6 +31,7 @@ interface CartContextType {
   clearCart: () => void
   getTotalItems: () => number
   getTotalPrice: () => number
+  getItemPrice: (item: CartItem) => number
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
@@ -148,8 +156,23 @@ export function CartProvider({ children }: { children: ReactNode }) {
     return items.reduce((total, item) => total + item.quantity, 0)
   }
 
+  const getItemPrice = (item: CartItem): number => {
+    if (!item.pricingTiers || item.pricingTiers.length === 0) {
+      return item.basePrice
+    }
+
+    const applicableTier = item.pricingTiers
+      .filter(tier => item.quantity >= tier.minQty)
+      .sort((a, b) => b.minQty - a.minQty)[0]
+
+    return applicableTier ? applicableTier.price : item.basePrice
+  }
+
   const getTotalPrice = () => {
-    return items.reduce((total, item) => total + item.basePrice * item.quantity, 0)
+    return items.reduce((total, item) => {
+      const price = getItemPrice(item)
+      return total + price * item.quantity
+    }, 0)
   }
 
   return (
@@ -162,6 +185,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         clearCart,
         getTotalItems,
         getTotalPrice,
+        getItemPrice,
       }}
     >
       {children}

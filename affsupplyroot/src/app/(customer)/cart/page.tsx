@@ -12,7 +12,7 @@ import useAuth from "@/hooks/useAuth"
 import { toast } from "sonner"
 
 export default function CartPage() {
-  const { items, updateQuantity, removeItem, getTotalPrice, getTotalItems } = useCart()
+  const { items, updateQuantity, removeItem, getTotalPrice, getTotalItems, getItemPrice } = useCart()
   const router = useRouter()
   const { state } = useAuth()
   const { user } = state
@@ -123,9 +123,16 @@ export default function CartPage() {
                             <p className="text-sm text-gray-500 mb-2">
                               Shop: {item.shopName}
                             </p>
-                            <p className="text-xl font-bold text-green-600">
-                              {formatPrice(item.basePrice)}
-                            </p>
+                            <div className="space-y-1">
+                              <p className="text-xl font-bold text-green-600">
+                                {formatPrice(getItemPrice(item))}
+                              </p>
+                              {item.pricingTiers && item.pricingTiers.length > 0 && getItemPrice(item) < item.basePrice && (
+                                <p className="text-xs text-gray-400 line-through">
+                                  {formatPrice(item.basePrice)}
+                                </p>
+                              )}
+                            </div>
                           </div>
 
                           <Button
@@ -179,7 +186,7 @@ export default function CartPage() {
                           <div className="text-right">
                             <p className="text-sm text-gray-600">Thành tiền:</p>
                             <p className="text-lg font-bold text-gray-900">
-                              {formatPrice(item.basePrice * item.quantity)}
+                              {formatPrice(getItemPrice(item) * item.quantity)}
                             </p>
                           </div>
                         </div>
